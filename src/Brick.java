@@ -1,8 +1,8 @@
 import javax.swing.*;
 import java.awt.*;
 
-/** 砖块类
- *
+/**
+ * 砖块类
  */
 public class Brick extends JComponent {
 
@@ -13,14 +13,14 @@ public class Brick extends JComponent {
     /** 是否存在 */
     private boolean isAlive = true;
 
-    private int x,y;
+    private int x, y;
     private Color color;
 
-    public void draw(Graphics g){
-        Graphics2D g2 = (Graphics2D)g;
-        if(isAlive){
+    public void draw(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        if (isAlive) {
             g2.setColor(color);
-            g2.fillRect(x,y,BRICK_WIDTH,BRICK_HEIGHT);
+            g2.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         }
     }
 

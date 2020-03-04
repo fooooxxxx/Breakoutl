@@ -1,6 +1,8 @@
 import javax.swing.*;
+import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -11,10 +13,17 @@ public class JBreakout extends JFrame implements KeyListener {
     public static int realWidth = 0;
     public static int realHeight = 0;
 
+    /** 每层砖块的数量 */
+    private static final int BRICKS_PER_ROW = 10;
+    /** 层数 */
+    private static final int BRICK_ROWS = 10;
+    /** 砖块之间的间隔 */
+    private static final int BRICK_SEP = 4;
     //变量
     BreakoutComponents breakoutComponents = null;
     Paddle paddle = null;
     Ball ball = null;
+    ArrayList<Brick> bricks = null;
 
 
     public JBreakout() {
@@ -31,7 +40,8 @@ public class JBreakout extends JFrame implements KeyListener {
         //初始化组件
         paddle = new Paddle();
         ball = new Ball();
-        breakoutComponents = new BreakoutComponents(paddle, ball);
+        bricks = initBricks();
+        breakoutComponents = new BreakoutComponents(paddle, ball,bricks);
         //paddleMoveTimer = new Timer();
 
         //将组件设置为焦点
@@ -50,6 +60,7 @@ public class JBreakout extends JFrame implements KeyListener {
             public void run() {
                 breakoutComponents.repaint();
                 ball.moveAndBounce();
+                updateBrickWidth();
             }
         }, 0, 5);
     }
@@ -99,6 +110,56 @@ public class JBreakout extends JFrame implements KeyListener {
             case KeyEvent.VK_D:
                 paddle.moveRightCancel();
                 break;
+        }
+    }
+
+    private ArrayList<Brick> initBricks() {
+        ArrayList<Brick> bricks = new ArrayList<>();
+        for(int i = 0;i <BRICK_ROWS;i++){
+            for(int j =0;j<BRICKS_PER_ROW;j++){
+                Brick brick = new Brick();
+                switch(i+1){
+                    case 1:
+                    case 2:
+                        brick.setColor(Color.RED);
+                        break;
+                    case 3:
+                    case 4:
+                        brick.setColor(Color.ORANGE);
+                        break;
+                    case 5:
+                    case 6:
+                        brick.setColor(Color.YELLOW);
+                    case 7:
+                    case 8:
+                        brick.setColor(Color.GREEN);
+                    case 9:
+                    case 10:
+                        brick.setColor(Color.CYAN);
+                        break;
+                }
+                bricks.add(brick);
+            }
+        }
+        return bricks;
+    }
+
+    /** 用于更新brick坐标和宽度*/
+    private void updateBrickWidth(){
+        int i = 0,j = 0;
+        int BRICK_WIDTH = (JBreakout.realWidth - (BRICKS_PER_ROW - 1) *BRICK_SEP) / BRICKS_PER_ROW;
+        for(Brick brick : bricks){
+            brick.setBRICK_WIDTH(BRICK_WIDTH);
+            //x,y为砖块坐标
+            int x = j * BRICK_WIDTH +4*(j+1);
+            brick.setX(x);
+            int y = i*Brick.BRICK_HEIGHT +4*i;
+            brick.setY(y);
+            j++;
+            if( j == 10){
+                j=0;
+                i++;
+            }
         }
     }
 

@@ -9,9 +9,10 @@ public class BreakoutComponents extends JComponent {
     Ball ball;
     ArrayList<Brick> bricks;
 
-    BreakoutComponents(Paddle paddle, Ball ball) {
+    BreakoutComponents(Paddle paddle, Ball ball,ArrayList<Brick> bricks) {
         this.paddle = paddle;
         this.ball = ball;
+        this.bricks = bricks;
 
     }
 
@@ -20,6 +21,9 @@ public class BreakoutComponents extends JComponent {
         super.paintComponent(g);
         paddle.draw(g);
         ball.draw(g);
+        for(Brick brick : bricks){
+            brick.draw(g);
+        }
     }
 
 }
