@@ -20,10 +20,10 @@ public class JBreakout extends JFrame implements KeyListener {
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 4;
     //变量
-    BreakoutComponents breakoutComponents = null;
-    Paddle paddle = null;
-    Ball ball = null;
-    ArrayList<Brick> bricks = null;
+    BreakoutComponents breakoutComponents;
+    Paddle paddle;
+    Ball ball;
+    ArrayList<Brick> bricks;
 
 
     public JBreakout() {
@@ -31,6 +31,7 @@ public class JBreakout extends JFrame implements KeyListener {
         setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
         //设置窗体标题
         setTitle("Breakout");
+
 
         //设置点击关闭按钮关闭程序
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -61,6 +62,7 @@ public class JBreakout extends JFrame implements KeyListener {
                 breakoutComponents.repaint();
                 ball.moveAndBounce();
                 updateBrickWidth();
+
             }
         }, 0, 5);
     }
@@ -130,9 +132,11 @@ public class JBreakout extends JFrame implements KeyListener {
                     case 5:
                     case 6:
                         brick.setColor(Color.YELLOW);
+                        break;
                     case 7:
                     case 8:
                         brick.setColor(Color.GREEN);
+                        break;
                     case 9:
                     case 10:
                         brick.setColor(Color.CYAN);

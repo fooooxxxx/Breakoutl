@@ -23,6 +23,7 @@ public class Ball extends JComponent {
         Graphics2D g2 = (Graphics2D)g;
         //绘制小球
         g2.drawOval(x,y,BALL_RADIUS*2,BALL_RADIUS*2);
+
     }
 
     /** 小球移动函数*/
@@ -54,6 +55,19 @@ public class Ball extends JComponent {
         vy = -vy;
     }
 
+    /** 判断小球是否碰撞函数
+     * @param object_x 被判断物体的x轴起始坐标
+     * @param object_y 被判断物体的y轴起始坐标
+     * @param object_height 被判断物体的高度
+     * @param object_width 被判断物体的宽度
+     * @return 返回true,则表示发生了碰撞,否则无碰撞*/
+    public boolean collide(int object_x,int object_y,int object_width,int object_height){
+        if(this.x+2*BALL_RADIUS>object_x && this.x<object_x+object_width
+                && this.y+2*BALL_RADIUS > object_y && this.y<object_y+object_height){
+            return true;
+        }
+        return false;
+    }
 
 
 }
