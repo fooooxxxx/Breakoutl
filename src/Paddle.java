@@ -58,8 +58,8 @@ public class Paddle extends JComponent {
 
     /** 将paddle向右移动speed个单位 */
     public void moveRight() {
-        if(paddleRightMoveFlag==0)//如果已经在移动,则不继续添加移动定时器
-            paddleRightMoveFlag++;//指示量+1.说明当前按下左移动按钮数量增加
+        if(paddleRightMoveFlag==0)//
+            paddleRightMoveFlag++;//指示量+1.说明当前按下右移动按钮数量增加
         moveStart(1);//执行向右移动任务
 
     }
