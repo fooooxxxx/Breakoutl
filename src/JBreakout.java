@@ -15,9 +15,9 @@ public class JBreakout extends JFrame implements KeyListener {
     public static int realHeight = 0;
 
     /** 每层砖块的数量 */
-    private static final int BRICKS_PER_ROW = 2;
+    private static final int BRICKS_PER_ROW = 10;
     /** 层数 */
-    private static final int BRICK_ROWS = 1;
+    private static final int BRICK_ROWS = 10;
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 1;
     //变量
