@@ -20,6 +20,8 @@ public class Paddle extends JComponent {
     /** 移动定时器启动间隔,越短移动越快 */
     private int movePeriod=16;
 
+    double paddleTan = 0;//中心到顶点的tan值
+
     //移动计时器
     Timer paddleMoveTimer;
     TimerTask paddleMoveTask;
@@ -31,6 +33,8 @@ public class Paddle extends JComponent {
 
     Paddle() {
         paddleMoveTimer = new Timer();
+        countPaddleTan();
+
     }
 
     /** 重写draw函数 */
@@ -45,7 +49,7 @@ public class Paddle extends JComponent {
     public void setStartPosition() {
         x = (JBreakout.realWidth - PADDLE_WIDTH) / 2;
         y = JBreakout.realHeight - PADDLE_Y_OFFSET;
-        System.out.println(x);
+        //System.out.println(x);
     }
 
     /** 将paddle向左移动speed个单位 */
@@ -122,7 +126,19 @@ public class Paddle extends JComponent {
         if(paddleLeftMoveFlag > 0) moveStart(0);
     }
 
+    /** 计算并更新paddle中心到各顶点的tan值 */
+    public void countPaddleTan(){
+        paddleTan = (double)PADDLE_HEIGHT/PADDLE_WIDTH;
+        System.out.println("paddleTan" + paddleTan);
+    }
 
+    @Override
+    public int getX() {
+        return x;
+    }
 
-
+    @Override
+    public int getY() {
+        return y;
+    }
 }

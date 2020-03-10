@@ -7,8 +7,9 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 public class JBreakout extends JFrame implements KeyListener {
-    public static final int APPLICATION_WIDTH = 400;
-    public static final int APPLICATION_HEIGHT = 600;
+    //游戏参数
+    public static final int APPLICATION_WIDTH = 600;
+    public static final int APPLICATION_HEIGHT = 900;
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
@@ -24,7 +25,7 @@ public class JBreakout extends JFrame implements KeyListener {
     Paddle paddle;
     Ball ball;
     ArrayList<Brick> bricks;
-
+    boolean isGameStart = false;//游戏是否在进行中标志
 
     public JBreakout() {
         //设置窗体大小
@@ -60,11 +61,25 @@ public class JBreakout extends JFrame implements KeyListener {
             @Override
             public void run() {
                 breakoutComponents.repaint();
-                ball.moveAndBounce();
+                ball.moveAndBounce();//球的移动,以及对墙碰撞
                 updateBrickWidth();
+                if(!isGameStart) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
+                for(Brick brickOne : bricks) {//对砖块撞击判定
+                    if(brickOne.isAlive() && ball.collide(brickOne.getX(),brickOne.getY(),brickOne.getBRICK_WIDTH(),brickOne.getHeight())) {//如果和brick发生碰撞
+                        if(judgeCollideDirection(ball,brickOne.brickTan,brickOne.getX(),brickOne.getY()))
+                            ball.rebounceX();
+                        else
+                            ball.rebounceY();
+                        brickOne.setAlive(false);
+                        break;
+                    }
+                }
+
+
 
             }
-        }, 0, 5);
+        }, 0, 10);
+
     }
 
     /** 设置游戏面板实际大小 */
@@ -96,6 +111,9 @@ public class JBreakout extends JFrame implements KeyListener {
             case KeyEvent.VK_RIGHT:
             case KeyEvent.VK_D:
                 paddle.moveRight();
+                break;
+            case KeyEvent.VK_SPACE:
+                isGameStart = true;
                 break;
         }
 
@@ -164,7 +182,32 @@ public class JBreakout extends JFrame implements KeyListener {
                 j=0;
                 i++;
             }
+        if(brick.brickTan!=0) brick.countBrickTan();
         }
+    }
+
+    /** 判断小球反弹方向
+     * @param ball 球对象
+     * @param setTan 设定的tan值,由被碰撞物体提供
+     * @param objX 被碰撞物体中心点的X轴坐标
+     * @param objY 被碰撞物体中心点的Y轴坐标
+     * @return true则进行逆转x轴速度的反弹,为false进行逆转y轴速度的反弹*/
+    public boolean judgeCollideDirection(Ball ball,double setTan,int objX,int objY){
+        double tempTan = (double)(objY-ball.getBallCenterY())/(objX-ball.getBallCenterX());
+        System.out.println("碰撞判定的tan为"+tempTan);
+        if(tempTan < setTan){
+            System.out.println("逆转X");
+        }
+        else{
+            System.out.println("逆转Y");
+        }
+        return tempTan < setTan;//如果tempTan小于setTan,则说明他们在左右面发生了碰撞,否则表面在上下面发生碰撞
+    }
+
+    /** 设置小球初始位置在Paddle的中间顶部*/
+    public void setStartBallPosition(){
+        ball.setX(paddle.getX()+Paddle.PADDLE_WIDTH/2-Ball.getBallRadius());
+        ball.setY(paddle.getY()-2*Ball.getBallRadius());
     }
 
 

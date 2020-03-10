@@ -6,18 +6,15 @@ import java.awt.*;
  */
 public class Ball extends JComponent {
     //小球半径
-    private static final int BALL_RADIUS = 10;
+    private static final int BALL_RADIUS = 5;
     //小球初始位置
-    private int x = 100;
-    private int y = 100;
+    private int x = 200;
+    private int y = 200;
     //小球在x和y轴上的初始速度
-    private int vx = 1;
-    private int vy = 1;
+    private int vx = 3;
+    private int vy = 3;
 
-    /** 设置小球初始位置在Paddle的顶部*/
-    public void setStartBallPosition(){
 
-    }
 
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
@@ -45,12 +42,12 @@ public class Ball extends JComponent {
         }
     }
 
-    /** 遇到左右墙的反弹*/
+    /** 遇到左右墙的反弹 ,x轴速度逆转*/
     public void rebounceX(){
         vx = -vx;
     }
 
-    /** 遇到上下墙的反弹*/
+    /** 遇到上下墙的反弹, y轴速度逆转*/
     public void rebounceY(){
         vy = -vy;
     }
@@ -63,11 +60,32 @@ public class Ball extends JComponent {
      * @return 返回true,则表示发生了碰撞,否则无碰撞*/
     public boolean collide(int object_x,int object_y,int object_width,int object_height){
         if(this.x+2*BALL_RADIUS>object_x && this.x<object_x+object_width
-                && this.y+2*BALL_RADIUS > object_y && this.y<object_y+object_height){
+                && this.y+2*BALL_RADIUS > object_y && this.y<object_y+object_height){//判断是否发生碰撞
             return true;
         }
         return false;
     }
 
+    /** 获得圆心X轴坐标 */
+    int getBallCenterX(){
+        return x+BALL_RADIUS/2;
+    }
 
+    /** 获得圆心Y轴坐标 */
+    int getBallCenterY(){
+        return y+BALL_RADIUS/2;
+    }
+
+
+    public void setX(int x) {
+        this.x = x;
+    }
+
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public static int getBallRadius() {
+        return BALL_RADIUS;
+    }
 }

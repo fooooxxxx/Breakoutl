@@ -9,12 +9,15 @@ public class Brick extends JComponent {
     /** Width of a brick */
     private int BRICK_WIDTH;
     /** Height of a brick */
-    public static final int BRICK_HEIGHT = 8;
+    public static final int BRICK_HEIGHT = 12;
     /** 是否存在 */
     private boolean isAlive = true;
 
     private int x, y;
     private Color color;
+
+    /** 设定的tan值 */
+    double brickTan=0;
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -25,6 +28,13 @@ public class Brick extends JComponent {
     }
 
     public Brick() {
+
+    }
+
+    /** 计算并更新brickTan中心到各顶点的tan值 */
+    public void countBrickTan(){
+        brickTan = (double)BRICK_HEIGHT/BRICK_WIDTH;
+        System.out.println("brickTan" + brickTan);
     }
 
     public int getBRICK_WIDTH() {
