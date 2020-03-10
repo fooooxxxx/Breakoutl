@@ -44,12 +44,16 @@ public class Ball extends JComponent {
 
     /** 遇到左右墙的反弹 ,x轴速度逆转*/
     public void rebounceX(){
+        x -=vx;
         vx = -vx;
+
     }
 
     /** 遇到上下墙的反弹, y轴速度逆转*/
     public void rebounceY(){
+        y -=vy;
         vy = -vy;
+
     }
 
     /** 判断小球是否碰撞函数
@@ -87,5 +91,15 @@ public class Ball extends JComponent {
 
     public static int getBallRadius() {
         return BALL_RADIUS;
+    }
+
+    @Override
+    public int getX() {
+        return x;
+    }
+
+    @Override
+    public int getY() {
+        return y;
     }
 }

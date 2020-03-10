@@ -141,4 +141,12 @@ public class Paddle extends JComponent {
     public int getY() {
         return y;
     }
+
+    public static int getPaddleWidth() {
+        return PADDLE_WIDTH;
+    }
+
+    public static int getPaddleHeight() {
+        return PADDLE_HEIGHT;
+    }
 }

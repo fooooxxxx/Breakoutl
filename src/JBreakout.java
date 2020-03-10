@@ -19,7 +19,7 @@ public class JBreakout extends JFrame implements KeyListener {
     /** 层数 */
     private static final int BRICK_ROWS = 10;
     /** 砖块之间的间隔 */
-    private static final int BRICK_SEP = 4;
+    private static final int BRICK_SEP = 1;
     //变量
     BreakoutComponents breakoutComponents;
     Paddle paddle;
@@ -73,6 +73,10 @@ public class JBreakout extends JFrame implements KeyListener {
                         brickOne.setAlive(false);
                         break;
                     }
+                }
+                if(ball.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleWidth())) {
+                    ball.setY(ball.getY()-6);
+                    ball.rebounceY();
                 }
 
 
@@ -173,9 +177,9 @@ public class JBreakout extends JFrame implements KeyListener {
         for(Brick brick : bricks){
             brick.setBRICK_WIDTH(BRICK_WIDTH);
             //x,y为砖块坐标
-            int x = j * BRICK_WIDTH +4*(j+1);
+            int x = j * BRICK_WIDTH +BRICK_SEP*(j+1);
             brick.setX(x);
-            int y = i*Brick.BRICK_HEIGHT +4*i;
+            int y = i*Brick.BRICK_HEIGHT +BRICK_SEP*i;
             brick.setY(y);
             j++;
             if( j == 10){
