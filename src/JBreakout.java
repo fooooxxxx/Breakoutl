@@ -8,16 +8,16 @@ import java.util.TimerTask;
 
 public class JBreakout extends JFrame implements KeyListener {
     //游戏参数
-    public static final int APPLICATION_WIDTH = 600;
-    public static final int APPLICATION_HEIGHT = 900;
+    public static final int APPLICATION_WIDTH = 616;
+    public static final int APPLICATION_HEIGHT = 939;
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
 
     /** 每层砖块的数量 */
-    private static final int BRICKS_PER_ROW = 10;
+    private static final int BRICKS_PER_ROW = 2;
     /** 层数 */
-    private static final int BRICK_ROWS = 10;
+    private static final int BRICK_ROWS = 1;
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 1;
     //变量
@@ -55,6 +55,8 @@ public class JBreakout extends JFrame implements KeyListener {
         //添加监听事件
         breakoutComponents.addKeyListener(this);
 
+
+
         //定时器
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -65,7 +67,7 @@ public class JBreakout extends JFrame implements KeyListener {
                 updateBrickWidth();
                 if(!isGameStart) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
                 for(Brick brickOne : bricks) {//对砖块撞击判定
-                    if(brickOne.isAlive() && ball.collide(brickOne.getX(),brickOne.getY(),brickOne.getBRICK_WIDTH(),brickOne.getHeight())) {//如果和brick发生碰撞
+                    if(brickOne.isAlive() && ball.collide(brickOne.getX(),brickOne.getY(),brickOne.getBRICK_WIDTH(),Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
                         if(judgeCollideDirection(ball,brickOne.brickTan,brickOne.getX(),brickOne.getY()))
                             ball.rebounceX();
                         else

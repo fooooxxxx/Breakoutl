@@ -41,6 +41,7 @@ public class Brick extends JComponent {
         return BRICK_WIDTH;
     }
 
+
     public void setBRICK_WIDTH(int BRICK_WIDTH) {
         this.BRICK_WIDTH = BRICK_WIDTH;
     }
