@@ -11,6 +11,7 @@ public class BreakoutComponents extends JComponent {
 
     BreakoutComponents(Paddle paddle, Ball ball,ArrayList<Brick> bricks) {
         this.paddle = paddle;
+        paddle.setVisible(true);
         this.ball = ball;
         this.bricks = bricks;
 

@@ -42,6 +42,7 @@ public class Paddle extends JComponent {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.blue);
         g2.drawRect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        //System.out.println(getX() + " ---"+getY());
     }
 
 
@@ -49,7 +50,7 @@ public class Paddle extends JComponent {
     public void setStartPosition() {
         x = (JBreakout.realWidth - PADDLE_WIDTH) / 2;
         y = JBreakout.realHeight - PADDLE_Y_OFFSET;
-        //System.out.println(x);
+        System.out.println("paddle起始位置设置完毕");
     }
 
     /** 将paddle向左移动speed个单位 */
@@ -57,7 +58,6 @@ public class Paddle extends JComponent {
         if(paddleLeftMoveFlag==0)//如果已经在移动,则不继续添加移动定时器
             paddleLeftMoveFlag++;//指示量+1.说明当前按下左移动按钮数量增加
         moveStart(0); //执行向左移动任务
-
     }
 
     /** 将paddle向右移动speed个单位 */
@@ -65,7 +65,6 @@ public class Paddle extends JComponent {
         if(paddleRightMoveFlag==0)//
             paddleRightMoveFlag++;//指示量+1.说明当前按下右移动按钮数量增加
         moveStart(1);//执行向右移动任务
-
     }
 
     /** 根据参数创建实际的移动任务

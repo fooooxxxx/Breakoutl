@@ -36,9 +36,8 @@ public class Ball extends JComponent {
             rebounceX();
         }
         if (y < 0) { y = 0;rebounceY(); }
-        if(y+2*BALL_RADIUS > JBreakout.realHeight){
-            y = JBreakout.realHeight - 2*BALL_RADIUS;
-            rebounceY();
+        if(y+2*BALL_RADIUS > JBreakout.realHeight){//球掉地上
+            JBreakout.isGameStart = false;
         }
     }
 

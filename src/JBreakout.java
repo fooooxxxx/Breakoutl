@@ -6,7 +6,7 @@ import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class JBreakout extends JFrame implements KeyListener {
+public class JBreakout extends JFrame {
     //游戏参数
     public static final int APPLICATION_WIDTH = 616;
     public static final int APPLICATION_HEIGHT = 939;
@@ -19,13 +19,14 @@ public class JBreakout extends JFrame implements KeyListener {
     /** 层数 */
     private static final int BRICK_ROWS = 10;
     /** 砖块之间的间隔 */
-    private static final int BRICK_SEP = 1;
+    private static final int BRICK_SEP = 2;
     //变量
     BreakoutComponents breakoutComponents;
     Paddle paddle;
     Ball ball;
     ArrayList<Brick> bricks;
-    boolean isGameStart = false;//游戏是否在进行中标志
+    MainMenu mainMenu ;//主菜单JPanel
+    static boolean isGameStart = false;//游戏是否在进行中标志
 
     public JBreakout() {
         //设置窗体大小
@@ -40,23 +41,64 @@ public class JBreakout extends JFrame implements KeyListener {
         setResizable(false);
 
         //初始化组件
+        mainMenu = new MainMenu(this);//主菜单JPanel
+
+        //添加组件
+        mainMenu.setVisible(true);
+        add(mainMenu);
+
+        //startGame();
+
+
+    }
+
+    /** 开始游戏,设置监听,并且启用监听*/
+    public void startGame(){
+        mainMenu.setVisible(false);
+
         paddle = new Paddle();
         ball = new Ball();
         bricks = initBricks();
         breakoutComponents = new BreakoutComponents(paddle, ball,bricks);
-        //paddleMoveTimer = new Timer();
-
-        //将组件设置为焦点
-        breakoutComponents.setFocusable(true);
-
-        //添加组件
         add(breakoutComponents);
+        breakoutComponents.setVisible(true);
+        breakoutComponents.requestFocus();//强制获取焦点
+        breakoutComponents.addKeyListener(new KeyListener() {
+            @Override
+            public void keyTyped(KeyEvent e) {
 
-        //添加监听事件
-        breakoutComponents.addKeyListener(this);
+            }
+            @Override
+            public void keyPressed(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_A:
+                        paddle.moveLeft();
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        paddle.moveRight();
+                        break;
+                    case KeyEvent.VK_SPACE:
+                        isGameStart = true;
+                        break;
+                }
+            }
 
-
-
+            @Override
+            public void keyReleased(KeyEvent e) {
+                switch (e.getKeyCode()) {
+                    case KeyEvent.VK_LEFT:
+                    case KeyEvent.VK_A:
+                        paddle.moveLeftCancel();
+                        break;
+                    case KeyEvent.VK_RIGHT:
+                    case KeyEvent.VK_D:
+                        paddle.moveRightCancel();
+                        break;
+                }
+            }
+        });  //添加监听事件
         //定时器
         Timer timer = new Timer();
         timer.schedule(new TimerTask() {
@@ -80,13 +122,12 @@ public class JBreakout extends JFrame implements KeyListener {
                     ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
-
-
-
             }
         }, 0, 10);
-
+        setStartPosition();
+        breakoutComponents.setFocusable(true);//将组件设置为焦点
     }
+
 
     /** 设置游戏面板实际大小 */
     public void setRealWidthHeight() {
@@ -96,47 +137,9 @@ public class JBreakout extends JFrame implements KeyListener {
         System.out.println("游戏面板 宽度为" + realWidth + "  高度为" + realHeight);
     }
 
-    /** 该方法由MainGame主进程调用 用于设置paddle起始位置 */
+    /** 该方法需要在JBreakout初始化完成后调用 用于设置paddle起始位置 */
     public void setStartPosition() {
         breakoutComponents.paddle.setStartPosition();
-    }
-
-    @Override
-    public void keyTyped(KeyEvent e) {
-
-    }
-
-    @Override
-    public void keyPressed(KeyEvent e) {
-
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
-                paddle.moveLeft();
-                break;
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
-                paddle.moveRight();
-                break;
-            case KeyEvent.VK_SPACE:
-                isGameStart = true;
-                break;
-        }
-
-    }
-
-    @Override
-    public void keyReleased(KeyEvent e) {
-        switch (e.getKeyCode()) {
-            case KeyEvent.VK_LEFT:
-            case KeyEvent.VK_A:
-                paddle.moveLeftCancel();
-                break;
-            case KeyEvent.VK_RIGHT:
-            case KeyEvent.VK_D:
-                paddle.moveRightCancel();
-                break;
-        }
     }
 
     private ArrayList<Brick> initBricks() {
@@ -218,3 +221,4 @@ public class JBreakout extends JFrame implements KeyListener {
 
 
 }
+
