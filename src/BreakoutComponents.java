@@ -8,12 +8,14 @@ public class BreakoutComponents extends JComponent {
     Paddle paddle;
     Ball ball;
     ArrayList<Brick> bricks;
-
+    JLabel healthLabel;
     BreakoutComponents(Paddle paddle, Ball ball,ArrayList<Brick> bricks) {
         this.paddle = paddle;
         paddle.setVisible(true);
         this.ball = ball;
         this.bricks = bricks;
+
+        this.setLayout(null);//使用绝对布局
 
     }
 

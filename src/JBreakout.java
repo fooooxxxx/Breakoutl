@@ -10,6 +10,10 @@ public class JBreakout extends JFrame {
     //游戏参数
     public static final int APPLICATION_WIDTH = 616;
     public static final int APPLICATION_HEIGHT = 939;
+    /** 血量 */
+    public static int healthPoint = 0;
+    /** 小球数量 */
+    public static int ballNum = 1;
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
@@ -26,7 +30,8 @@ public class JBreakout extends JFrame {
     Ball ball;
     ArrayList<Brick> bricks;
     MainMenu mainMenu ;//主菜单JPanel
-    static boolean isGameStart = false;//游戏是否在进行中标志
+    static boolean isBallLaunching = false;//球是否已经发射
+    static boolean isGameStart = false;//游戏是否开始
 
     public JBreakout() {
         //设置窗体大小
@@ -80,7 +85,7 @@ public class JBreakout extends JFrame {
                         paddle.moveRight();
                         break;
                     case KeyEvent.VK_SPACE:
-                        isGameStart = true;
+                        isBallLaunching = true;
                         break;
                 }
             }
@@ -107,7 +112,7 @@ public class JBreakout extends JFrame {
                 breakoutComponents.repaint();
                 ball.moveAndBounce();//球的移动,以及对墙碰撞
                 updateBrickWidth();
-                if(!isGameStart) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
+                if(!isBallLaunching) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
                 for(Brick brickOne : bricks) {//对砖块撞击判定
                     if(brickOne.isAlive() && ball.collide(brickOne.getX(),brickOne.getY(),brickOne.getBRICK_WIDTH(),Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
                         if(judgeCollideDirection(ball,brickOne.brickTan,brickOne.getX(),brickOne.getY()))
@@ -125,7 +130,6 @@ public class JBreakout extends JFrame {
             }
         }, 0, 10);
         setStartPosition();
-        breakoutComponents.setFocusable(true);//将组件设置为焦点
     }
 
 
@@ -184,7 +188,7 @@ public class JBreakout extends JFrame {
             //x,y为砖块坐标
             int x = j * BRICK_WIDTH +BRICK_SEP*(j+1);
             brick.setX(x);
-            int y = i*Brick.BRICK_HEIGHT +BRICK_SEP*i;
+            int y = i*Brick.BRICK_HEIGHT +BRICK_SEP*i+30;//加的30为了给血量显示面板留出空间
             brick.setY(y);
             j++;
             if( j == 10){
