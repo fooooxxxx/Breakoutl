@@ -12,6 +12,8 @@ public class JBreakout extends JFrame {
     public static final int APPLICATION_HEIGHT = 939;
     /** 血量 */
     public static int healthPoint = 0;
+    /** 当期分数*/
+    public static int score = 0;
     /** 小球数量 */
     public static int ballNum = 1;
     //游戏面板实际宽高
@@ -127,6 +129,7 @@ public class JBreakout extends JFrame {
                     ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
+                breakoutComponents.updateHpAndScore(healthPoint,score);//更新显示出来的数据
             }
         }, 0, 10);
         setStartPosition();
