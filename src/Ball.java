@@ -40,6 +40,7 @@ public class Ball extends JComponent {
             JBreakout.isBallLaunching = false;
             if(JBreakout.ballNum == 1){//如果这是场上唯一的ball,则扣血
                 JBreakout.healthPoint-=1;
+
             }
         }
     }

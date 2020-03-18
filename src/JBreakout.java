@@ -32,9 +32,12 @@ public class JBreakout extends JFrame {
     Ball ball;
     ArrayList<Brick> bricks;
     MainMenu mainMenu ;//主菜单JPanel
+    Timer mainTimer;
     static boolean isBallLaunching = false;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
 
+    //字体变量
+    Font ggFont = new Font("黑体",Font.BOLD,18);
     public JBreakout() {
         //设置窗体大小
         setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
@@ -62,10 +65,11 @@ public class JBreakout extends JFrame {
     /** 开始游戏,设置监听,并且启用监听*/
     public void startGame(){
         mainMenu.setVisible(false);
-
+        healthPoint = 3;//初始血量为3
+        score = 0;//清空分数
         paddle = new Paddle();
         ball = new Ball();
-        bricks = initBricks();
+        bricks = initBricks();//生成砖块
         breakoutComponents = new BreakoutComponents(paddle, ball,bricks);
         add(breakoutComponents);
         breakoutComponents.setVisible(true);
@@ -107,8 +111,8 @@ public class JBreakout extends JFrame {
             }
         });  //添加监听事件
         //定时器
-        Timer timer = new Timer();
-        timer.schedule(new TimerTask() {
+        mainTimer = new Timer();
+        mainTimer.schedule(new TimerTask() {
             @Override
             public void run() {
                 breakoutComponents.repaint();
@@ -121,7 +125,7 @@ public class JBreakout extends JFrame {
                             ball.rebounceX();
                         else
                             ball.rebounceY();
-                        brickOne.setAlive(false);
+                        brickOne.hpCheck(1);//进行一次伤害判定,伤害默认为1
                         break;
                     }
                 }
@@ -129,12 +133,31 @@ public class JBreakout extends JFrame {
                     ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
+                if(healthPoint==0){
+                    System.out.println("空血");
+                    gameOver();
+                }
                 breakoutComponents.updateHpAndScore(healthPoint,score);//更新显示出来的数据
             }
         }, 0, 10);
         setStartPosition();
     }
 
+    public void gameOver(){//生命值归零之后调用,弹出结束画面,并且记录分数
+        mainTimer.cancel();//关闭定时器,游戏结束
+        JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
+        ggLabel.setBounds(200,400,200,100);
+        ggLabel.setFont(ggFont);
+        ggLabel.setVisible(true);
+
+        breakoutComponents.add(ggLabel);
+        breakoutComponents.repaint();//进行重绘,直接显示ggLabel
+
+    }
+
+    public void launchBall(){//按空格后启动小球
+
+    }
 
     /** 设置游戏面板实际大小 */
     public void setRealWidthHeight() {
@@ -149,6 +172,19 @@ public class JBreakout extends JFrame {
         breakoutComponents.paddle.setStartPosition();
     }
 
+
+    /** 初始化brick.并且有随机生命值
+     * @return 返回初始化完成的bricks*/
+    private ArrayList<Brick> randInitBricks() {
+        ArrayList<Brick> bricks = new ArrayList<>();
+
+
+
+
+        return bricks;
+    }
+    /** 普通地初始化brick
+     * @return 返回初始化完成的bricks*/
     private ArrayList<Brick> initBricks() {
         ArrayList<Brick> bricks = new ArrayList<>();
         for(int i = 0;i <BRICK_ROWS;i++){
