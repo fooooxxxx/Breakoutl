@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
@@ -128,13 +130,14 @@ public class JBreakout extends JFrame {
                         brickOne.hpCheck(1);//进行一次伤害判定,伤害默认为1
                         break;
                     }
+                    brickOne.setAutoColor();
                 }
                 if(ball.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleWidth())) {
                     ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
                 if(healthPoint==0){
-                    System.out.println("空血");
+                    System.out.println("生命不足,游戏结束");
                     gameOver();
                 }
                 breakoutComponents.updateHpAndScore(healthPoint,score);//更新显示出来的数据
@@ -146,11 +149,21 @@ public class JBreakout extends JFrame {
     public void gameOver(){//生命值归零之后调用,弹出结束画面,并且记录分数
         mainTimer.cancel();//关闭定时器,游戏结束
         JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
-        ggLabel.setBounds(200,400,200,100);
+        JButton backBtn = new JButton("返回主菜单");
+        ggLabel.setBounds(180,350,300,100);
         ggLabel.setFont(ggFont);
         ggLabel.setVisible(true);
-
+        backBtn.setBounds(200,450,200,100);
+        backBtn.setFont(ggFont);//设置字体
+        breakoutComponents.add(backBtn);
         breakoutComponents.add(ggLabel);
+        backBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                breakoutComponents.setVisible(false);
+                mainMenu.setVisible(true);
+            }
+        });
         breakoutComponents.repaint();//进行重绘,直接显示ggLabel
 
     }
@@ -193,25 +206,22 @@ public class JBreakout extends JFrame {
                 switch(i+1){
                     case 1:
                     case 2:
-                        brick.setColor(Color.RED);
+                    case 7:
+                    case 8:
+                    case 9:
+                        brick.setBrickHP(1);
                         break;
                     case 3:
                     case 4:
-                        brick.setColor(Color.ORANGE);
+                        brick.setBrickHP(3);
                         break;
                     case 5:
                     case 6:
-                        brick.setColor(Color.YELLOW);
-                        break;
-                    case 7:
-                    case 8:
-                        brick.setColor(Color.GREEN);
-                        break;
-                    case 9:
                     case 10:
-                        brick.setColor(Color.CYAN);
+                        brick.setBrickHP(2);
                         break;
                 }
+                //brick.setAutoColor();
                 bricks.add(brick);
             }
         }
