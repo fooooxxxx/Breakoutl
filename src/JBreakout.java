@@ -1,12 +1,21 @@
+import javax.sound.sampled.AudioInputStream;
 import javax.swing.*;
+import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
+import java.io.BufferedInputStream;
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
+import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
+
 
 public class JBreakout extends JFrame {
     //游戏参数
@@ -117,10 +126,10 @@ public class JBreakout extends JFrame {
         mainTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if(!isBallLaunching) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
                 breakoutComponents.repaint();
                 ball.moveAndBounce();//球的移动,以及对墙碰撞
                 updateBrickWidth();
-                if(!isBallLaunching) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
                 for(Brick brickOne : bricks) {//对砖块撞击判定
                     if(brickOne.isAlive() && ball.collide(brickOne.getX(),brickOne.getY(),brickOne.getBRICK_WIDTH(),Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
                         if(judgeCollideDirection(ball,brickOne.brickTan,brickOne.getX(),brickOne.getY()))
@@ -128,12 +137,13 @@ public class JBreakout extends JFrame {
                         else
                             ball.rebounceY();
                         brickOne.hpCheck(1);//进行一次伤害判定,伤害默认为1
+                        hitSoundPlay();
                         break;
                     }
-                    brickOne.setAutoColor();
+                    brickOne.setAutoColor();//根据生命值自动设置颜色
                 }
-                if(ball.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleWidth())) {
-                    ball.setY(ball.getY()-6);
+                if(ball.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleHeight())) {
+                    //ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
                 if(healthPoint==0){
@@ -272,6 +282,24 @@ public class JBreakout extends JFrame {
         ball.setY(paddle.getY()-2*Ball.getBallRadius());
     }
 
-
+    /** 击中砖块后播放击中音乐 */
+    public void hitSoundPlay(){
+        new Thread(new Runnable() {
+            @Override
+            public void run() {
+                System.out.println("播放hit音效");
+                try {
+                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav"));
+                    Clip clip = AudioSystem.getClip();
+                    clip.open(audioInputStream);
+                    clip.start();
+                    /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
+                } catch (Exception e) {
+                    e.printStackTrace();
+                    System.out.println("异常抛出,音乐文件未找到");
+                }
+            }
+        }).start();
+    }
 }
 
