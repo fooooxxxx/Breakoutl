@@ -145,7 +145,7 @@ public class JBreakout extends JFrame {
                     brickOne.setAutoColor();//根据生命值自动设置颜色
                 }
                 if(ball.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleHeight())) {
-                    //ball.setY(ball.getY()-6);
+                    ball.setY(ball.getY()-5);//防止ball与paddle进行多次碰撞
                     ball.rebounceY();
                 }
                 items.removeIf(gameItem -> gameItem.itemMove() == -1);//对道具进行判定,是否需要移除
@@ -202,7 +202,7 @@ public class JBreakout extends JFrame {
     /** 初始化brick.并且有随机生命值
      * @return 返回初始化完成的bricks*/
     private ArrayList<Brick> randInitBricks() {
-        ArrayList<Brick> bricks = new ArrayList<>();
+        //ArrayList<Brick> bricks = new ArrayList<>();
 
 
 
