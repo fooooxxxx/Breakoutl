@@ -312,12 +312,15 @@ public class JBreakout extends JFrame {
         System.out.println("道具"+itemType+"get√");
         switch (itemType) {
             case 1:
+                breakoutComponents.updateItemMessage("挡板长度增加了!");
                 paddle.updatePaddleWidth(2*Paddle.oldWidth,5000);
                 break;
             case 2:
+                breakoutComponents.updateItemMessage("小球分裂了!");
                 break;
             case 3:
                 healthPoint++;
+                breakoutComponents.updateItemMessage("增加一条生命值!");
                 System.out.println("生命值提升了");
                 break;
         }

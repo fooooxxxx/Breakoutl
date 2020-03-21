@@ -28,6 +28,7 @@ public class BreakoutComponents extends JComponent {
         this.showLabel.setBounds(20,0,100,30);
         this.itemLabel.setBounds(180,0,100,30);
         add(showLabel);
+        add(itemLabel);
         random = new Random();
     }
 
