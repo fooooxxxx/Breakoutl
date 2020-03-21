@@ -17,7 +17,7 @@ public class JBreakout extends JFrame {
     /** 当期分数 */
     public static int score = 0;
     /** 小球数量 */
-    public static int ballNum = 1;
+    public static int ballNum = 1;//当小球数量为0时,生命值减一
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
@@ -249,7 +249,8 @@ public class JBreakout extends JFrame {
                         brick.setBrickHP(2);
                         break;
                 }
-                //brick.setAutoColor();
+
+
                 bricks.add(brick);
             }
         }
@@ -316,6 +317,8 @@ public class JBreakout extends JFrame {
             case 2:
                 break;
             case 3:
+                healthPoint++;
+                System.out.println("生命值提升了");
                 break;
         }
     }
