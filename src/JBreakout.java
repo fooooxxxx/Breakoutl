@@ -6,6 +6,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Timer;
 import java.util.TimerTask;
 import javax.sound.sampled.AudioSystem;
@@ -36,9 +37,10 @@ public class JBreakout extends JFrame {
     BreakoutComponents breakoutComponents;
     Paddle paddle;
     Ball ball;
-    ArrayList<Brick> bricks;
+    ArrayList<Brick> bricks;//砖块
     MainMenu mainMenu ;//主菜单JPanel
     Timer mainTimer;
+    ArrayList<GameItem> items;//道具列表
     static boolean isBallLaunching = false;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
 
@@ -75,7 +77,8 @@ public class JBreakout extends JFrame {
         paddle = new Paddle();
         ball = new Ball();
         bricks = initBricks();//生成砖块
-        breakoutComponents = new BreakoutComponents(paddle, ball,bricks);
+        items = new ArrayList<GameItem>();
+        breakoutComponents = new BreakoutComponents(paddle, ball,bricks,items);
         add(breakoutComponents);
         breakoutComponents.setVisible(true);
         breakoutComponents.requestFocus();//强制获取焦点
@@ -130,7 +133,8 @@ public class JBreakout extends JFrame {
                             ball.rebounceX();
                         else
                             ball.rebounceY();
-                        brickOne.hpCheck(1);//进行一次伤害判定,伤害默认为1
+                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数 */
+                        if(brickOne.hpCheck(1)) breakoutComponents.generateItem(brickOne);
                         hitSoundPlay();//播放击中音效
                         break;
                     }
@@ -140,6 +144,7 @@ public class JBreakout extends JFrame {
                     //ball.setY(ball.getY()-6);
                     ball.rebounceY();
                 }
+                items.removeIf(gameItem -> gameItem.itemMove() == -1);//对道具进行判定,是否需要移除
                 if(healthPoint==0){
                     System.out.println("生命不足,游戏结束");
                     gameOver();
@@ -274,6 +279,11 @@ public class JBreakout extends JFrame {
     public void setStartBallPosition(){
         ball.setX(paddle.getX()+Paddle.PADDLE_WIDTH/2-Ball.getBallRadius());
         ball.setY(paddle.getY()-2*Ball.getBallRadius());
+    }
+
+    /**预先对音效进行加载*/
+    public void preSound(){
+
     }
 
     /** 击中砖块后播放击中音乐 */

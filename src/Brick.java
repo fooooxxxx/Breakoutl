@@ -33,7 +33,7 @@ public class Brick extends JComponent {
 
     /** 碰撞时调用,进行一次血量判定
      * @param damage 小球碰撞一次的伤害值
-     * @return 血量为空,返回true,反之有剩余血量返回false*/
+     * @return 小球血量为空,被击碎,返回true,反之有剩余血量返回false*/
     public boolean hpCheck(int damage){//如果返回false,则说明该brick还有剩余血量
         this.brickHP -= damage;
         if(this.brickHP<=0){//血量为空
