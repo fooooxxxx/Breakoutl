@@ -25,7 +25,7 @@ public class Brick extends JComponent {
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        if (isAlive) {
+        if (isAlive) {//brick是否存活
             g2.setColor(color);
             g2.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         }
