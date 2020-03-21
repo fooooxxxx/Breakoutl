@@ -101,7 +101,7 @@ public class JBreakout extends JFrame {
                         paddle.moveRight();
                         break;
                     case KeyEvent.VK_SPACE:
-                        isBallLaunching = true;
+                        launchBall();
                         break;
                 }
             }
@@ -192,7 +192,7 @@ public class JBreakout extends JFrame {
     }
 
     public void launchBall() {//按空格后启动小球
-
+        isBallLaunching = true;
     }
 
     /** 设置游戏面板实际大小 */
@@ -311,8 +311,12 @@ public class JBreakout extends JFrame {
         System.out.println("道具"+itemType+"get√");
         switch (itemType) {
             case 1:
+                paddle.updatePaddleWidth(2*Paddle.oldWidth,5000);
+                break;
             case 2:
+                break;
             case 3:
+                break;
         }
     }
 

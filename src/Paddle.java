@@ -6,7 +6,7 @@ import java.util.TimerTask;
 public class Paddle extends JComponent {
 
     //宽高
-    public static final int PADDLE_WIDTH = 65;
+    public static int PADDLE_WIDTH = 65;
     public static final int PADDLE_HEIGHT = 10;
 
     //offset 距离窗体底部距离
@@ -25,14 +25,22 @@ public class Paddle extends JComponent {
     //移动计时器
     Timer paddleMoveTimer;
     TimerTask paddleMoveTask;
-
+    //道具效果计时器
+    Timer paddleItemTimer;
+    TimerTask paddleItemWidthTask;
+    /** 该paddle是否在受width增长道具影响标志,true表示有道具影响,false表示无道具影响 */
+    static boolean paddleItemWidthFlag = false;
     /** 按下左移动按钮指示量 */
     int paddleLeftMoveFlag = 0;
     /** 按下右移动按钮指示量 */
     int paddleRightMoveFlag = 0;
+    /** 初始width,记录道具获得之前的PADDLE宽度 */
+    static int oldWidth = 0;
 
     Paddle() {
         paddleMoveTimer = new Timer();
+        paddleItemTimer = new Timer();
+        oldWidth = PADDLE_WIDTH;//记录初始宽度
         countPaddleTan();
 
     }
@@ -129,6 +137,25 @@ public class Paddle extends JComponent {
     public void countPaddleTan(){
         paddleTan = (double)PADDLE_HEIGHT/PADDLE_WIDTH;
         System.out.println("paddleTan" + paddleTan);
+    }
+
+    /** 用于设置paddle的宽度
+     * @param width 被设置的宽度
+     * @param time 宽度修改持续时间,单位为毫秒,如果该值为0则为永久修改*/
+    public void updatePaddleWidth(int width,int time){
+        if(paddleItemWidthFlag) paddleItemWidthTask.cancel();//paddle如果在受道具影响,则取消TimerTask,以便进行重置道具影响时间
+        if(time>0) {//如果time大于0,设置让宽度恢复的计时器
+            paddleItemWidthTask = new TimerTask() {
+                @Override
+                public void run() {
+                    PADDLE_WIDTH = oldWidth;
+                    paddleItemWidthFlag = false;
+                }
+            };
+        }
+        paddleItemTimer.schedule(paddleItemWidthTask,time);
+        PADDLE_WIDTH = width;
+        paddleItemWidthFlag = true;
     }
 
     @Override
