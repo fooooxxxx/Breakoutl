@@ -37,8 +37,8 @@ public class Ball extends JComponent {
         }
         if (y < 0) { y = 0;rebounceY(); }
         if(y+2*BALL_RADIUS > JBreakout.realHeight){//球碰到底部
-            JBreakout.isBallLaunching = false;
             if(JBreakout.ballNum == 1){//如果这是场上唯一的ball,则扣血
+                JBreakout.isBallLaunching = false;
                 JBreakout.healthPoint-=1;
 
             }
