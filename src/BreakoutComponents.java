@@ -11,6 +11,7 @@ public class BreakoutComponents extends JComponent {
     ArrayList<Brick> bricks;
     ArrayList<GameItem> items;
     JLabel showLabel;//用于显示游戏信息,比如血量等
+    JLabel itemLabel;//显示道具效果
     Random random;//随机数生成器
     final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
 
@@ -22,8 +23,10 @@ public class BreakoutComponents extends JComponent {
         this.bricks = bricks;
         this.items = items;
         this.showLabel = new JLabel("游戏尚未开始");
+        this.itemLabel = new JLabel("尚未获得道具");
         this.setLayout(null);//使用绝对布局
         this.showLabel.setBounds(20,0,100,30);
+        this.itemLabel.setBounds(180,0,100,30);
         add(showLabel);
         random = new Random();
     }
@@ -33,6 +36,12 @@ public class BreakoutComponents extends JComponent {
      * @param score 当前游戏分数*/
     public void updateHpAndScore(int healthPoint,int score){
         showLabel.setText("生命:"+healthPoint +"    分数" + score);
+    }
+
+    /** 当获得道具时调用该函数显示道具效果
+     * @param message 需要显示的道具效果 */
+    public void updateItemMessage(String message){
+        itemLabel.setText(message);
     }
 
     @Override
