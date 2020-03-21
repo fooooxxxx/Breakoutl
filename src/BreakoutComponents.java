@@ -8,6 +8,7 @@ public class BreakoutComponents extends JComponent {
     Paddle paddle;
     Ball ball;
     ArrayList<Brick> bricks;
+    ArrayList<GameItem> items;
     JLabel showLabel;//用于显示游戏信息,比如血量等
     BreakoutComponents(Paddle paddle, Ball ball,ArrayList<Brick> bricks) {
         this.paddle = paddle;
@@ -34,6 +35,9 @@ public class BreakoutComponents extends JComponent {
         ball.draw(g);
         for(Brick brick : bricks){
             brick.draw(g);
+        }
+        for(GameItem item : items){
+            item.draw(g);
         }
     }
 

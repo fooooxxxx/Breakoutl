@@ -1,18 +1,13 @@
 import javax.sound.sampled.AudioInputStream;
 import javax.swing.*;
-import java.applet.AudioClip;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.io.BufferedInputStream;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
-import javax.sound.sampled.AudioInputStream;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
@@ -137,7 +132,7 @@ public class JBreakout extends JFrame {
                         else
                             ball.rebounceY();
                         brickOne.hpCheck(1);//进行一次伤害判定,伤害默认为1
-                        hitSoundPlay();
+                        hitSoundPlay();//播放击中音效
                         break;
                     }
                     brickOne.setAutoColor();//根据生命值自动设置颜色
@@ -296,8 +291,7 @@ public class JBreakout extends JFrame {
                     /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
                 } catch (Exception e) {
                     e.printStackTrace();
-                    System.out.println("异常抛出,音乐文件未找到");
-                }
+                    System.out.println("异常抛出,音乐文件未找到");                }
             }
         }).start();
     }
