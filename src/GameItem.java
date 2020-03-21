@@ -24,12 +24,21 @@ public class GameItem extends JComponent implements CollideInterface{
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.RED);
+        //g2.setColor(Color.RED);
         g2.drawOval(x,y,ITEM_WIDTH,ITEM_HEIGHT);
         switch(itemType){//不同道具样式不一样
             case 0:
+                g2.setColor(Color.RED);
+
                 break;
+            case 1:
+                g2.setColor(Color.GREEN);
+            case 2:
+
+
+
         }
+        g2.drawOval(x,y,ITEM_WIDTH,ITEM_HEIGHT);
     }
 
     /** 道具的移动函数,应放在计时器中定时执行
