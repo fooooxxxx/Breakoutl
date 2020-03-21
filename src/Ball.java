@@ -23,8 +23,9 @@ public class Ball extends JComponent implements CollideInterface{
 
     }
 
-    /** 小球移动函数*/
-    public void moveAndBounce() {
+    /** 小球移动函数,并且处理与四边的碰撞
+     * @return 返回值代表该球是否触底,false表示ball触底了,需要移除,true表示不需要 */
+    public boolean moveAndBounce() {
         x += vx;
         y += vy;
         if (x < 0) {
@@ -40,9 +41,13 @@ public class Ball extends JComponent implements CollideInterface{
             if(JBreakout.ballNum == 1){//如果这是场上唯一的ball,则扣血
                 JBreakout.isBallLaunching = false;
                 JBreakout.healthPoint-=1;
-
+            }
+            else{
+                JBreakout.ballNum--;//减少JBreakout的数量
+                return false;//返回一个false,以便JBreakout处理删除该球
             }
         }
+        return true;
     }
 
     /** 遇到左右墙的反弹 ,x轴速度逆转*/
