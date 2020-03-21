@@ -1,14 +1,14 @@
 import javax.sound.sampled.AudioInputStream;
+import javax.sound.sampled.UnsupportedAudioFileException;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.io.IOException;
+import java.util.*;
 import java.util.Timer;
-import java.util.TimerTask;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
@@ -41,6 +41,8 @@ public class JBreakout extends JFrame {
     MainMenu mainMenu ;//主菜单JPanel
     Timer mainTimer;
     ArrayList<GameItem> items;//道具列表
+
+
     static boolean isBallLaunching = false;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
 
@@ -78,6 +80,8 @@ public class JBreakout extends JFrame {
         ball = new Ball();
         bricks = initBricks();//生成砖块
         items = new ArrayList<GameItem>();
+
+        preSound();//音频预加载
         breakoutComponents = new BreakoutComponents(paddle, ball,bricks,items);
         add(breakoutComponents);
         breakoutComponents.setVisible(true);
@@ -203,6 +207,7 @@ public class JBreakout extends JFrame {
 
 
 
+
         return bricks;
     }
     /** 普通地初始化brick
@@ -283,6 +288,14 @@ public class JBreakout extends JFrame {
 
     /**预先对音效进行加载*/
     public void preSound(){
+        try {
+            Clip clip = AudioSystem.getClip();
+            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
+
+        } catch (Exception e) {
+            e.printStackTrace();
+            System.out.println("异常抛出,音乐文件未找到");
+        }
 
     }
 
@@ -293,9 +306,8 @@ public class JBreakout extends JFrame {
             public void run() {
                 System.out.println("播放hit音效");
                 try {
-                    AudioInputStream audioInputStream = AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav"));
                     Clip clip = AudioSystem.getClip();
-                    clip.open(audioInputStream);
+                    clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
                     clip.start();
                     /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
                 } catch (Exception e) {

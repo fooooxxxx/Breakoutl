@@ -35,7 +35,7 @@ public class GameItem extends JComponent {
     /** 道具的移动函数,应放在计时器中定时执行
      * @return 返回道具类型 */
     public int itemMove(){
-        y+=4;
+        y+=itemSpeed;
         if(y+ITEM_HEIGHT >= JBreakout.realHeight){//判定球是否落到底部
             itemType = -1;//判断该道具无效,应当销毁
             System.out.println("道具落到地面,销毁");
