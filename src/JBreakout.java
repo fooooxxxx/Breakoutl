@@ -4,6 +4,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
 import java.util.Timer;
+import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
@@ -35,7 +36,7 @@ public class JBreakout extends JFrame {
     ArrayList<Brick> bricks;//砖块
     MainMenu mainMenu;//主菜单JPanel
     Timer mainTimer;
-    ArrayList<GameItem> items;//道具列表
+    CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
 
 
@@ -76,7 +77,7 @@ public class JBreakout extends JFrame {
         paddle = new Paddle();
         ball = new Ball();
         bricks = initBricks();//生成砖块
-        items = new ArrayList<>();
+        items = new CopyOnWriteArrayList<>();
 
         preSound();//音频预加载
         breakoutComponents = new BreakoutComponents(paddle, ball, bricks, items);
@@ -158,7 +159,7 @@ public class JBreakout extends JFrame {
                         if (itemTemp.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             //如果道具碰到paddle道具,并且移除
                             itemUse(itemTemp.itemType);
-                            itemIterator.remove();
+                            items.remove(itemTemp);
                         }
                     }
                 }
