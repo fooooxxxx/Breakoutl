@@ -308,9 +308,11 @@ public class JBreakout extends JFrame {
      * @param itemType 道具类型号,决定道具效果
      */
     public void itemUse(int itemType) {
+        System.out.println("道具"+itemType+"get√");
         switch (itemType) {
-            case 0:
-                System.out.println("测试道具获得");
+            case 1:
+            case 2:
+            case 3:
         }
     }
 

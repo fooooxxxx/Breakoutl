@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.Random;
 
 /**
  * 掉落的游戏道具类
@@ -19,7 +20,9 @@ public class GameItem extends JComponent implements CollideInterface{
     GameItem(int x,int y){
         this.x = x;
         this.y = y;
-        itemType = 0;//每种类型道具概率为1/3
+        Random r = new Random();
+        itemType = r.nextInt(3)+1;//每种类型道具概率为1/3
+
     }
 
     public void draw(Graphics g) {
@@ -29,11 +32,16 @@ public class GameItem extends JComponent implements CollideInterface{
         switch(itemType){//不同道具样式不一样
             case 0:
                 g2.setColor(Color.RED);
-
                 break;
             case 1:
                 g2.setColor(Color.GREEN);
+                break;
             case 2:
+                g2.setColor(Color.BLACK);
+                break;
+            case 3:
+                g2.setColor(Color.BLUE);
+                break;
 
 
 
