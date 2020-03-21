@@ -41,6 +41,7 @@ public class JBreakout extends JFrame {
     MainMenu mainMenu ;//主菜单JPanel
     Timer mainTimer;
     ArrayList<GameItem> items;//道具列表
+    Iterator<GameItem> itemIterator;//道具迭代器
 
 
     static boolean isBallLaunching = false;//球是否已经发射
@@ -127,7 +128,10 @@ public class JBreakout extends JFrame {
         mainTimer.schedule(new TimerTask() {
             @Override
             public void run() {
-                if(!isBallLaunching) setStartBallPosition();//如果游戏尚未开始,小球就会跟着paddle移动
+                if(!isBallLaunching) {
+                    setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
+                    items.clear();//清空场上所有道具
+                }
                 breakoutComponents.repaint();
                 ball.moveAndBounce();//球的移动,以及对墙碰撞
                 updateBrickWidth();
@@ -137,7 +141,7 @@ public class JBreakout extends JFrame {
                             ball.rebounceX();
                         else
                             ball.rebounceY();
-                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数,道具在场上数量不能超过2,连续击碎下无效  */
+                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                         if(brickOne.hpCheck(1) && items.size()<3) breakoutComponents.generateItem(brickOne);
                         hitSoundPlay();//播放击中音效
                         break;
@@ -148,7 +152,20 @@ public class JBreakout extends JFrame {
                     ball.setY(ball.getY()-5);//防止ball与paddle进行多次碰撞
                     ball.rebounceY();
                 }
-                items.removeIf(gameItem -> gameItem.itemMove() == -1);//对道具进行判定,是否需要移除
+                itemIterator = items.iterator();
+                while(itemIterator.hasNext()){//判断item是否和paddle碰撞,以及移除到底部的item
+                    GameItem itemTemp = itemIterator.next();
+                    if(itemTemp.itemMove()==-1) {//如果类型为-1,则说明已经到底部,需要移除
+                        itemIterator.remove();
+                    }
+                    else{
+                        if(itemTemp.collide(paddle.getX(),paddle.getY(),Paddle.getPaddleWidth(),Paddle.getPaddleHeight())){
+                            //如果道具碰到paddle道具,并且移除
+                            itemUse(itemTemp.itemType);
+                            itemIterator.remove();
+                        }
+                    }
+                }
                 if(healthPoint==0){
                     System.out.println("生命不足,游戏结束");
                     gameOver();
@@ -284,6 +301,15 @@ public class JBreakout extends JFrame {
     public void setStartBallPosition(){
         ball.setX(paddle.getX()+Paddle.PADDLE_WIDTH/2-Ball.getBallRadius());
         ball.setY(paddle.getY()-2*Ball.getBallRadius());
+    }
+
+    /** 当道具碰到paddle时调用
+     * @param itemType 道具类型号,决定道具效果 */
+    public void itemUse(int itemType){
+        switch(itemType){
+            case 0:
+                System.out.println("测试道具获得");
+        }
     }
 
     /**预先对音效进行加载*/
