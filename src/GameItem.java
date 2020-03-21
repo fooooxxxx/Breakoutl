@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * 掉落的游戏道具类
  */
-public class GameItem extends JComponent {
+public class GameItem extends JComponent implements CollideInterface{
     final static int ITEM_HEIGHT = 8;
     final static int ITEM_WIDTH = 30;
     final static int itemSpeed = 2;
@@ -41,5 +41,14 @@ public class GameItem extends JComponent {
             System.out.println("道具落到地面,销毁");
         }
         return itemType;
+    }
+
+    @Override
+    public boolean collide(int object_x,int object_y,int object_width,int object_height){
+        if(this.x+ITEM_WIDTH>object_x && this.x<object_x+object_width
+                && this.y+ITEM_HEIGHT > object_y && this.y<object_y+object_height){//判断是否发生碰撞
+            return true;
+        }
+        return false;
     }
 }

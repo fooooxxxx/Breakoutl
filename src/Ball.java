@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * Ball类
  */
-public class Ball extends JComponent {
+public class Ball extends JComponent implements CollideInterface{
     //小球半径
     private static final int BALL_RADIUS = 5;
     //小球初始位置
@@ -61,6 +61,7 @@ public class Ball extends JComponent {
      * @param object_height 被判断物体的高度
      * @param object_width 被判断物体的宽度
      * @return 返回true,则表示发生了碰撞,否则无碰撞*/
+    @Override
     public boolean collide(int object_x,int object_y,int object_width,int object_height){
         if(this.x+2*BALL_RADIUS>object_x && this.x<object_x+object_width
                 && this.y+2*BALL_RADIUS > object_y && this.y<object_y+object_height){//判断是否发生碰撞
