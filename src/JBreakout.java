@@ -137,8 +137,8 @@ public class JBreakout extends JFrame {
                             ball.rebounceX();
                         else
                             ball.rebounceY();
-                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数 */
-                        if(brickOne.hpCheck(1)) breakoutComponents.generateItem(brickOne);
+                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数,道具在场上数量不能超过2 */
+                        if(brickOne.hpCheck(1) && items.size()<3) breakoutComponents.generateItem(brickOne);
                         hitSoundPlay();//播放击中音效
                         break;
                     }
