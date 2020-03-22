@@ -143,23 +143,27 @@ public class JBreakout extends JFrame {
                 breakoutComponents.repaint();
                 updateBrickWidth();
                 for(Ball ball: balls) {
-                    ball.moveAndBounce();//球的移动,以及对墙碰撞
-                    for (Brick brickOne : bricks) {//对砖块撞击判定
-                        if (brickOne.isAlive() && ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
-                            if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))
-                                ball.rebounceX();
-                            else
-                                ball.rebounceY();
-                            /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                            if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
-                            hitSoundPlay();//播放击中音效
-                            break;
+                    if(ball.moveAndBounce()) {//球的移动,以及对墙碰撞
+                        for (Brick brickOne : bricks) {//对砖块撞击判定
+                            if (brickOne.isAlive() && ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
+                                if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))
+                                    ball.rebounceX();
+                                else
+                                    ball.rebounceY();
+                                /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
+                                if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
+                                hitSoundPlay();//播放击中音效
+                                break;
+                            }
+                            brickOne.setAutoColor();//根据生命值自动设置颜色
                         }
-                        brickOne.setAutoColor();//根据生命值自动设置颜色
+                        if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
+                            ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
+                            ball.rebounceY();
+                        }
                     }
-                    if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
-                        ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
-                        ball.rebounceY();
+                    else{//如果判定到底部且不是唯一的小球,则对小球进行移除
+                        balls.remove(ball);
                     }
                 }
                 itemIterator = items.iterator();

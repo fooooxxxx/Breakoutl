@@ -24,7 +24,7 @@ public class Ball extends JComponent implements CollideInterface{
     }
 
     /** 小球移动函数,并且处理与四边的碰撞
-     * @return 返回值代表该球是否触底,false表示ball触底了,需要移除,true表示不需要 */
+     * @return 返回值代表该球是否触底,false表示场上非唯一的ball触底了,需要移除,true表示不需要或者这是最后一个小球 */
     public boolean moveAndBounce() {
         x += vx;
         y += vy;
