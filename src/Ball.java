@@ -8,8 +8,8 @@ public class Ball extends JComponent implements CollideInterface{
     //小球半径
     private static final int BALL_RADIUS = 5;
     //小球初始位置
-    private int x = 200;
-    private int y = 200;
+    private int x = 300;
+    private int y = 700;
     //小球在x和y轴上的初始速度
     private int vx = 3;
     private int vy = 3;
@@ -20,6 +20,7 @@ public class Ball extends JComponent implements CollideInterface{
     Ball(int vx,int vy){
         this.vx = vx;
         this.vy = vy;
+        System.out.println("新增小球vx为"+ vx + "-vy为" +vy );
     }
     Ball(){
 
@@ -81,6 +82,14 @@ public class Ball extends JComponent implements CollideInterface{
             return true;
         }
         return false;
+    }
+    /** 获得速度方向,使用1和-1来表示
+     * @return 返回一个int数组,其中第一个元素为x轴方向,第二个为y轴方向 */
+    public int[]  getSpeedDirection(){
+        int[] directionInt = new int[2];
+        directionInt[0]=vx>0?1:-1;
+        directionInt[1]=vx>0?1:-1;
+        return directionInt;
     }
 
     /** 获得圆心X轴坐标 */
