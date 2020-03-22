@@ -38,6 +38,7 @@ public class JBreakout extends JFrame {
     Timer mainTimer;
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
+    CopyOnWriteArrayList<Ball> balls;//小球列表
 
 
     static boolean isBallLaunching = false;//球是否已经发射
@@ -154,7 +155,7 @@ public class JBreakout extends JFrame {
                 while (itemIterator.hasNext()) {//判断item是否和paddle碰撞,以及移除到底部的item
                     GameItem itemTemp = itemIterator.next();
                     if (itemTemp.itemMove() == -1) {//如果类型为-1,则说明已经到底部,需要移除
-                        itemIterator.remove();
+                        items.remove(itemTemp);
                     } else {
                         if (itemTemp.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             //如果道具碰到paddle道具,并且移除
