@@ -17,7 +17,9 @@ public class Ball extends JComponent implements CollideInterface{
     /** ball构造函数
      * @param vx x轴小球速度
      * @param vy y轴小球速度*/
-    Ball(int vx,int vy){
+    Ball(int x,int y,int vx,int vy){
+        this.x = x;
+        this.y = y;
         this.vx = vx;
         this.vy = vy;
         System.out.println("新增小球vx为"+ vx + "-vy为" +vy );
@@ -77,18 +79,16 @@ public class Ball extends JComponent implements CollideInterface{
      * @return 返回true,则表示发生了碰撞,否则无碰撞*/
     @Override
     public boolean collide(int object_x,int object_y,int object_width,int object_height){
-        if(this.x+2*BALL_RADIUS>object_x && this.x<object_x+object_width
-                && this.y+2*BALL_RADIUS > object_y && this.y<object_y+object_height){//判断是否发生碰撞
-            return true;
-        }
-        return false;
+        //判断是否发生碰撞
+        return this.x + 2 * BALL_RADIUS > object_x && this.x < object_x + object_width
+                && this.y + 2 * BALL_RADIUS > object_y && this.y < object_y + object_height;
     }
     /** 获得速度方向,使用1和-1来表示
      * @return 返回一个int数组,其中第一个元素为x轴方向,第二个为y轴方向 */
     public int[]  getSpeedDirection(){
         int[] directionInt = new int[2];
         directionInt[0]=vx>0?1:-1;
-        directionInt[1]=vx>0?1:-1;
+        directionInt[1]=vy>0?1:-1;
         return directionInt;
     }
 

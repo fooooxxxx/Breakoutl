@@ -150,7 +150,7 @@ public class JBreakout extends JFrame {
                                     ball.rebounceX();
                                 else
                                     ball.rebounceY();
-                                /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
+                                /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                 if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
                                 hitSoundPlay();//播放击中音效
                                 break;
@@ -162,7 +162,7 @@ public class JBreakout extends JFrame {
                             ball.rebounceY();
                         }
                     }
-                    else{//如果判定到底部且不是唯一的小球,则对小球进行移除
+                    else{//如果小球到底部且不是唯一的小球,则对小球进行移除
                         balls.remove(ball);
                     }
                 }
@@ -236,8 +236,7 @@ public class JBreakout extends JFrame {
     }
 
     /**
-     * 普通地初始化brick
-     *
+     * 正常初始化brick
      * @return 返回初始化完成的bricks
      */
     private ArrayList<Brick> initBricks() {
@@ -327,9 +326,10 @@ public class JBreakout extends JFrame {
         switch (itemType) {
             case 1:
                 breakoutComponents.updateItemMessage("挡板长度增加了!");
-                paddle.updatePaddleWidth(2*Paddle.oldWidth,5000);
+                paddle.updatePaddleWidth(2*Paddle.oldWidth,8000);
                 break;
             case 2:
+                ballSplit();
                 breakoutComponents.updateItemMessage("小球分裂了!");
                 break;
             case 3:
@@ -338,6 +338,16 @@ public class JBreakout extends JFrame {
                 System.out.println("生命值提升了");
                 break;
         }
+    }
+
+    /** 小球分裂函数 */
+    public void ballSplit(){
+        Random randBall = new Random();
+        Ball ballOne = balls.get(0);//获得第一个球
+        int[] directionInt = ballOne.getSpeedDirection();
+        balls.add(new Ball(ballOne.getX(),ballOne.getY(),(randBall.nextInt(4)+2)*directionInt[0],(randBall.nextInt(4)+2)*directionInt[1]));
+        balls.add(new Ball(ballOne.getX(),ballOne.getY(),(randBall.nextInt(4)+2)*directionInt[0],(randBall.nextInt(4)+2)*directionInt[1]));
+        ballNum +=2;
     }
 
     /** 预先对音效进行加载 */
