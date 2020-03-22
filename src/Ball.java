@@ -14,13 +14,21 @@ public class Ball extends JComponent implements CollideInterface{
     private int vx = 3;
     private int vy = 3;
 
+    /** ball构造函数
+     * @param vx x轴小球速度
+     * @param vy y轴小球速度*/
+    Ball(int vx,int vy){
+        this.vx = vx;
+        this.vy = vy;
+    }
+    Ball(){
 
+    }
 
     public void draw(Graphics g){
         Graphics2D g2 = (Graphics2D)g;
         //绘制小球
         g2.drawOval(x,y,BALL_RADIUS*2,BALL_RADIUS*2);
-
     }
 
     /** 小球移动函数,并且处理与四边的碰撞
