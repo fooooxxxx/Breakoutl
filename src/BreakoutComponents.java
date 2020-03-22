@@ -8,19 +8,20 @@ import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BreakoutComponents extends JComponent {
     Paddle paddle;
-    Ball ball;
+    //Ball ball;
     ArrayList<Brick> bricks;
     CopyOnWriteArrayList<GameItem> items;
+    CopyOnWriteArrayList<Ball> balls;
     JLabel showLabel;//用于显示游戏信息,比如血量等
     JLabel itemLabel;//显示道具效果
     Random random;//随机数生成器
     final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
 
 
-    BreakoutComponents(Paddle paddle, Ball ball, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items) {
+    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items) {
         this.paddle = paddle;
         paddle.setVisible(true);
-        this.ball = ball;
+        this.balls = balls;
         this.bricks = bricks;
         this.items = items;
         this.showLabel = new JLabel("游戏尚未开始");
@@ -50,7 +51,9 @@ public class BreakoutComponents extends JComponent {
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
         paddle.draw(g);
-        ball.draw(g);
+        for(Ball ball : balls){
+            ball.draw(g);
+        }
         for(Brick brick : bricks){
             brick.draw(g);
         }

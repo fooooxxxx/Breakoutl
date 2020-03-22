@@ -32,13 +32,14 @@ public class JBreakout extends JFrame {
     //变量
     BreakoutComponents breakoutComponents;
     Paddle paddle;
-    Ball ball;
+    //Ball ball;
     ArrayList<Brick> bricks;//砖块
     MainMenu mainMenu;//主菜单JPanel
     Timer mainTimer;
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
     CopyOnWriteArrayList<Ball> balls;//小球列表
+
 
 
     static boolean isBallLaunching = false;//球是否已经发射
@@ -76,12 +77,12 @@ public class JBreakout extends JFrame {
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
         paddle = new Paddle();
-        ball = new Ball();
+
         bricks = initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
 
         preSound();//音频预加载
-        breakoutComponents = new BreakoutComponents(paddle, ball, bricks, items);
+        breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items);
         add(breakoutComponents);
         breakoutComponents.setVisible(true);
         breakoutComponents.requestFocus();//强制获取焦点
@@ -132,24 +133,26 @@ public class JBreakout extends JFrame {
                     items.clear();//清空场上所有道具
                 }
                 breakoutComponents.repaint();
-                ball.moveAndBounce();//球的移动,以及对墙碰撞
                 updateBrickWidth();
-                for (Brick brickOne : bricks) {//对砖块撞击判定
-                    if (brickOne.isAlive() && ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
-                        if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))
-                            ball.rebounceX();
-                        else
-                            ball.rebounceY();
-                        /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                        if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
-                        hitSoundPlay();//播放击中音效
-                        break;
+                for(Ball ball: balls) {
+                    ball.moveAndBounce();//球的移动,以及对墙碰撞
+                    for (Brick brickOne : bricks) {//对砖块撞击判定
+                        if (brickOne.isAlive() && ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
+                            if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))
+                                ball.rebounceX();
+                            else
+                                ball.rebounceY();
+                            /* 进行一次伤害判定,默认伤害为1,如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
+                            if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
+                            hitSoundPlay();//播放击中音效
+                            break;
+                        }
+                        brickOne.setAutoColor();//根据生命值自动设置颜色
                     }
-                    brickOne.setAutoColor();//根据生命值自动设置颜色
-                }
-                if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
-                    ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
-                    ball.rebounceY();
+                    if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
+                        ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
+                        ball.rebounceY();
+                    }
                 }
                 itemIterator = items.iterator();
                 while (itemIterator.hasNext()) {//判断item是否和paddle碰撞,以及移除到底部的item
@@ -195,6 +198,9 @@ public class JBreakout extends JFrame {
 
     public void launchBall() {//按空格后启动小球
         isBallLaunching = true;
+        if(balls.size()==0){//当场上无小球时,按空格键发射小球
+            balls.add(new Ball());
+        }
     }
 
     /** 设置游戏面板实际大小 */
@@ -301,8 +307,8 @@ public class JBreakout extends JFrame {
 
     /** 设置小球初始位置在Paddle的中间顶部 */
     public void setStartBallPosition() {
-        ball.setX(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius());
-        ball.setY(paddle.getY() - 2 * Ball.getBallRadius());
+        balls.get(0).setX(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius());
+        balls.get(0).setY(paddle.getY() - 2 * Ball.getBallRadius());
     }
 
     /**
