@@ -77,7 +77,8 @@ public class JBreakout extends JFrame {
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
         paddle = new Paddle();
-
+        balls = new CopyOnWriteArrayList<>();
+        balls.add(new Ball());
         bricks = initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
 
@@ -128,7 +129,14 @@ public class JBreakout extends JFrame {
         mainTimer.schedule(new TimerTask() {
             @Override
             public void run() {
+                if (healthPoint == 0) {
+                    System.out.println("生命不足,游戏结束");
+                    gameOver();
+                }
                 if (!isBallLaunching) {
+                    if(balls.size()==0){//当场上无小球时,生成小球
+                        balls.add(new Ball());
+                    }
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
@@ -167,10 +175,7 @@ public class JBreakout extends JFrame {
                         }
                     }
                 }
-                if (healthPoint == 0) {
-                    System.out.println("生命不足,游戏结束");
-                    gameOver();
-                }
+
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新显示出来的数据
             }
         }, 0, 10);
@@ -198,9 +203,6 @@ public class JBreakout extends JFrame {
 
     public void launchBall() {//按空格后启动小球
         isBallLaunching = true;
-        if(balls.size()==0){//当场上无小球时,按空格键发射小球
-            balls.add(new Ball());
-        }
     }
 
     /** 设置游戏面板实际大小 */
