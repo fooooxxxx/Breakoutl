@@ -41,7 +41,6 @@ public class JBreakout extends JFrame {
     CopyOnWriteArrayList<Ball> balls;//小球列表
 
 
-
     static boolean isBallLaunching = false;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
 
@@ -137,18 +136,19 @@ public class JBreakout extends JFrame {
 //                    if(balls.size()==0){//当场上无小球时,生成小球
 //                        balls.add(new Ball());
 //                    }
-                    balls.get(0).setSpeed(3,3);//对唯一的ball设置速度
+                    balls.get(0).setSpeed(3, 3);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
                 breakoutComponents.repaint();
                 updateBrickWidth();
                 boolean winFlag = true;//如果有砖块存活,改为false
-                for(Ball ball: balls) {
-                    if(ball.moveAndBounce()) {//球的移动,以及对墙碰撞
+                for (Ball ball : balls) {
+                    if (ball.moveAndBounce()) {//球的移动,以及对墙碰撞
                         for (Brick brickOne : bricks) {//对砖块撞击判定
 
-                            if(brickOne.isAlive()) {//如果brick存在
+                            if (brickOne.isAlive()) {//如果brick存在
+                                winFlag = false;//还有brick存在,游戏尚未结束
                                 if (ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
                                     if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))//判断方向
                                         ball.rebounceX();
@@ -161,19 +161,17 @@ public class JBreakout extends JFrame {
                                     break;
                                 }
                                 brickOne.setAutoColor();//根据生命值自动设置颜色
-                                winFlag = false;
                             }
                         }
                         if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
                             ball.rebounceY();
                         }
-                    }
-                    else{//如果小球到底部且不是唯一的小球,则对小球进行移除
+                    } else {//如果小球到底部且不是唯一的小球,则对小球进行移除
                         balls.remove(ball);
                     }
                 }
-                if(winFlag) gameOver(0);
+                if (winFlag) gameOver(0);
                 itemIterator = items.iterator();
                 while (itemIterator.hasNext()) {//判断item是否和paddle碰撞,以及移除到底部的item
                     GameItem itemTemp = itemIterator.next();
@@ -190,12 +188,15 @@ public class JBreakout extends JFrame {
 
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新显示出来的数据
             }
-        }, 0, 10);
+        }, 0, 14);
         setStartPosition();
     }
 
-    /** 生命值归零,或者玩家主动退出时调用
-     * @param result 0为胜利,1为失败*/
+    /**
+     * 生命值归零,或者玩家主动退出时调用
+     *
+     * @param result 0为胜利,1为失败
+     */
     public void gameOver(int result) {//弹出结束画面,并且记录分数
         mainTimer.cancel();//关闭定时器,游戏结束
         JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
@@ -205,8 +206,8 @@ public class JBreakout extends JFrame {
         ggLabel.setVisible(true);
         backBtn.setBounds(200, 450, 200, 100);
         backBtn.setFont(ggFont);//设置字体
-        if(result==0){//游戏胜利的提示
-            ggLabel.setText("游戏胜利!你的分数为 "+ score);
+        if (result == 0) {//游戏胜利的提示
+            ggLabel.setText("游戏胜利!你的分数为 " + score);
         }
         breakoutComponents.add(backBtn);
         breakoutComponents.add(ggLabel);
@@ -249,6 +250,7 @@ public class JBreakout extends JFrame {
 
     /**
      * 正常初始化brick
+     *
      * @return 返回初始化完成的bricks
      */
     private ArrayList<Brick> initBricks() {
@@ -334,11 +336,11 @@ public class JBreakout extends JFrame {
      * @param itemType 道具类型号,决定道具效果
      */
     public void itemUse(int itemType) {
-        System.out.println("道具"+itemType+"get√");
+        System.out.println("道具" + itemType + "get√");
         switch (itemType) {
             case 1:
                 breakoutComponents.updateItemMessage("挡板长度增加了!");
-                paddle.updatePaddleWidth(2*Paddle.oldWidth,8000);
+                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 8000);
                 break;
             case 2:
                 ballSplit();
@@ -353,13 +355,13 @@ public class JBreakout extends JFrame {
     }
 
     /** 小球分裂函数 */
-    public void ballSplit(){
+    public void ballSplit() {
         Random randBall = new Random();
         Ball ballOne = balls.get(0);//获得第一个球
         int[] directionInt = ballOne.getSpeedDirection();
-        balls.add(new Ball(ballOne.getX(),ballOne.getY(),(randBall.nextInt(4)+2)*directionInt[0],(randBall.nextInt(4)+2)*directionInt[1]));
-        balls.add(new Ball(ballOne.getX(),ballOne.getY(),(randBall.nextInt(4)+2)*directionInt[0],(randBall.nextInt(4)+2)*directionInt[1]));
-        ballNum +=2;
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 2) * directionInt[0], (randBall.nextInt(4) + 2) * directionInt[1]));
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 2) * directionInt[0], (randBall.nextInt(4) + 2) * directionInt[1]));
+        ballNum += 2;
     }
 
     /** 预先对音效进行加载 */

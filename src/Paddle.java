@@ -18,7 +18,7 @@ public class Paddle extends JComponent {
     //paddle移动速度
     private int speed = 4;
     /** 移动定时器启动间隔,越短移动越快 */
-    private int movePeriod=16;
+    private int movePeriod = 16;
 
     double paddleTan = 0;//中心到顶点的tan值
 
@@ -63,25 +63,28 @@ public class Paddle extends JComponent {
 
     /** 将paddle向左移动speed个单位 */
     public void moveLeft() {
-        if(paddleLeftMoveFlag==0)//如果已经在移动,则不继续添加移动定时器
+        if (paddleLeftMoveFlag == 0)//如果已经在移动,则不继续添加移动定时器
             paddleLeftMoveFlag++;//指示量+1.说明当前按下左移动按钮数量增加
         moveStart(0); //执行向左移动任务
     }
 
     /** 将paddle向右移动speed个单位 */
     public void moveRight() {
-        if(paddleRightMoveFlag==0)//
+        if (paddleRightMoveFlag == 0)//
             paddleRightMoveFlag++;//指示量+1.说明当前按下右移动按钮数量增加
         moveStart(1);//执行向右移动任务
     }
 
-    /** 根据参数创建实际的移动任务
-     * @param direction 0为向左,1为向右 */
-    void moveStart(int direction){
-        if(paddleMoveTask!=null)
+    /**
+     * 根据参数创建实际的移动任务
+     *
+     * @param direction 0为向左,1为向右
+     */
+    void moveStart(int direction) {
+        if (paddleMoveTask != null)
             this.moveCancel();
-        if(direction==0){
-            paddleMoveTask = new TimerTask(){
+        if (direction == 0) {
+            paddleMoveTask = new TimerTask() {
                 @Override
                 public void run() {
                     if (x >= speed)
@@ -92,9 +95,8 @@ public class Paddle extends JComponent {
                     }
                 }
             };
-        }
-        else{
-            paddleMoveTask = new TimerTask(){
+        } else {
+            paddleMoveTask = new TimerTask() {
                 @Override
                 public void run() {
                     if (x + speed <= JBreakout.realWidth - PADDLE_WIDTH)
@@ -106,45 +108,48 @@ public class Paddle extends JComponent {
                 }
             };
         }
-        paddleMoveTimer.schedule(paddleMoveTask,1,movePeriod); //统一执行移动任务
+        paddleMoveTimer.schedule(paddleMoveTask, 1, movePeriod); //统一执行移动任务
     }
 
     /** 取消移动定时器 */
-    public void moveCancel(){
+    public void moveCancel() {
         paddleMoveTask.cancel();
         paddleMoveTask = null;
     }
 
     /** 取消左移动定时器,释放按钮时调用 */
-    public void moveLeftCancel(){
+    public void moveLeftCancel() {
         //System.out.print("左按钮释放前flag为" +paddleLeftMoveFlag);
-        if(paddleLeftMoveFlag > 0) paddleLeftMoveFlag--;//指示量-1
+        if (paddleLeftMoveFlag > 0) paddleLeftMoveFlag--;//指示量-1
         //System.out.println("----->左按钮释放后flag为" +paddleLeftMoveFlag);
         moveCancel();
-        if(paddleRightMoveFlag > 0) moveStart(1);
+        if (paddleRightMoveFlag > 0) moveStart(1);
     }
 
     /** 取消右移动定时器,释放按钮时调用 */
-    public void moveRightCancel(){
+    public void moveRightCancel() {
         //System.out.print("右按钮释放前flag为" +paddleRightMoveFlag);
-        if(paddleRightMoveFlag > 0) paddleRightMoveFlag--;//指示量-1
+        if (paddleRightMoveFlag > 0) paddleRightMoveFlag--;//指示量-1
         //System.out.println("----->右按钮释放后flag为" +paddleRightMoveFlag);
         moveCancel();
-        if(paddleLeftMoveFlag > 0) moveStart(0);
+        if (paddleLeftMoveFlag > 0) moveStart(0);
     }
 
     /** 计算并更新paddle中心到各顶点的tan值 */
-    public void countPaddleTan(){
-        paddleTan = (double)PADDLE_HEIGHT/PADDLE_WIDTH;
+    public void countPaddleTan() {
+        paddleTan = (double) PADDLE_HEIGHT / PADDLE_WIDTH;
         System.out.println("paddleTan" + paddleTan);
     }
 
-    /** 用于设置paddle的宽度
+    /**
+     * 用于设置paddle的宽度
+     *
      * @param width 被设置的宽度
-     * @param time 宽度修改持续时间,单位为毫秒,如果该值为0则为永久修改*/
-    public void updatePaddleWidth(int width,int time){
-        if(paddleItemWidthFlag) paddleItemWidthTask.cancel();//paddle如果在受道具影响,则取消TimerTask,以便进行重置道具影响时间
-        if(time>0) {//如果time大于0,设置让宽度恢复的计时器
+     * @param time  宽度修改持续时间,单位为毫秒,如果该值为0则为永久修改
+     */
+    public void updatePaddleWidth(int width, int time) {
+        if (paddleItemWidthFlag) paddleItemWidthTask.cancel();//paddle如果在受道具影响,则取消TimerTask,以便进行重置道具影响时间
+        if (time > 0) {//如果time大于0,设置让宽度恢复的计时器
             paddleItemWidthTask = new TimerTask() {
                 @Override
                 public void run() {
@@ -153,7 +158,7 @@ public class Paddle extends JComponent {
                 }
             };
         }
-        paddleItemTimer.schedule(paddleItemWidthTask,time);
+        paddleItemTimer.schedule(paddleItemWidthTask, time);
         PADDLE_WIDTH = width;
         paddleItemWidthFlag = true;
     }

@@ -14,14 +14,14 @@ public class Brick extends JComponent {
     private boolean isAlive = true;
     /** brick的生命值 */
     private int brickHP = 1;
-    /** 消除该brick获得的分数*/
+    /** 消除该brick获得的分数 */
     private int brickScore = 1;
 
     private int x, y;
     private Color color;
 
     /** 设定的tan值 */
-    double brickTan=0;
+    double brickTan = 0;
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -31,14 +31,17 @@ public class Brick extends JComponent {
         }
     }
 
-    /** 碰撞时调用,进行一次血量判定
+    /**
+     * 碰撞时调用,进行一次血量判定
+     *
      * @param damage 小球碰撞一次的伤害值
-     * @return 小球血量为空,被击碎,返回true,反之有剩余血量返回false*/
-    public boolean hpCheck(int damage){//如果返回false,则说明该brick还有剩余血量
+     * @return 小球血量为空, 被击碎, 返回true, 反之有剩余血量返回false
+     */
+    public boolean hpCheck(int damage) {//如果返回false,则说明该brick还有剩余血量
         this.brickHP -= damage;
-        if(this.brickHP<=0){//血量为空
-            isAlive=false;//该砖块消失
-            JBreakout.score+=this.brickScore;
+        if (this.brickHP <= 0) {//血量为空
+            isAlive = false;//该砖块消失
+            JBreakout.score += this.brickScore;
             return true;
         }
         return false;
@@ -46,7 +49,7 @@ public class Brick extends JComponent {
 
     public void setBrickHP(int brickHP) {
         this.brickHP = brickHP;
-        this.brickScore = brickHP*2;
+        this.brickScore = brickHP * 2;
     }
 
     public Brick() {
@@ -54,8 +57,8 @@ public class Brick extends JComponent {
     }
 
     /** 计算并更新brickTan中心到各顶点的tan值 */
-    public void countBrickTan(){
-        brickTan = (double)BRICK_HEIGHT/BRICK_WIDTH;
+    public void countBrickTan() {
+        brickTan = (double) BRICK_HEIGHT / BRICK_WIDTH;
         System.out.println("brickTan" + brickTan);
     }
 
@@ -63,9 +66,9 @@ public class Brick extends JComponent {
         return BRICK_WIDTH;
     }
 
-    /** 根据生命值自动设置brick样式*/
-    public void setAutoColor(){
-        if(brickHP!=0) {
+    /** 根据生命值自动设置brick样式 */
+    public void setAutoColor() {
+        if (brickHP != 0) {
             switch (brickHP) {//根据生命值设定颜色
                 case 3:
                     setColor(Color.BLUE);
