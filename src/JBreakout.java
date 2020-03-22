@@ -131,31 +131,38 @@ public class JBreakout extends JFrame {
             public void run() {
                 if (healthPoint == 0) {
                     System.out.println("生命不足,游戏结束");
-                    gameOver();
+                    gameOver(1);
                 }
                 if (!isBallLaunching) {
-                    if(balls.size()==0){//当场上无小球时,生成小球
-                        balls.add(new Ball());
-                    }
+//                    if(balls.size()==0){//当场上无小球时,生成小球
+//                        balls.add(new Ball());
+//                    }
+                    balls.get(0).setSpeed(3,3);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
                 breakoutComponents.repaint();
                 updateBrickWidth();
+                boolean winFlag = true;//如果有砖块存活,改为false
                 for(Ball ball: balls) {
                     if(ball.moveAndBounce()) {//球的移动,以及对墙碰撞
                         for (Brick brickOne : bricks) {//对砖块撞击判定
-                            if (brickOne.isAlive() && ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
-                                if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))
-                                    ball.rebounceX();
-                                else
-                                    ball.rebounceY();
-                                /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                                if (brickOne.hpCheck(1) && items.size() < 3) breakoutComponents.generateItem(brickOne);
-                                hitSoundPlay();//播放击中音效
-                                break;
+
+                            if(brickOne.isAlive()) {//如果brick存在
+                                if (ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
+                                    if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))//判断方向
+                                        ball.rebounceX();
+                                    else
+                                        ball.rebounceY();
+                                    /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
+                                    if (brickOne.hpCheck(1) && items.size() < 3)
+                                        breakoutComponents.generateItem(brickOne);
+                                    hitSoundPlay();//播放击中音效
+                                    break;
+                                }
+                                brickOne.setAutoColor();//根据生命值自动设置颜色
+                                winFlag = false;
                             }
-                            brickOne.setAutoColor();//根据生命值自动设置颜色
                         }
                         if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
@@ -166,6 +173,7 @@ public class JBreakout extends JFrame {
                         balls.remove(ball);
                     }
                 }
+                if(winFlag) gameOver(0);
                 itemIterator = items.iterator();
                 while (itemIterator.hasNext()) {//判断item是否和paddle碰撞,以及移除到底部的item
                     GameItem itemTemp = itemIterator.next();
@@ -186,7 +194,9 @@ public class JBreakout extends JFrame {
         setStartPosition();
     }
 
-    public void gameOver() {//生命值归零之后调用,弹出结束画面,并且记录分数
+    /** 生命值归零,或者玩家主动退出时调用
+     * @param result 0为胜利,1为失败*/
+    public void gameOver(int result) {//弹出结束画面,并且记录分数
         mainTimer.cancel();//关闭定时器,游戏结束
         JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
         JButton backBtn = new JButton("返回主菜单");
@@ -195,6 +205,9 @@ public class JBreakout extends JFrame {
         ggLabel.setVisible(true);
         backBtn.setBounds(200, 450, 200, 100);
         backBtn.setFont(ggFont);//设置字体
+        if(result==0){//游戏胜利的提示
+            ggLabel.setText("游戏胜利!你的分数为 "+ score);
+        }
         breakoutComponents.add(backBtn);
         breakoutComponents.add(ggLabel);
         backBtn.addActionListener(e -> {
@@ -202,7 +215,6 @@ public class JBreakout extends JFrame {
             mainMenu.setVisible(true);
         });
         breakoutComponents.repaint();//进行重绘,直接显示ggLabel
-
     }
 
     public void launchBall() {//按空格后启动小球

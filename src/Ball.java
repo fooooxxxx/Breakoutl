@@ -20,12 +20,12 @@ public class Ball extends JComponent implements CollideInterface{
     Ball(int x,int y,int vx,int vy){
         this.x = x;
         this.y = y;
-        this.vx = vx;
-        this.vy = vy;
+        setSpeed(vx,vy);
         System.out.println("新增小球vx为"+ vx + "-vy为" +vy );
     }
     Ball(){
-
+        vx =3;
+        vy =3;
     }
 
     public void draw(Graphics g){
@@ -90,6 +90,12 @@ public class Ball extends JComponent implements CollideInterface{
         directionInt[0]=vx>0?1:-1;
         directionInt[1]=vy>0?1:-1;
         return directionInt;
+    }
+
+    /** 设置速度函数 */
+    void setSpeed(int vx,int vy){
+        this.vx = vx;
+        this.vy = vy;
     }
 
     /** 获得圆心X轴坐标 */
