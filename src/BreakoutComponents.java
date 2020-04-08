@@ -18,7 +18,7 @@ public class BreakoutComponents extends JComponent {
     final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
 
 
-    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items) {
+    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items) {
         this.paddle = paddle;
         paddle.setVisible(true);
         this.balls = balls;
@@ -27,8 +27,8 @@ public class BreakoutComponents extends JComponent {
         this.showLabel = new JLabel("游戏尚未开始");
         this.itemLabel = new JLabel("尚未获得道具");
         this.setLayout(null);//使用绝对布局
-        this.showLabel.setBounds(20, 0, 100, 30);
-        this.itemLabel.setBounds(180, 0, 100, 30);
+        this.showLabel.setBounds(480, 870, 100, 30);
+        this.itemLabel.setBounds(380, 870, 100, 30);
         add(showLabel);
         add(itemLabel);
         random = new Random();
