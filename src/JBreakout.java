@@ -343,7 +343,7 @@ public class JBreakout extends JFrame {
         switch (itemType) {
             case 1:
                 breakoutComponents.updateItemMessage("挡板长度增加了!");
-                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 8000);
+                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000);
                 break;
             case 2:
                 ballSplit();
