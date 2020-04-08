@@ -360,10 +360,10 @@ public class JBreakout extends JFrame {
     /** 小球分裂函数 */
     public void ballSplit() {
         Random randBall = new Random();
-        Ball ballOne = balls.get(0);//获得第一个球
+        Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 2) * directionInt[0], (randBall.nextInt(4) + 2) * directionInt[1]));
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 2) * directionInt[0], (randBall.nextInt(4) + 2) * directionInt[1]));
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 1) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 1) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
         ballNum += 2;
     }
 
