@@ -12,7 +12,7 @@ public class Ball extends JComponent implements CollideInterface {
     private int y = 700;
     //小球在x和y轴上的初始速度
     private int vx = 4;
-    private int vy = 4;
+    private int vy = 5;
 
     /**
      * ball构造函数

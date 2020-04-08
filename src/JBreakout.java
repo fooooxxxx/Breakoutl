@@ -146,7 +146,6 @@ public class JBreakout extends JFrame {
                 for (Ball ball : balls) {
                     if (ball.moveAndBounce()) {//球的移动,以及对墙碰撞
                         for (Brick brickOne : bricks) {//对砖块撞击判定
-
                             if (brickOne.isAlive()) {//如果brick存在
                                 winFlag = false;//还有brick存在,游戏尚未结束
                                 if (ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
@@ -155,9 +154,12 @@ public class JBreakout extends JFrame {
                                     else
                                         ball.rebounceY();
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                                    if (brickOne.hpCheck(1) && items.size() < 3)
+                                    if (brickOne.hpCheck(1) && items.size() < 3) {
                                         breakoutComponents.generateItem(brickOne);
-                                    hitSoundPlay();//播放击中音效
+
+                                    }
+                                    else
+                                        soundPlay(1);//播放击中音效
                                     break;
                                 }
                                 brickOne.setAutoColor();//根据生命值自动设置颜色
@@ -181,6 +183,7 @@ public class JBreakout extends JFrame {
                         if (itemTemp.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             //如果道具碰到paddle道具,并且移除
                             itemUse(itemTemp.itemType);
+                            soundPlay(3);
                             items.remove(itemTemp);
                         }
                     }
@@ -368,26 +371,35 @@ public class JBreakout extends JFrame {
     public void preSound() {
         try {
             Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
-
+            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/itemGetSound.wav")));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("异常抛出,音乐文件未找到");
         }
-
     }
 
-    /** 击中砖块后播放击中音乐 */
-    public void hitSoundPlay() {
+    /** 各种音效的播放
+     * @param soundType 音效类型,1为击中音效,2为击碎音效,3为获得道具音效 */
+    public void soundPlay(int soundType) {
         new Thread(new Runnable() {
             @Override
             public void run() {
-                System.out.println("播放hit音效");
                 try {
                     Clip clip = AudioSystem.getClip();
-                    clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
+                    switch(soundType) {
+                        case 1:
+                            System.out.println("播放hit音效");
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
+                            /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
+                            break;
+                        case 2:
+                            break;
+                        case 3:
+                            System.out.println("播放获得道具音效");
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/itemGetSound.wav")));
+                            break;
+                    }
                     clip.start();
-                    /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
                 } catch (Exception e) {
                     e.printStackTrace();
                     System.out.println("异常抛出,音乐文件未找到");

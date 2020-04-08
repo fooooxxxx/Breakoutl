@@ -1,5 +1,5 @@
 /**
- *
+ * 碰撞方法接口
  */
 public interface CollideInterface {
     /**
