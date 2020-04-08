@@ -303,7 +303,7 @@ public class JBreakout extends JFrame {
                 j = 0;
                 i++;
             }
-            if (brick.brickTan != 0) brick.countBrickTan();
+            if (brick.brickTan == 0) brick.countBrickTan();
         }
     }
 
