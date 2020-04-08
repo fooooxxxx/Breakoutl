@@ -67,7 +67,6 @@ public class JBreakout extends JFrame {
         add(mainMenu);
 
         //startGame();
-
     }
 
     /** 开始游戏,设置监听,并且启用监听 */
