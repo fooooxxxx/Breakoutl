@@ -79,7 +79,7 @@ public class JBreakout extends JFrame {
         balls.add(new Ball());
         bricks = initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
-
+        isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
         breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items);
         add(breakoutComponents);
@@ -215,6 +215,7 @@ public class JBreakout extends JFrame {
         breakoutComponents.add(ggLabel);
         backBtn.addActionListener(e -> {
             breakoutComponents.setVisible(false);
+            remove(breakoutComponents);
             mainMenu.setVisible(true);
         });
         breakoutComponents.repaint();//进行重绘,直接显示ggLabel
@@ -278,8 +279,6 @@ public class JBreakout extends JFrame {
                         brick.setBrickHP(2);
                         break;
                 }
-
-
                 bricks.add(brick);
             }
         }
@@ -361,8 +360,8 @@ public class JBreakout extends JFrame {
         Random randBall = new Random();
         Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 1) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 1) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
+        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
         ballNum += 2;
     }
 
