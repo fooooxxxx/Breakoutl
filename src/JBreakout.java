@@ -156,7 +156,7 @@ public class JBreakout extends JFrame {
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if (brickOne.hpCheck(1) && items.size() < 3) {
                                         breakoutComponents.generateItem(brickOne);
-
+                                        soundPlay(2);//播放击碎音效
                                     }
                                     else
                                         soundPlay(1);//播放击中音效
@@ -393,6 +393,8 @@ public class JBreakout extends JFrame {
                             /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
                             break;
                         case 2:
+                            System.out.println("击碎音效播放");
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/smash.wav")));
                             break;
                         case 3:
                             System.out.println("播放获得道具音效");

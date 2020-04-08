@@ -22,7 +22,13 @@ public class GameItem extends JComponent implements CollideInterface {
         this.x = x;
         this.y = y;
         Random r = new Random();
-        itemType = r.nextInt(3) + 1;//每种类型道具概率为1/3
+        int randNum = r.nextInt(100);//随机roll点,决定道具类型
+        if(randNum>=80)
+            itemType = 3;//20%概率为加命道具
+        else if(randNum>=40)
+            itemType = 2;
+        else
+            itemType = 1;
 
     }
 

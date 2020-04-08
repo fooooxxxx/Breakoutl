@@ -6,7 +6,7 @@ import java.util.TimerTask;
 public class Paddle extends JComponent {
 
     //宽高
-    public static int PADDLE_WIDTH = 65;
+    public static int PADDLE_WIDTH = 80;
     public static final int PADDLE_HEIGHT = 10;
 
     //offset 距离窗体底部距离
