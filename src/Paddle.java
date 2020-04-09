@@ -53,7 +53,6 @@ public class Paddle extends JComponent {
         //System.out.println(getX() + " ---"+getY());
     }
 
-
     /** 设置paddle起始位置, 使用前,应当先设置游戏面板实际大小 */
     public void setStartPosition() {
         x = (JBreakout.realWidth - PADDLE_WIDTH) / 2;
