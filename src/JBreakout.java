@@ -187,8 +187,7 @@ public class JBreakout extends JFrame {
                         }
                     }
                 }
-
-                breakoutComponents.updateHpAndScore(healthPoint, score);//更新显示出来的数据
+                breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }
         }, 0, 14);
         setStartPosition();
@@ -344,7 +343,7 @@ public class JBreakout extends JFrame {
                 paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000);
                 break;
             case 2:
-                ballSplit();
+                ballSplit(2);//分裂出两个小球
                 breakoutComponents.updateItemMessage("小球分裂了!");
                 break;
             case 3:
@@ -355,14 +354,17 @@ public class JBreakout extends JFrame {
         }
     }
 
-    /** 小球分裂函数 */
-    public void ballSplit() {
+    /** 小球分裂函数
+     * @param ballSplitNum 小球分裂数量*/
+    public void ballSplit(int ballSplitNum) {
         Random randBall = new Random();
         Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
-        balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
-        ballNum += 2;
+        for(int i = 0;i < ballSplitNum;i++){
+            balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
+            ballNum+=1;//小球数量+1
+        }
+
     }
 
     /** 预先对音效进行加载 */
