@@ -12,18 +12,20 @@ public class BreakoutComponents extends JComponent {
     ArrayList<Brick> bricks;
     CopyOnWriteArrayList<GameItem> items;
     CopyOnWriteArrayList<Ball> balls;
+    EnergyAdder energyAdder;
     JLabel showLabel;//用于显示游戏信息,比如血量等
     JLabel itemLabel;//显示道具效果
     Random random;//随机数生成器
     final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
     Font showFont;//显示游戏信息的字体
 
-    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items) {
+    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items,EnergyAdder energyAdder) {
         this.paddle = paddle;
         paddle.setVisible(true);
         this.balls = balls;
         this.bricks = bricks;
         this.items = items;
+        this.energyAdder = energyAdder;
         this.showLabel = new JLabel("游戏尚未开始");
         this.itemLabel = new JLabel("尚未获得道具");
         this.setLayout(null);//使用绝对布局
@@ -70,6 +72,7 @@ public class BreakoutComponents extends JComponent {
         for (GameItem item : items) {
             item.draw(g);
         }
+        energyAdder.draw(g);
     }
 
     /**

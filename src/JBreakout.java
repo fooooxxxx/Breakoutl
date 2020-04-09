@@ -34,6 +34,7 @@ public class JBreakout extends JFrame {
     Paddle paddle;
     //Ball ball;
     ArrayList<Brick> bricks;//砖块
+    EnergyAdder energyAdder;//能量加成器
     MainMenu mainMenu;//主菜单JPanel
     Timer mainTimer;
     CopyOnWriteArrayList<GameItem> items;//道具列表
@@ -77,11 +78,12 @@ public class JBreakout extends JFrame {
         paddle = new Paddle();
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
+        energyAdder = new EnergyAdder();
         bricks = initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
-        breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items);
+        breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items,energyAdder);
         add(breakoutComponents);
         breakoutComponents.setVisible(true);
         breakoutComponents.requestFocus();//强制获取焦点
@@ -180,13 +182,14 @@ public class JBreakout extends JFrame {
                         items.remove(itemTemp);
                     } else {
                         if (itemTemp.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
-                            //如果道具碰到paddle道具,并且移除
+                            //如果道具碰到paddle应当触发,并且移除
                             itemUse(itemTemp.itemType);
                             soundPlay(3);
                             items.remove(itemTemp);
                         }
                     }
                 }
+                //itemUse(2);//有趣的测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }
         }, 0, 14);
