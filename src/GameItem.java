@@ -16,7 +16,7 @@ public class GameItem extends JComponent implements CollideInterface {
      * 道具效果,当itemType为-1时,说明道具消失或者被使用
      * 0-测试道具,无效果,1-增加Paddle长度,2-小球分裂为3个,3-增加一条生命值
      */
-    public int itemType = 0;
+    public int itemType;
 
     GameItem(int x, int y) {
         this.x = x;
@@ -35,7 +35,7 @@ public class GameItem extends JComponent implements CollideInterface {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         //g2.setColor(Color.RED);
-        g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+        //g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
         switch (itemType) {//不同道具样式不一样
             case 0:
                 g2.setColor(Color.RED);
@@ -49,8 +49,6 @@ public class GameItem extends JComponent implements CollideInterface {
             case 3:
                 g2.setColor(Color.BLUE);
                 break;
-
-
         }
         g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
     }
