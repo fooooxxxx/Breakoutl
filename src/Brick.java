@@ -41,7 +41,6 @@ public class Brick extends JComponent {
         this.brickHP -= damage;
         if (this.brickHP <= 0) {//血量为空
             isAlive = false;//该砖块消失
-            JBreakout.score += this.brickScore;
             return true;
         }
         return false;

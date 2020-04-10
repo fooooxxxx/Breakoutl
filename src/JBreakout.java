@@ -158,13 +158,15 @@ public class JBreakout extends JFrame {
                                     if (brickOne.hpCheck(1) && items.size() < 3) {
                                         breakoutComponents.generateItem(brickOne);
                                         energyAdder.addEnergy(1);//击碎时增加一点分数能量
-                                        energyAdder.reduceEnergy(240);//能量短时间内不再泄漏
+                                        score +=energyAdder.scoreMultiple*brickOne.getBrickScore();//加分
+                                        energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
                                         soundPlay(2);//播放击碎音效
                                     }
-                                    else
+                                    else {
                                         energyAdder.addEnergy(1);//击中时增加一点分数能量
-                                        energyAdder.reduceEnergy(140);//能量短时间内不再泄漏
+                                        energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
                                         soundPlay(1);//播放击中音效
+                                    }
                                     break;
                                 }
                                 brickOne.setAutoColor();//根据生命值自动设置颜色
@@ -188,13 +190,15 @@ public class JBreakout extends JFrame {
                         if (itemTemp.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
                             //如果道具碰到paddle应当触发,并且移除
                             itemUse(itemTemp.itemType);
+                            energyAdder.reduceEnergy(220);//碰到道具时重置能量泄漏倒计时
+                            energyAdder.addEnergy(1);
                             soundPlay(3);
                             items.remove(itemTemp);
                         }
                     }
                 }
                 energyAdder.reduceEnergy(0);//泄漏能量
-                //itemUse(2);//有趣的测试代码,无限分裂小球,快速胜利
+                //itemUse(2);//测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }
         }, 0, 14);
