@@ -157,9 +157,13 @@ public class JBreakout extends JFrame {
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if (brickOne.hpCheck(1) && items.size() < 3) {
                                         breakoutComponents.generateItem(brickOne);
+                                        energyAdder.addEnergy(1);//击碎时增加一点分数能量
+                                        energyAdder.reduceEnergy(240);//能量短时间内不再泄漏
                                         soundPlay(2);//播放击碎音效
                                     }
                                     else
+                                        energyAdder.addEnergy(1);//击中时增加一点分数能量
+                                        energyAdder.reduceEnergy(140);//能量短时间内不再泄漏
                                         soundPlay(1);//播放击中音效
                                     break;
                                 }
@@ -189,6 +193,7 @@ public class JBreakout extends JFrame {
                         }
                     }
                 }
+                energyAdder.reduceEnergy(0);//泄漏能量
                 //itemUse(2);//有趣的测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }

@@ -10,13 +10,17 @@ import java.awt.*;
 public class EnergyAdder extends JComponent {
     private final int x = 5;//x轴起始坐标
     private final int y = 830;//y轴起始坐标
+    private final int ADDER_WIDTH = 35;//分数能量槽宽度
+    private final int ADDER_HEIGHT = 50;//分数能量槽高度
+    private final int ADDER_BOTTOM_WIDTH = 9;//底部宽度
+    private final int CENTER_LINE_X = 17;//中间对称线X轴坐标
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
     private int[] xFillList;//内填充x轴坐标数组
     private int[] yFillList;
     private int[] xFillList2;//用于两个多边形填充
-    private int[] yFillList2;
+    //private int[] yFillList2;
     private int fillPointNum;//内填充所需坐标数
 
     final int[] scoreLine = {0, 10, 20, 30, 40, 50};//阶段所需分数,分别为提升到2,3,4,5倍分数加成所需的分数加成器能量,最后一个50为5倍时的能量上限
@@ -40,20 +44,19 @@ public class EnergyAdder extends JComponent {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.BLACK);
-
         g2.drawPolygon(xBorderList, yBorderList, 14);//绘制加成器外轮廓
+        g2.setColor(autoSelectColor());
         int tempFillFlag = calculateFillPoint();
         if (tempFillFlag!=0) {//返回false,说明当前倍数下累计能量为0,无需绘制
             g2.fillPolygon(xFillList, yFillList, fillPointNum);
             if(tempFillFlag==2) {//根据计算结果绘制第二个多边形
-                g2.fillPolygon(xFillList2,yFillList2,fillPointNum);
+                g2.fillPolygon(xFillList2,yFillList,fillPointNum);
             }
         }
     }
 
     /** 根据当前分数加成器能量计算加成器填充多边形坐标 */
     int calculateFillPoint() {
-
         int tempScoreMeter = scoreMeter - scoreLine[scoreMultiple - 1];//临时分数加成器能量,减去了非当前倍数内累计的能量,用于绘制分数能量槽
         if (tempScoreMeter == 0) {//分数能量为0时,无需绘制里面的填充多边形
             return 0;
@@ -63,9 +66,15 @@ public class EnergyAdder extends JComponent {
             int[] stageHeight = {16,24,25,33};//这4个为特殊高度,其中小于16时,需要绘制两个多边形
             int currentScoreLine = scoreLine[scoreMultiple];//当前分数倍数下分数能量的上限
             int tempHeight = (int)Math.ceil(1.0*scoreMeter/currentScoreLine*48);//分数能量槽高度
-
+            //System.out.println("当前能量高度为" + tempHeight);
+            int leftStartX;//左上角起始点X轴坐标
             if(tempHeight < stageHeight[0]){//当tempHeight高度小于16时,需要绘制两个多边形
-
+                leftStartX = (int)Math.ceil((tempHeight+1)/2.0);
+                xFillList = new int[]{leftStartX,leftStartX+ADDER_BOTTOM_WIDTH,ADDER_BOTTOM_WIDTH,1};
+                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1,ADDER_HEIGHT-1};
+                xFillList2 = new int[]{(CENTER_LINE_X-xFillList[1])*2+xFillList[1]+1,(CENTER_LINE_X-xFillList[0])*2+xFillList[0]//此处第一个点x轴+1用于修正坐标
+                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1};
+                for(int i = 0;i < 4;i++){xFillList[i] = xFillList[i]+x;yFillList[i]=yFillList[i]+y;xFillList2[i] = xFillList2[i]+x;}
                 fillPointNum = 4;
                 return 2;
             }else if(tempHeight > stageHeight[3]){
@@ -73,8 +82,10 @@ public class EnergyAdder extends JComponent {
             }else if(tempHeight > stageHeight[2]){
                 fillPointNum = 9;
             }else{
+
                 fillPointNum = 7;
             }
+
 
         }
         return 1;
@@ -94,11 +105,11 @@ public class EnergyAdder extends JComponent {
             if (scoreMeter > scoreLine[scoreMultiple]) {
                 scoreMultiple++;
                 scoreMeter = 0;//不计算提升倍数所溢出能量
-                reduceEnergy(250);//重设能量泄露倒计时
             }
         }
         skillEnergy += energy*scoreMultiple;//增加技能能量,技能能量的增加也受分数倍数影响
         if(skillEnergy>skillEnergyUpperLimit) skillEnergy = skillEnergyUpperLimit;//不允许超过技能能量上限
+        System.out.println("阶段能量为"+scoreMeter + " 技能能量为"+skillEnergy);
         return scoreMultiple;
     }
 
@@ -114,16 +125,37 @@ public class EnergyAdder extends JComponent {
             return 0;
         }
         if (--reduceCountDown <= 0) {
-            if (scoreMultiple == 1) {//如果倍数为1,并且没有任何分数能量,则能量依然为0
-                reduceCountDown = 0;
-            } else {//否则降低倍数,并且将scoreMeter设置为前一阶段可达到的分数
-                scoreMultiple--;
-                scoreMeter = scoreLine[scoreMultiple] - 1;
+            --scoreMeter;
+            if(scoreMeter<=0){//当scoreMeter小于0的时候,说明当前阶段分数能量已经被耗尽
+                if (scoreMultiple == 1) {//如果倍数为1,并且没有任何分数能量,则能量依然为0
+                    scoreMeter = 0;
+                } else{//否则降低倍数,并且将scoreMeter设置为前一阶段可达到的分数
+                    scoreMultiple--;
+                    scoreMeter = scoreLine[scoreMultiple] - 1;
+                }
             }
+            System.out.println("能量泄漏,当前能量为"+scoreMeter);
             reduceCountDown = 30;
         }
-
         return scoreMultiple;
+    }
+
+    /** 根据当前分数倍数自动选择颜色 */
+    public Color autoSelectColor(){
+        switch(scoreMultiple){
+            case 1:
+                return new Color(0,255,0);
+
+            case 2:
+                break;
+            case 3:
+                break;
+            case 4:
+                break;
+            case 5:
+
+        }
+        return new Color(0,255,255);
     }
 
 }
