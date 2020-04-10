@@ -37,6 +37,7 @@ public class BreakoutComponents extends JComponent {
         this.itemLabel.setFont(showFont);
         add(showLabel);
         add(itemLabel);
+        add(energyAdder.scoreMultipleLabel);
         random = new Random();
     }
 

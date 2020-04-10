@@ -13,7 +13,10 @@ public class EnergyAdder extends JComponent {
     private final int ADDER_WIDTH = 35;//分数能量槽宽度
     private final int ADDER_HEIGHT = 50;//分数能量槽高度
     private final int ADDER_BOTTOM_WIDTH = 9;//底部宽度
-    private final int CENTER_LINE_X = 17;//中间对称线X轴坐标
+    private final int VERTICAL_CENTER_LINE_X = 17;//中间对称线X轴坐标
+    private final int VERTICAL_CENTER_LINE_Y = 33;
+    private final int HORIZONTAL_CENTER_LINE_X = 13;//偏下的水平对称线
+    private final int HORIZONTAL_CENTER_LINE_Y = 25;
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
@@ -24,21 +27,30 @@ public class EnergyAdder extends JComponent {
     private int fillPointNum;//内填充所需坐标数
 
     final int[] scoreLine = {0, 10, 20, 30, 40, 50};//阶段所需分数,分别为提升到2,3,4,5倍分数加成所需的分数加成器能量,最后一个50为5倍时的能量上限
-    private int scoreMeter;//分数加成器当前能量,达到一定阶段所需分数是,提升分数倍数,将该值设置为0
+    private int scoreMeter;//分数加成器当前阶段的分数能量,达到一定阶段所需分数是,提升分数倍数,将该值设置为0
     int scoreMultiple = 1;//分数倍数,默认为1
-    Color scoreAdderColor;//分数加成器的内填充颜色,随scoreMeter改变而改变
     Color scoreMultipleColor;//分数倍数字体颜色,随scoreMultiple改变而改变
+    JLabel scoreMultipleLabel;
+    Font scoreFont;//分数字体
+
     private int skillEnergy;//技能能量
     private final int skillEnergyUpperLimit = 1000;//技能能量上限值为1000
     private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
 
 
+
     EnergyAdder() {
+        scoreFont = new Font("Agency FB",Font.PLAIN,60);
+        scoreMultipleLabel = new JLabel("1");
+        scoreMultipleLabel.setBounds(x+ADDER_WIDTH+10,y-10,50,70);
+        scoreMultipleLabel.setFont(scoreFont);
+        autoChangeLabel();
         /*外轮廓多绘制了两个没用的点*/
         xBorderList = new int[]{x, x + 10, x + 17, x + 24, x + 34, x + 22, x + 22, x + 34, x + 24, x + 17, x + 10, x, x + 12, x + 12};//外轮廓坐标顺序为顺时针,从左上角开始
         yBorderList = new int[]{y, y, y + 15, y, y, y + 24, y + 25, y + 49, y + 49, y + 34, y + 49, y + 49, y + 25, y + 24};
         scoreMeter = 0;
         skillEnergy = 0;
+
     }
 
     public void draw(Graphics g) {
@@ -57,11 +69,11 @@ public class EnergyAdder extends JComponent {
 
     /** 根据当前分数加成器能量计算加成器填充多边形坐标 */
     int calculateFillPoint() {
-        int tempScoreMeter = scoreMeter - scoreLine[scoreMultiple - 1];//临时分数加成器能量,减去了非当前倍数内累计的能量,用于绘制分数能量槽
+        int tempScoreMeter = scoreMeter;//分数加成器能量
         if (tempScoreMeter == 0) {//分数能量为0时,无需绘制里面的填充多边形
             return 0;
         } else if (scoreMultiple == 5) {//倍数等于5时,分数加成器内填充永远为满
-
+            //暂时不写
         } else {
             int[] stageHeight = {16,24,25,33};//这4个为特殊高度,其中小于16时,需要绘制两个多边形
             int currentScoreLine = scoreLine[scoreMultiple];//当前分数倍数下分数能量的上限
@@ -69,24 +81,63 @@ public class EnergyAdder extends JComponent {
             //System.out.println("当前能量高度为" + tempHeight);
             int leftStartX;//左上角起始点X轴坐标
             if(tempHeight < stageHeight[0]){//当tempHeight高度小于16时,需要绘制两个多边形
-                leftStartX = (int)Math.ceil((tempHeight+1)/2.0);
-                xFillList = new int[]{leftStartX,leftStartX+ADDER_BOTTOM_WIDTH,ADDER_BOTTOM_WIDTH,1};
-                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1,ADDER_HEIGHT-1};
-                xFillList2 = new int[]{(CENTER_LINE_X-xFillList[1])*2+xFillList[1]+1,(CENTER_LINE_X-xFillList[0])*2+xFillList[0]//此处第一个点x轴+1用于修正坐标
-                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1};
-                for(int i = 0;i < 4;i++){xFillList[i] = xFillList[i]+x;yFillList[i]=yFillList[i]+y;xFillList2[i] = xFillList2[i]+x;}
                 fillPointNum = 4;
+                leftStartX = (int)Math.ceil((tempHeight+1)/2.0);
+                xFillList = new int[]{leftStartX,leftStartX+ADDER_BOTTOM_WIDTH
+                        ,ADDER_BOTTOM_WIDTH,1};
+                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1};
+                xFillList2 = new int[]{(VERTICAL_CENTER_LINE_X -xFillList[1])*2+xFillList[1]+1,(VERTICAL_CENTER_LINE_X -xFillList[0])*2+xFillList[0]//此处第一个点x轴+1用于修正坐标
+                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1};
+                for(int i = 0;i < fillPointNum;i++){xFillList[i] = xFillList[i]+x;yFillList[i]=yFillList[i]+y;xFillList2[i] = xFillList2[i]+x;}//需要算三组坐标
                 return 2;
             }else if(tempHeight > stageHeight[3]){
+                leftStartX = (int)Math.ceil((48-tempHeight+1)/2.0);
+                xFillList = new int[]{leftStartX,leftStartX+ADDER_BOTTOM_WIDTH
+                        ,VERTICAL_CENTER_LINE_X
+                        ,ADDER_WIDTH-leftStartX-ADDER_BOTTOM_WIDTH,ADDER_WIDTH-leftStartX-1
+                        ,ADDER_WIDTH-HORIZONTAL_CENTER_LINE_X-1
+                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1
+                        ,VERTICAL_CENTER_LINE_X
+                        ,ADDER_BOTTOM_WIDTH,1
+                        ,HORIZONTAL_CENTER_LINE_X};
+                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight
+                        ,ADDER_HEIGHT-VERTICAL_CENTER_LINE_Y-1
+                        ,ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight
+                        ,HORIZONTAL_CENTER_LINE_Y
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1
+                        ,VERTICAL_CENTER_LINE_Y
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1
+                        ,HORIZONTAL_CENTER_LINE_Y};
                 fillPointNum = 12;
             }else if(tempHeight > stageHeight[2]){
+                leftStartX = (int)Math.ceil((48-tempHeight+1)/2.0);
+                xFillList = new int[]{leftStartX,(VERTICAL_CENTER_LINE_X -leftStartX)*2+leftStartX
+                        ,ADDER_WIDTH-HORIZONTAL_CENTER_LINE_X-1
+                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1
+                        , VERTICAL_CENTER_LINE_X
+                        ,ADDER_BOTTOM_WIDTH,1
+                        ,HORIZONTAL_CENTER_LINE_X};
+                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight
+                        ,HORIZONTAL_CENTER_LINE_Y
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1
+                        , VERTICAL_CENTER_LINE_Y
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1
+                        ,HORIZONTAL_CENTER_LINE_Y};
                 fillPointNum = 9;
             }else{
-
+                leftStartX = (int)Math.ceil((tempHeight+1)/2.0);
+                xFillList = new int[]{leftStartX,(VERTICAL_CENTER_LINE_X -leftStartX)*2+leftStartX
+                        ,ADDER_WIDTH-2,ADDER_WIDTH-ADDER_BOTTOM_WIDTH-1
+                        , VERTICAL_CENTER_LINE_X
+                        ,ADDER_BOTTOM_WIDTH,1};
+                yFillList = new int[]{ADDER_HEIGHT-1-tempHeight,ADDER_HEIGHT-1-tempHeight
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1
+                        , VERTICAL_CENTER_LINE_Y
+                        ,ADDER_HEIGHT-1,ADDER_HEIGHT-1};
                 fillPointNum = 7;
             }
-
-
+            for(int i = 0;i < fillPointNum;i++){xFillList[i] = xFillList[i]+x;yFillList[i]=yFillList[i]+y;}//计算两组坐标
         }
         return 1;
     }
@@ -105,6 +156,8 @@ public class EnergyAdder extends JComponent {
             if (scoreMeter > scoreLine[scoreMultiple]) {
                 scoreMultiple++;
                 scoreMeter = 0;//不计算提升倍数所溢出能量
+                autoChangeLabel();
+                reduceEnergy(400);
             }
         }
         skillEnergy += energy*scoreMultiple;//增加技能能量,技能能量的增加也受分数倍数影响
@@ -132,30 +185,35 @@ public class EnergyAdder extends JComponent {
                 } else{//否则降低倍数,并且将scoreMeter设置为前一阶段可达到的分数
                     scoreMultiple--;
                     scoreMeter = scoreLine[scoreMultiple] - 1;
+                    autoChangeLabel();
                 }
             }
-            System.out.println("能量泄漏,当前能量为"+scoreMeter);
+            System.out.println("能量泄漏,当前能量为"+scoreMeter+",当前分数倍数为"+scoreMultiple);
             reduceCountDown = 30;
         }
         return scoreMultiple;
     }
 
-    /** 根据当前分数倍数自动选择颜色 */
+    /**根据当前分数倍数自动选择分数倍数的字体颜色,并改变内容*/
+    public void autoChangeLabel(){
+        scoreMultipleLabel.setForeground(autoSelectColor());
+        scoreMultipleLabel.setText(String.valueOf(scoreMultiple));
+    }
+    /** 根据当前分数倍数自动选择分数加成器颜色 */
     public Color autoSelectColor(){
         switch(scoreMultiple){
             case 1:
-                return new Color(0,255,0);
-
+                return new Color(16,255,1);
             case 2:
-                break;
+                return new Color(0,241,255);
             case 3:
-                break;
+                return new Color(255,227,21);
             case 4:
-                break;
+                return new Color(255,51,10);
             case 5:
-
+                return new Color(208,3,255);
+            default://一般来说,这个选项不会发生
+                return new Color(122,123,45);
         }
-        return new Color(0,255,255);
     }
-
 }
