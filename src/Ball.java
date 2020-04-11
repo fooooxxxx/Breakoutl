@@ -6,7 +6,7 @@ import java.awt.*;
  */
 public class Ball extends JComponent implements CollideInterface {
     //小球半径
-    private static final int BALL_RADIUS = 5;
+    private static final int BALL_RADIUS = 6;
     //小球初始位置
     private int x = 300;
     private int y = 700;
