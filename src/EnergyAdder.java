@@ -9,8 +9,8 @@ import java.awt.*;
  */
 public class EnergyAdder extends JComponent {
     /*图像相关*/
-    private final int x = 5;//x轴起始坐标
-    private final int y = 830;//y轴起始坐标
+    private final int x = 10;//x轴起始坐标
+    private final int y = 840;//y轴起始坐标
     private final int ADDER_WIDTH = 35;//分数能量槽宽度
     private final int ADDER_HEIGHT = 50;//分数能量槽高度
     private final int ADDER_BOTTOM_WIDTH = 9;//底部宽度
