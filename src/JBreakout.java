@@ -43,8 +43,8 @@ public class JBreakout extends JFrame implements CastSkill {
     Iterator<GameItem> itemIterator;//道具迭代器
     /*技能相关*/
     int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
-    int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
-    int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
+    static int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
+    static int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
 
 
     static boolean isBallLaunching;//球是否已经发射
@@ -222,7 +222,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     }
                 }
-                useSkill();
+                useSkill();//释放复杂的技能
                 energyAdder.reduceEnergy(0);//泄漏能量
                 //itemUse(2);//测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
@@ -452,10 +452,17 @@ public class JBreakout extends JFrame implements CastSkill {
 
     //使用复杂技能
     void useSkill(){
-        switch(skillTypeUsing){
-            case 1://轨道炮
+        if(skillTypeUsing!=-1) {//如果有在生效的技能
+            if (--skillTimeCounter == 0) {//倒计时为0时,结束释放
+                skillTypeUsing = -1;
+            }
+            switch (skillTypeUsing) {
+                case 1://轨道炮
+                    if(skillTimeCounter%70==0){//每980毫秒造成一次伤害,进行三次
 
-                break;
+                    }
+                    break;
+            }
         }
     }
 
@@ -471,7 +478,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     break;
                 case 1://轨道炮
                     skillTypeUsing = 1;
-                    skillTimeCounter = 300;
+                    skillTimeCounter = 280;
                     break;
             }
             System.out.println("释放<"+sType+">号技能");
@@ -482,7 +489,6 @@ public class JBreakout extends JFrame implements CastSkill {
         }
         return 0;
     }
-
 
 }
 

@@ -75,6 +75,28 @@ public class BreakoutComponents extends JComponent {
             item.draw(g);
         }
         energyAdder.draw(g);
+        drawSkill(g);
+    }
+
+    /**绘制一些复杂的技能效果*/
+    void drawSkill(Graphics g){
+        Graphics2D g2 = (Graphics2D)g;
+        if(JBreakout.skillTypeUsing!=-1 ){//判断是否有复杂技能在释放
+            switch(JBreakout.skillTypeUsing){
+                case 1://轨道炮技能效果绘制
+                    if(JBreakout.skillTimeCounter > 210){
+                        g2.setColor(Color.RED);//红色线
+                        int leftX =(int)((1.0*JBreakout.skillTimeCounter - 210)/70*Paddle.PADDLE_WIDTH/2);//左侧红线X轴与paddleX轴坐标的差
+                        g2.drawLine(paddle.getCenterX()-leftX,0,paddle.getCenterX()-leftX,paddle.getY()-1);
+                        g2.drawLine(paddle.getCenterX()+leftX,0,paddle.getCenterX()+leftX,paddle.getY()-1);
+                    }
+                    else{//然后绘制轨道炮图片
+
+                    }
+
+                    break;
+            }
+        }
     }
 
     /**
