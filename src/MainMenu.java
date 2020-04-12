@@ -12,7 +12,7 @@ public class MainMenu extends JPanel {
     GridLayout menuLayout = new GridLayout(9, 1, 10, 20);
 
     public MainMenu(JBreakout mainFrame) {
-        icon = new ImageIcon("image/bg.jpg");
+        icon = new ImageIcon("src/image/bg.jpg");
         image = icon.getImage();
 
 

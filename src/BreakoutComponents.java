@@ -1,7 +1,5 @@
 import javax.swing.*;
 import java.awt.*;
-import java.awt.event.KeyEvent;
-import java.awt.event.KeyListener;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -38,6 +36,8 @@ public class BreakoutComponents extends JComponent {
         add(showLabel);
         add(itemLabel);
         add(energyAdder.scoreMultipleLabel);
+        for(Skill skillOne :energyAdder.skillLabelList)
+            add(skillOne);
         random = new Random();
     }
 

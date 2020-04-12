@@ -11,12 +11,14 @@ public class Ball extends JComponent implements CollideInterface {
     private int x = 300;
     private int y = 700;
     //小球在x和y轴上的初始速度
-    private int vx = 4;
-    private int vy = 5;
+    private int vx = 3;
+    private int vy = 4;
 
     /**
-     * ball构造函数
+     * 有参ball构造函数,可以指定小球速度和坐标
      *
+     * @param x 小球X轴坐标
+     * @param y 小球Y轴坐标
      * @param vx x轴小球速度
      * @param vy y轴小球速度
      */
@@ -26,6 +28,19 @@ public class Ball extends JComponent implements CollideInterface {
         setSpeed(vx, vy);
         System.out.println("新增小球vx为" + vx + "-vy为" + vy);
     }
+
+    /**
+     * 有参ball构造函数,只能指定小球坐标,速度为默认速度
+     *
+     * @param x 小球X轴坐标
+     * @param y 小球Y轴坐标
+     */
+    Ball(int x, int y) {
+        this.x = x;
+        this.y = y;
+        System.out.println("新增小球vx为" + vx + "-vy为" + vy);
+    }
+
 
     Ball() {
         vx = 3;

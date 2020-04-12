@@ -9,7 +9,7 @@ public class Brick extends JComponent {
     /** Width of a brick */
     private int BRICK_WIDTH;
     /** Height of a brick */
-    public static final int BRICK_HEIGHT = 24;
+    public static final int BRICK_HEIGHT = 26;
     /** 是否存在,true为存在,false为消失 */
     private boolean isAlive = true;
     /** brick的生命值 */

@@ -9,7 +9,7 @@ import javax.sound.sampled.AudioSystem;
 import javax.sound.sampled.Clip;
 
 
-public class JBreakout extends JFrame {
+public class JBreakout extends JFrame implements CastSkill {
     //游戏参数
     public static final int APPLICATION_WIDTH = 616;
     public static final int APPLICATION_HEIGHT = 939;
@@ -40,9 +40,9 @@ public class JBreakout extends JFrame {
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
     CopyOnWriteArrayList<Ball> balls;//小球列表
+    int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
 
-
-    static boolean isBallLaunching = false;//球是否已经发射
+    static boolean isBallLaunching;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
 
     //字体变量
@@ -68,30 +68,31 @@ public class JBreakout extends JFrame {
         add(mainMenu);
 
         //startGame();
+
     }
 
     /** 开始游戏,设置监听,并且启用监听 */
     public void startGame() {
         mainMenu.setVisible(false);
+
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
         paddle = new Paddle();
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
-        energyAdder = new EnergyAdder();
+        energyAdder = new EnergyAdder(this);
         bricks = initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
         breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items,energyAdder);
         add(breakoutComponents);
+
         breakoutComponents.setVisible(true);
         breakoutComponents.requestFocus();//强制获取焦点
         breakoutComponents.addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) {
-
-            }
+            public void keyTyped(KeyEvent e) { }
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -105,7 +106,24 @@ public class JBreakout extends JFrame {
                         paddle.moveRight();
                         break;
                     case KeyEvent.VK_SPACE:
-                        launchBall();
+                        System.out.println("按下并释放了空格");
+                        if (!isBallLaunching)//如果不处于发射状态,则进行发射
+                            launchBall();
+                        else {//否则释放技能
+                            if(energyAdder.useSkill()==1){
+                                System.out.println("能量不足,技能释放失败");
+                            }
+                        }
+                        break;
+                    case KeyEvent.VK_P://暂停按钮
+                        break;
+                    case KeyEvent.VK_UP:
+                    case KeyEvent.VK_W:
+                        breakoutComponents.energyAdder.switchSkill(-1);
+                        break;
+                    case KeyEvent.VK_DOWN:
+                    case KeyEvent.VK_S:
+                        breakoutComponents.energyAdder.switchSkill(1);
                         break;
                 }
             }
@@ -137,7 +155,7 @@ public class JBreakout extends JFrame {
 //                    if(balls.size()==0){//当场上无小球时,生成小球
 //                        balls.add(new Ball());
 //                    }
-                    balls.get(0).setSpeed(3, 3);//对唯一的ball设置速度
+                    balls.get(0).setSpeed(3,4);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
@@ -379,6 +397,8 @@ public class JBreakout extends JFrame {
 
     }
 
+
+
     /** 预先对音效进行加载 */
     public void preSound() {
         try {
@@ -421,5 +441,29 @@ public class JBreakout extends JFrame {
             }
         }).start();
     }
+
+    @Override
+    public int castSkill(int sType) {
+        if(skillCoolDown == 0 ) {
+            int castFlag;
+            switch (sType) {
+                case 0://立刻从挡板中心发射一颗默认速度的小球
+                    balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
+                            ,paddle.getY() - 2 * Ball.getBallRadius()));
+                    ballNum++;
+                    break;
+                case 1:
+                    break;
+            }
+            System.out.println("释放<"+sType+">号技能");
+        }
+        else{
+            System.out.println("释放技能失败,尚在冷却中");
+            return 2;
+        }
+        return 0;
+    }
+
+
 }
 

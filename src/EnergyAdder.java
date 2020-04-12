@@ -1,5 +1,6 @@
 import javax.swing.*;
 import java.awt.*;
+import java.util.ArrayList;
 
 /**
  * 能量加成器
@@ -7,7 +8,7 @@ import java.awt.*;
  * 当小球击中或击碎砖块,以及拾取道具时获得能量,一定能量后提升分数倍数
  * 同时设置技能能量槽,技能能量槽满后可以选择技能释放
  */
-public class EnergyAdder extends JComponent {
+public class EnergyAdder {
     /*加成器图像相关*/
     private final int x = 10;//加成器x轴起始坐标
     private final int y = 840;//加成器y轴起始坐标
@@ -19,12 +20,13 @@ public class EnergyAdder extends JComponent {
     private final int HORIZONTAL_CENTER_LINE_X = 13;//偏下的水平对称线
     private final int HORIZONTAL_CENTER_LINE_Y = 25;
     /*技能图像相关*/
-    private final int skillX = 90;//技能X轴坐标
-    private final int skillY = 810;//技能Y轴坐标
-    private final int sEnergyX = 90;//技能能量槽X坐标
+    private final int skillStartX = 90;//技能X轴坐标
+    private final int skillY = 830;//技能Y轴坐标
+    static final int sEnergyX = 90;//技能能量槽X坐标
     private final int sEnergyY = 870;//技能能量槽Y坐标
-    private final int sEnergyWidth = 252;//外轮廓技能能量槽长度
+    static final int sEnergyWidth = 252;//外轮廓技能能量槽长度
     private final int sEnergyHeight = 20;//外轮廓技能能量槽高度
+    ArrayList<Skill> skillLabelList;
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
@@ -39,15 +41,23 @@ public class EnergyAdder extends JComponent {
     Color scoreMultipleColor;//分数倍数字体颜色,随scoreMultiple改变而改变
     JLabel scoreMultipleLabel;
     Font scoreFont;//分数字体
-    private int skillEnergy;//技能能量
-    private final int maxSkillEnergy = 500;//技能能量上限值
+    static int skillEnergy;//技能能量
+    static final int maxSkillEnergy = 400;//技能能量上限值
     private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
     private final int minCountDown = 30;//最小倒计时
     private static int lastCountDown;//上次倒计时
+    //技能使用
+    int skillSelect = 0;//选中的技能编号
+    int skillNum;//技能数量
+    CastSkill castSkillInterface;//技能释放的回调接口
 
 
-    EnergyAdder() {
+
+
+    EnergyAdder(CastSkill castSkillInterface) {
+        this.castSkillInterface = castSkillInterface;
         scoreFont = new Font("Agency FB", Font.BOLD, 66);
+        skillLabelList = new ArrayList<>();
         scoreMultipleLabel = new JLabel("1");
         scoreMultipleLabel.setBounds(x + ADDER_WIDTH + 10, y - 12, 50, 70);
         scoreMultipleLabel.setFont(scoreFont);
@@ -58,6 +68,16 @@ public class EnergyAdder extends JComponent {
         scoreMeter = 0;
         skillEnergy = 0;
         lastCountDown = minCountDown;
+        //技能图标
+        Skill.skillStartX = skillStartX;
+        Skill.skillY = skillY;
+        //添加技能
+        skillLabelList.add(new Skill(new ImageIcon("src/image/ballPlus2.jpg"),20,"额外加码"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/railGun.jpg"),350,"轨道炮"));
+
+        skillNum = skillLabelList.size();//获得技能数量
+
+
 
     }
 
@@ -80,6 +100,13 @@ public class EnergyAdder extends JComponent {
         g2.setColor(Color.CYAN);
         //绘制内填充的能量槽
         g2.fillRoundRect(sEnergyX+1,sEnergyY+1,calculateSkillEnergyMeter(),sEnergyHeight-1,10,15);
+        for(int i = 0;i<skillNum;i++)
+            if(skillSelect!=i)
+                skillLabelList.get(i).draw(g,false);
+            else
+                skillLabelList.get(i).draw(g,true);//绘制被选中的技能上方的箭头
+
+
     }
 
     /** 根据当前分数加成器能量计算加成器填充多边形坐标 */
@@ -214,7 +241,6 @@ public class EnergyAdder extends JComponent {
      * @return 返回值为0时, 说明该方法被用于重设倒计时, 否则返回值为当前分数加成倍数
      */
     public int reduceEnergy(int countDown) {
-
         if (countDown != 0) {
             if (reduceCountDown < countDown && lastCountDown/2<countDown) {reduceCountDown = countDown;lastCountDown = reduceCountDown;}
             //如果新的能量泄露倒计时值大于原有的,并且大于下一阶段的倒计时,才重设,否则重设无效
@@ -245,6 +271,31 @@ public class EnergyAdder extends JComponent {
         scoreMultipleLabel.setText(String.valueOf(scoreMultiple));
     }
 
+    /** 切换技能
+     * @param direction 切换方向参数,-1为向上切换,1为向下切换
+     * @return 当前所选择技能下标*/
+    int switchSkill(int direction){
+        skillSelect+= direction;
+        if(skillSelect >= skillNum)
+            skillSelect = 0;//循环切换
+        else if(skillSelect < 0)
+            skillSelect = skillNum-1;
+        return skillSelect;
+    }
+
+    /** 使用技能
+     * return 返回0时表示技能释放成功;1表示技能能量不足,释放失败,返回2说明技能还在冷却*/
+    int useSkill(){
+        int result = 1;
+        if(skillLabelList.get(skillSelect).checkCastEnergy()){
+            result = castSkillInterface.castSkill(skillSelect);//释放选中技能
+            if(result == 0)
+                skillEnergy -= skillLabelList.get(skillSelect).needEnergy;
+        }
+
+        return result;
+    }
+
     /** 根据当前分数倍数自动选择分数加成器颜色 */
     public Color autoSelectColor() {
         switch (scoreMultiple) {
@@ -262,4 +313,14 @@ public class EnergyAdder extends JComponent {
                 return new Color(122, 123, 45);
         }
     }
+
+
+
+
+}
+interface CastSkill{
+    /** 实现技能效果
+     * @param sType 技能编号
+     * @return 返回值为0,表示释放成功,返回2说明技能还在冷却*/
+    int castSkill(int sType);
 }
