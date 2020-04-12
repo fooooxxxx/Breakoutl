@@ -36,6 +36,7 @@ public class BreakoutComponents extends JComponent {
         add(showLabel);
         add(itemLabel);
         add(energyAdder.scoreMultipleLabel);
+        add(energyAdder.skillDescriptionLabel);
         for(Skill skillOne :energyAdder.skillLabelList)
             add(skillOne);
         random = new Random();

@@ -14,16 +14,17 @@ public class Skill extends JLabel {
     private final int imageSize = 25;//技能图片宽高为25
     int needEnergy;//所需技能能量值
     private String skillName;
-    String skillDescription;//技能效果描述
+    String skillDescription = "技能描述";//技能效果描述
     private final int arrowHalfWidth = 4;
     private final int arrowHeight = 10;//箭头高度
     private final int arrowOffset = 4;//距离技能图标高度
     //boolean isSelect = false;//是否被选中
 
-    Skill(ImageIcon img,int needEnergy,String skillName){
+    Skill(ImageIcon img,int needEnergy,String skillName,String skillDescription){
         super(img);
         this.needEnergy = needEnergy;
         this.skillName = skillName;
+        this.skillDescription  =skillDescription;
         skillCenterX = (int)(1.0*needEnergy/EnergyAdder.maxSkillEnergy*EnergyAdder.sEnergyWidth+EnergyAdder.sEnergyX);
         skillX = skillCenterX-imageSize/2;
         setBounds(skillX,skillY,imageSize,imageSize);
@@ -48,11 +49,13 @@ public class Skill extends JLabel {
         //绘制技能名字
     }
 
+    String concatDescription(){
+        return "<html>&lt;" + skillName + "&gt;<br/>" + skillDescription +"</html>";
+    }
+
     /**检查当前技能能量值是否足够来释放该技能*/
     boolean checkCastEnergy(){
         return needEnergy<EnergyAdder.skillEnergy;
     }
-
-
 
 }

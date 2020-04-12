@@ -34,13 +34,18 @@ public class JBreakout extends JFrame implements CastSkill {
     Paddle paddle;
     //Ball ball;
     ArrayList<Brick> bricks;//砖块
+    CopyOnWriteArrayList<Ball> balls;//小球列表
     EnergyAdder energyAdder;//能量加成器
     MainMenu mainMenu;//主菜单JPanel
     Timer mainTimer;
+    /*道具相关*/
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
-    CopyOnWriteArrayList<Ball> balls;//小球列表
+    /*技能相关*/
     int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
+    int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
+    int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
+
 
     static boolean isBallLaunching;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
@@ -77,6 +82,8 @@ public class JBreakout extends JFrame implements CastSkill {
 
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
+        skillTypeUsing = -1;
+        //构建对象
         paddle = new Paddle();
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
@@ -215,6 +222,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     }
                 }
+                useSkill();
                 energyAdder.reduceEnergy(0);//泄漏能量
                 //itemUse(2);//测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
@@ -442,6 +450,15 @@ public class JBreakout extends JFrame implements CastSkill {
         }).start();
     }
 
+    //使用复杂技能
+    void useSkill(){
+        switch(skillTypeUsing){
+            case 1://轨道炮
+
+                break;
+        }
+    }
+
     @Override
     public int castSkill(int sType) {
         if(skillCoolDown == 0 ) {
@@ -452,7 +469,9 @@ public class JBreakout extends JFrame implements CastSkill {
                             ,paddle.getY() - 2 * Ball.getBallRadius()));
                     ballNum++;
                     break;
-                case 1:
+                case 1://轨道炮
+                    skillTypeUsing = 1;
+                    skillTimeCounter = 300;
                     break;
             }
             System.out.println("释放<"+sType+">号技能");

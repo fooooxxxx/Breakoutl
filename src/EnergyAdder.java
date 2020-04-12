@@ -50,16 +50,18 @@ public class EnergyAdder {
     int skillSelect = 0;//选中的技能编号
     int skillNum;//技能数量
     CastSkill castSkillInterface;//技能释放的回调接口
-
-
+    //技能描述相关
+    JLabel skillDescriptionLabel;
 
 
     EnergyAdder(CastSkill castSkillInterface) {
         this.castSkillInterface = castSkillInterface;
+        skillDescriptionLabel = new JLabel("<html>上下键切换技能,空格键使用技能</html>");
+        skillDescriptionLabel.setBounds(skillStartX+280,skillY-20,220,60);
         scoreFont = new Font("Agency FB", Font.BOLD, 66);
         skillLabelList = new ArrayList<>();
         scoreMultipleLabel = new JLabel("1");
-        scoreMultipleLabel.setBounds(x + ADDER_WIDTH + 10, y - 12, 50, 70);
+        scoreMultipleLabel.setBounds(x + ADDER_WIDTH + 10, y - 12, 50, 70);//设置分数倍数坐标
         scoreMultipleLabel.setFont(scoreFont);
         autoChangeLabel();
         /*外轮廓多绘制了两个没用的点*/
@@ -72,12 +74,15 @@ public class EnergyAdder {
         Skill.skillStartX = skillStartX;
         Skill.skillY = skillY;
         //添加技能
-        skillLabelList.add(new Skill(new ImageIcon("src/image/ballPlus2.jpg"),20,"额外加码"));
-        skillLabelList.add(new Skill(new ImageIcon("src/image/railGun.jpg"),350,"轨道炮"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/ballPlus2.jpg"),20,
+                "额外加码","立刻从挡板上发射一颗小球"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/railGun.jpg"),350,
+                "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成伤害"));
+
+        //添加技能描述
+
 
         skillNum = skillLabelList.size();//获得技能数量
-
-
 
     }
 
@@ -100,11 +105,9 @@ public class EnergyAdder {
         g2.setColor(Color.CYAN);
         //绘制内填充的能量槽
         g2.fillRoundRect(sEnergyX+1,sEnergyY+1,calculateSkillEnergyMeter(),sEnergyHeight-1,10,15);
+        //绘制被选中的技能上方的箭头
         for(int i = 0;i<skillNum;i++)
-            if(skillSelect!=i)
-                skillLabelList.get(i).draw(g,false);
-            else
-                skillLabelList.get(i).draw(g,true);//绘制被选中的技能上方的箭头
+            skillLabelList.get(i).draw(g, skillSelect == i);
 
 
     }
@@ -280,7 +283,13 @@ public class EnergyAdder {
             skillSelect = 0;//循环切换
         else if(skillSelect < 0)
             skillSelect = skillNum-1;
+        skillDescriptionLabel.setText(skillLabelList.get(skillSelect).concatDescription());
         return skillSelect;
+    }
+
+    /**显示技能说明*/
+    void showSkillDescription(){
+
     }
 
     /** 使用技能
