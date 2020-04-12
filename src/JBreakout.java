@@ -168,12 +168,10 @@ public class JBreakout extends JFrame implements CastSkill {
                 }
                 breakoutComponents.repaint();
                 updateBrickWidth();
-                boolean winFlag = true;//如果有砖块存活,改为false
                 for (Ball ball : balls) {
                     if (ball.moveAndBounce()) {//球的移动,以及对墙碰撞
                         for (Brick brickOne : bricks) {//对砖块撞击判定
                             if (brickOne.isAlive()) {//如果brick存在
-                                winFlag = false;//还有brick存在,游戏尚未结束
                                 if (ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
                                     if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))//判断方向
                                         ball.rebounceX();
@@ -205,7 +203,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         balls.remove(ball);
                     }
                 }
-                if (winFlag) gameOver(0);
+                if (winCheck()) gameOver(0);
                 itemIterator = items.iterator();
                 while (itemIterator.hasNext()) {//判断item是否和paddle碰撞,以及移除到底部的item
                     GameItem itemTemp = itemIterator.next();
@@ -224,7 +222,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 }
                 useSkill();//释放复杂的技能
                 energyAdder.reduceEnergy(0);//泄漏能量
-                //itemUse(2);//测试代码,无限分裂小球,快速胜利
+                itemUse(2);//测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }
         }, 0, 14);
@@ -460,13 +458,39 @@ public class JBreakout extends JFrame implements CastSkill {
                 case 1://轨道炮
                     if(skillTimeCounter<212) {//延长前期的动画效果
                         if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
-
+                            for(Brick brickOne : bricks){
+                                if(isBrickTrigger(brickOne, paddle.getX(), 0, paddle.getX()+Paddle.PADDLE_WIDTH,paddle.getY()))
+                                    brickOne.hpCheck(1);
+                            }
                         }
                     }
                     break;
             }
         }
     }
+
+    /** 判断该砖块是否在效果范围内
+     * @param x1 左上角点的X轴坐标
+     * @param y1 左上角点的Y轴坐标
+     * @param x2 右下角点的X轴坐标
+     * @param y2 右下角点的Y轴坐标
+     * @return 如果在,返回true,否则返回false*/
+    boolean isBrickTrigger(Brick brick,int x1,int y1,int x2,int y2){
+        int x = brick.getX();
+        int y = brick.getY();
+        int width = brick.getBRICK_WIDTH();
+        return isPointInRect(x,y,x1,y1,x2,y2)//需要对四个顶点都进行一次判断
+                || isPointInRect(x+width,y,x1,y1,x2,y2)
+                || isPointInRect(x,y+Brick.BRICK_HEIGHT,x1,y1,x2,y2)
+                || isPointInRect(x+width,y+Brick.BRICK_HEIGHT,x1,y1,x2,y2);
+
+    }
+
+    /**判断一个点是否在一个矩形内*/
+    boolean isPointInRect(int x,int y,int x1,int y1,int x2,int y2){
+        return x>x1 && x<x2 && y>y1 && y<y2;
+    }
+
 
     @Override
     public int castSkill(int sType) {
@@ -490,6 +514,13 @@ public class JBreakout extends JFrame implements CastSkill {
             return 2;
         }
         return 0;
+    }
+
+    boolean winCheck(){
+        for(Brick brickOne : bricks){
+            if(brickOne.isAlive()) return false;
+        }
+        return true;
     }
 
 }
