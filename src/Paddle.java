@@ -38,6 +38,7 @@ public class Paddle extends JComponent {
     static int oldWidth = 0;
 
     Paddle() {
+        PADDLE_WIDTH = 80;
         paddleMoveTimer = new Timer();
         paddleItemTimer = new Timer();
         oldWidth = PADDLE_WIDTH;//记录初始宽度
@@ -179,4 +180,7 @@ public class Paddle extends JComponent {
     public static int getPaddleHeight() {
         return PADDLE_HEIGHT;
     }
+
+    /**返回paddle对称线的X轴坐标*/
+    public int getCenterX(){ return x+PADDLE_WIDTH/2; }
 }
