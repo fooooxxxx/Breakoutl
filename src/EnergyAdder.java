@@ -8,9 +8,9 @@ import java.awt.*;
  * 同时设置技能能量槽,技能能量槽满后可以选择技能释放
  */
 public class EnergyAdder extends JComponent {
-    /*图像相关*/
-    private final int x = 10;//x轴起始坐标
-    private final int y = 840;//y轴起始坐标
+    /*加成器图像相关*/
+    private final int x = 10;//加成器x轴起始坐标
+    private final int y = 840;//加成器y轴起始坐标
     private final int ADDER_WIDTH = 35;//分数能量槽宽度
     private final int ADDER_HEIGHT = 50;//分数能量槽高度
     private final int ADDER_BOTTOM_WIDTH = 9;//底部宽度
@@ -18,13 +18,19 @@ public class EnergyAdder extends JComponent {
     private final int VERTICAL_CENTER_LINE_Y = 33;
     private final int HORIZONTAL_CENTER_LINE_X = 13;//偏下的水平对称线
     private final int HORIZONTAL_CENTER_LINE_Y = 25;
+    /*技能图像相关*/
+    private final int skillX = 90;//技能X轴坐标
+    private final int skillY = 810;//技能Y轴坐标
+    private final int sEnergyX = 90;//技能能量槽X坐标
+    private final int sEnergyY = 870;//技能能量槽Y坐标
+    private final int sEnergyWidth = 252;//外轮廓技能能量槽长度
+    private final int sEnergyHeight = 20;//外轮廓技能能量槽高度
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
     private int[] xFillList;//内填充x轴坐标数组
     private int[] yFillList;
     private int[] xFillList2;//用于两个多边形填充
-    //private int[] yFillList2;
     private int fillPointNum;//内填充所需坐标数
     /* 能量相关 */
     final int[] scoreLine = {0, 10, 20, 30, 40, 50};//阶段所需分数,分别为提升到2,3,4,5倍分数加成所需的分数加成器能量,最后一个50为5倍时的能量上限
@@ -34,7 +40,7 @@ public class EnergyAdder extends JComponent {
     JLabel scoreMultipleLabel;
     Font scoreFont;//分数字体
     private int skillEnergy;//技能能量
-    private final int skillEnergyUpperLimit = 1000;//技能能量上限值为1000
+    private final int maxSkillEnergy = 500;//技能能量上限值
     private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
     private final int minCountDown = 30;//最小倒计时
     private static int lastCountDown;//上次倒计时
@@ -58,15 +64,22 @@ public class EnergyAdder extends JComponent {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.BLACK);
+        /* 分数加成器绘制 */
         g2.drawPolygon(xBorderList, yBorderList, 14);//绘制加成器外轮廓
         g2.setColor(autoSelectColor());
         int tempFillFlag = calculateFillPoint();
-        if (tempFillFlag != 0) {//返回false,说明当前倍数下累计能量为0,无需绘制
+            if (tempFillFlag != 0) {//返回false,说明当前倍数下累计能量为0,无需绘制
             g2.fillPolygon(xFillList, yFillList, fillPointNum);
             if (tempFillFlag == 2) {//根据计算结果绘制第二个多边形
                 g2.fillPolygon(xFillList2, yFillList, fillPointNum);
             }
         }
+        /* 技能面板槽绘制 */
+        g2.setColor(Color.BLACK);
+        g2.drawRoundRect(sEnergyX,sEnergyY,sEnergyWidth,sEnergyHeight,8,15);//技能外轮廓能量槽绘制
+        g2.setColor(Color.CYAN);
+        //绘制内填充的能量槽
+        g2.fillRoundRect(sEnergyX+1,sEnergyY+1,calculateSkillEnergyMeter(),sEnergyHeight-1,10,15);
     }
 
     /** 根据当前分数加成器能量计算加成器填充多边形坐标 */
@@ -164,6 +177,11 @@ public class EnergyAdder extends JComponent {
         }
         return 1;
     }
+    /**根据当前技能能量计算内填充的技能能量槽长度
+     * @return 返回内填充能量槽长度*/
+    private int calculateSkillEnergyMeter(){
+        return (int)Math.ceil(1.0*skillEnergy/maxSkillEnergy*(sEnergyWidth-1));
+    }
 
     /**
      * 增加分数能量和技能能量,如果分数能量达到下一倍数所需能量,则提升分数倍数,并且将scoreMeter置0
@@ -184,7 +202,7 @@ public class EnergyAdder extends JComponent {
             }
         }
         skillEnergy += energy * scoreMultiple;//增加技能能量,技能能量的增加也受分数倍数影响
-        if (skillEnergy > skillEnergyUpperLimit) skillEnergy = skillEnergyUpperLimit;//不允许超过技能能量上限
+        if (skillEnergy > maxSkillEnergy) skillEnergy = maxSkillEnergy;//不允许超过技能能量上限
         System.out.println("阶段能量为" + scoreMeter + " 技能能量为" + skillEnergy);
         return scoreMultiple;
     }
