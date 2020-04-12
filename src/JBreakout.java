@@ -458,8 +458,10 @@ public class JBreakout extends JFrame implements CastSkill {
             }
             switch (skillTypeUsing) {
                 case 1://轨道炮
-                    if(skillTimeCounter%70==0){//每980毫秒造成一次伤害,进行三次
+                    if(skillTimeCounter<212) {//延长前期的动画效果
+                        if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
 
+                        }
                     }
                     break;
             }
@@ -478,7 +480,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     break;
                 case 1://轨道炮
                     skillTypeUsing = 1;
-                    skillTimeCounter = 280;
+                    skillTimeCounter = 320;
                     break;
             }
             System.out.println("释放<"+sType+">号技能");
