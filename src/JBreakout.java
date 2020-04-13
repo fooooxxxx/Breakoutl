@@ -42,12 +42,12 @@ public class JBreakout extends JFrame implements CastSkill {
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
     /*技能相关*/
-    int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
+    static int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
     static int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
     static int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
 
     static boolean isBallLaunching;//球是否已经发射
-    static boolean isGameStart = false;//游戏是否开始
+    //static boolean isGameStart = false;//游戏是否开始
     /**距离下一次小球启动自动锁定倒计时*/
     int autoLockBrickCountDown;
 
@@ -231,6 +231,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     }
                 }
+                if(skillCoolDown>0) skillCoolDown--;//技能冷却
                 useSkill();//释放复杂的技能
                 energyAdder.reduceEnergy(0);//泄漏能量
                 //itemUse(2);//测试代码,无限分裂小球,快速胜利
@@ -520,6 +521,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
                             ,paddle.getY() - 2 * Ball.getBallRadius()));*/
                     ballNum++;
+                    skillCoolDown = 400;
                     break;
                 case 1://轨道炮
                     skillTypeUsing = 1;
