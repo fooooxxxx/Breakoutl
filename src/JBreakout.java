@@ -154,6 +154,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 }
             }
         });  //添加监听事件
+        updateBrickWidth();
         //定时器
         mainTimer = new Timer();
         mainTimer.schedule(new TimerTask() {
@@ -172,7 +173,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     items.clear();//清空场上所有道具
                 }
                 breakoutComponents.repaint();
-                updateBrickWidth();
+
                 for (Ball ball : balls) {
                     if (ball.moveAndBounce()) {//球的移动,以及对墙碰撞
                         for (Brick brickOne : bricks) {//对砖块撞击判定
@@ -475,6 +476,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                     //砖块需要存活的,可被摧毁的,并且在效果范围内才能生效
                                     brickOne.hpCheck(1);
                                     energyAdder.addEnergy(1);
+                                    score += energyAdder.scoreMultiple * brickOne.getBrickScore();
                                 }
                             }
                             energyAdder.reduceEnergy(110);
