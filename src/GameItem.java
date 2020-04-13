@@ -27,6 +27,7 @@ public class GameItem  implements CollideInterface, ImageObserver {
         int randNum = r.nextInt(100);//随机roll点,决定道具类型
         if(randNum>=80) {
             itemType = 3;//20%概率为加命道具
+            itemImage = new ImageIcon("src/image/add_hp.png").getImage();
         }
         else if(randNum>=40) {
             itemType = 2;
@@ -34,6 +35,7 @@ public class GameItem  implements CollideInterface, ImageObserver {
         }
         else {
             itemType = 1;
+            itemImage = new ImageIcon("src/image/paddle_long.png").getImage();
         }
     }
 
@@ -41,22 +43,9 @@ public class GameItem  implements CollideInterface, ImageObserver {
         Graphics2D g2 = (Graphics2D) g;
         //g2.setColor(Color.RED);
         //g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
-        switch (itemType) {//不同道具样式不一样
-            case 0:
-                g2.setColor(Color.RED);
-                break;
-            case 1:
-                g2.setColor(Color.GREEN);
-                break;
-            case 2:
-                g2.setColor(Color.BLACK);
-                g2.drawImage(itemImage,x,y,this);
-                break;
-            case 3:
-                g2.setColor(Color.BLUE);
-                break;
-        }
-        g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
+
+        g2.drawImage(itemImage,x,y,this);
+        //g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
     }
 
     /**
