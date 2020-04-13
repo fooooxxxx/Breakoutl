@@ -104,7 +104,7 @@ public class BreakoutComponents extends JComponent {
                     }
                     else{//然后绘制轨道炮图片
                         if(JBreakout.skillTimeCounter == 210){//初始化只执行一次
-                            railGunLabel.setBounds(paddle.getCenterX()-40,0,80,810);
+                            railGunLabel.setBounds(paddle.getCenterX()-40,0,80,900-Paddle.PADDLE_Y_OFFSET);
                             railGunLabel.setVisible(true);
                             System.out.println("轨道炮图片加载一次");
                         }
@@ -112,11 +112,9 @@ public class BreakoutComponents extends JComponent {
                             if (JBreakout.skillTimeCounter <= 60) {//结束动画
                                 railGunLabel.setVisible(false);
                             } else//修正位置
-                                railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 810);
+                                railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 900-Paddle.PADDLE_Y_OFFSET);
                         }
-
                     }
-
                     break;
             }
         }
