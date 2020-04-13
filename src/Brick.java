@@ -30,6 +30,7 @@ public class Brick extends JComponent {
             g2.setColor(color);
             g2.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         }
+        ;
     }
 
     /**
@@ -128,6 +129,10 @@ public class Brick extends JComponent {
     public void setColor(Color color) {
         this.color = color;
     }
+
+    public int getCenterX(){ return x+BRICK_WIDTH/2; }
+
+    public int getCenterY(){ return y+BRICK_HEIGHT/2; }
 
     public boolean getDestoryable(){
         return isDestoryable;

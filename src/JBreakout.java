@@ -166,7 +166,7 @@ public class JBreakout extends JFrame implements CastSkill {
 //                    if(balls.size()==0){//当场上无小球时,生成小球
 //                        balls.add(new Ball());
 //                    }
-                    balls.get(0).setSpeed(3,4);//对唯一的ball设置速度
+                    balls.get(0).setSpeed(3,3);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
@@ -177,10 +177,11 @@ public class JBreakout extends JFrame implements CastSkill {
                         for (Brick brickOne : bricks) {//对砖块撞击判定
                             if (brickOne.isAlive()) {//如果brick存在
                                 if (ball.collide(brickOne.getX(), brickOne.getY(), brickOne.getBRICK_WIDTH(), Brick.BRICK_HEIGHT)) {//如果和brick发生碰撞
-                                    if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getX(), brickOne.getY()))//判断方向
+                                    if (judgeCollideDirection(ball, brickOne.brickTan, brickOne.getCenterX(), brickOne.getCenterY()))//判断方向
                                         ball.rebounceX();
                                     else
                                         ball.rebounceY();
+
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
                                         if (brickOne.hpCheck(1) && items.size() < 3) {
@@ -337,7 +338,7 @@ public class JBreakout extends JFrame implements CastSkill {
             //x,y为砖块坐标
             int x = j * BRICK_WIDTH + BRICK_SEP * (j + 1);
             brick.setX(x);
-            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + 30;//加的30为了给血量显示面板留出空间
+            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + 100;//空出上面空间
             brick.setY(y);
             j++;
             if (j == 10) {
@@ -359,6 +360,7 @@ public class JBreakout extends JFrame implements CastSkill {
      */
     public boolean judgeCollideDirection(Ball ball, double setTan, int objX, int objY) {
         double tempTan = (double) (objY - ball.getBallCenterY()) / (objX - ball.getBallCenterX());
+        if(tempTan<=0) tempTan = -tempTan;
         System.out.println("碰撞判定的tan为" + tempTan);
         if (tempTan < setTan) {
             System.out.println("逆转X");
@@ -508,8 +510,9 @@ public class JBreakout extends JFrame implements CastSkill {
             int castFlag;
             switch (sType) {
                 case 0://立刻从挡板中心发射一颗默认速度的小球
-                    balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
-                            ,paddle.getY() - 2 * Ball.getBallRadius()));
+                    balls.add(new Ball(0,0,3,3));
+                    /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
+                            ,paddle.getY() - 2 * Ball.getBallRadius()));*/
                     ballNum++;
                     break;
                 case 1://轨道炮

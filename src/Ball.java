@@ -10,6 +10,15 @@ public class Ball extends JComponent implements CollideInterface {
     //小球初始位置
     private int x = 300;
     private int y = 700;
+
+    public int getVx() {
+        return vx;
+    }
+
+    public int getVy() {
+        return vy;
+    }
+
     //小球在x和y轴上的初始速度
     private int vx = 3;
     private int vy = 4;
@@ -44,7 +53,7 @@ public class Ball extends JComponent implements CollideInterface {
 
     Ball() {
         vx = 3;
-        vy = 3;
+        vy = 4;
     }
 
     public void draw(Graphics g) {
