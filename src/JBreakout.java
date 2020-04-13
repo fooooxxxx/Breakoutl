@@ -187,8 +187,8 @@ public class JBreakout extends JFrame implements CastSkill {
                                     if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
                                         if (brickOne.hpCheck(1) && items.size() < 3) {//如果击碎砖块
                                             breakoutComponents.generateItem(brickOne);
-                                            energyAdder.addEnergy(1);//击碎时增加一点分数能量
-                                            score += energyAdder.scoreMultiple * brickOne.getBrickScore();//加分
+                                            //击碎时增加一点分数能量
+                                            score += energyAdder.addEnergy(1)* brickOne.getBrickScore();//加分
                                             energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
                                             soundPlay(2);//播放击碎音效
                                         } else {//没有击碎砖块
@@ -512,7 +512,7 @@ public class JBreakout extends JFrame implements CastSkill {
 
 
     @Override
-    public int castSkill(int sType) {
+    public int castSkill(int sType) {//此处sType可以和skillTypeUsing不对应,添加技能更加方便
         if(skillCoolDown == 0 ) {
             int castFlag;
             switch (sType) {
