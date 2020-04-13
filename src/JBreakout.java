@@ -182,19 +182,22 @@ public class JBreakout extends JFrame implements CastSkill {
                                     else
                                         ball.rebounceY();
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                                    if (brickOne.hpCheck(1) && items.size() < 3) {
-                                        breakoutComponents.generateItem(brickOne);
-                                        energyAdder.addEnergy(1);//击碎时增加一点分数能量
-                                        score +=energyAdder.scoreMultiple*brickOne.getBrickScore();//加分
-                                        energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
-                                        soundPlay(2);//播放击碎音效
-                                    }
-                                    else {
-                                        energyAdder.addEnergy(1);//击中时增加一点分数能量
+                                    if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
+                                        if (brickOne.hpCheck(1) && items.size() < 3) {
+                                            breakoutComponents.generateItem(brickOne);
+                                            energyAdder.addEnergy(1);//击碎时增加一点分数能量
+                                            score += energyAdder.scoreMultiple * brickOne.getBrickScore();//加分
+                                            energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
+                                            soundPlay(2);//播放击碎音效
+                                        } else {
+                                            energyAdder.addEnergy(1);//击中时增加一点分数能量
+                                            energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
+                                            soundPlay(1);//播放击中音效
+                                        }
+                                        break;
+                                    }else{//碰到不可被摧毁的砖块
                                         energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
-                                        soundPlay(1);//播放击中音效
                                     }
-                                    break;
                                 }
                                 brickOne.setAutoColor();//根据生命值自动设置颜色
                             }
@@ -300,7 +303,7 @@ public class JBreakout extends JFrame implements CastSkill {
         ArrayList<Brick> bricks = new ArrayList<>();
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICKS_PER_ROW; j++) {
-                Brick brick = new Brick();
+                Brick brick = new Brick(true);//都是可被破坏的砖块
                 switch (i + 1) {
                     case 1:
                     case 2:
@@ -408,8 +411,6 @@ public class JBreakout extends JFrame implements CastSkill {
 
     }
 
-
-
     /** 预先对音效进行加载 */
     public void preSound() {
         try {
@@ -464,9 +465,13 @@ public class JBreakout extends JFrame implements CastSkill {
                     if(skillTimeCounter<212) {//延长前期的动画效果
                         if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
                             for(Brick brickOne : bricks){
-                                if(isBrickTrigger(brickOne, paddle.getX(), 0, paddle.getX()+Paddle.PADDLE_WIDTH,paddle.getY()))
+                                if(brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getX(), 0, paddle.getX()+Paddle.PADDLE_WIDTH,paddle.getY())) {
+                                    //砖块需要存活的,可被摧毁的,并且在效果范围内才能生效
                                     brickOne.hpCheck(1);
+                                    energyAdder.addEnergy(1);
+                                }
                             }
+                            energyAdder.reduceEnergy(110);
                         }
                     }
                     break;
@@ -523,7 +528,7 @@ public class JBreakout extends JFrame implements CastSkill {
 
     boolean winCheck(){
         for(Brick brickOne : bricks){
-            if(brickOne.isAlive()) return false;
+            if(brickOne.isAlive() && brickOne.getDestoryable()) return false;
         }
         return true;
     }

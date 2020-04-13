@@ -17,6 +17,7 @@ public class Brick extends JComponent {
     /** 消除该brick获得的分数 */
     private int brickScore = 1;
 
+    private boolean isDestoryable;//是否可以被破坏,不可破坏的砖块不计入胜利条件内
     private int x, y;
     private Color color;
 
@@ -51,8 +52,8 @@ public class Brick extends JComponent {
         this.brickScore = brickHP * 2;
     }
 
-    public Brick() {
-
+    public Brick(boolean isDestory) {
+        this.isDestoryable = isDestory;
     }
 
     /** 计算并更新brickTan中心到各顶点的tan值 */
@@ -126,5 +127,9 @@ public class Brick extends JComponent {
 
     public void setColor(Color color) {
         this.color = color;
+    }
+
+    public boolean getDestoryable(){
+        return isDestoryable;
     }
 }
