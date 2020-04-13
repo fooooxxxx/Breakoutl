@@ -20,6 +20,7 @@ public class BreakoutComponents extends JComponent {
     Font showFont;//显示游戏信息的字体
     //技能特效相关
     JLabel railGunLabel;
+    Image backgroundImage;
 
     BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items,EnergyAdder energyAdder) {
         this.paddle = paddle;
@@ -44,6 +45,8 @@ public class BreakoutComponents extends JComponent {
         for(Skill skillOne :energyAdder.skillLabelList)
             add(skillOne);
         random = new Random();
+
+        backgroundImage = new ImageIcon("src/image/backgroundImage.png").getImage();
     }
 
     /**
@@ -68,6 +71,8 @@ public class BreakoutComponents extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
+        g.drawImage(backgroundImage,0,0,this);//绘制背景图片
+        drawSkill(g);
         paddle.draw(g);
         for (Ball ball : balls) {
             ball.draw(g);
@@ -79,7 +84,7 @@ public class BreakoutComponents extends JComponent {
             item.draw(g);
         }
         energyAdder.draw(g);
-        drawSkill(g);
+
     }
 
     /**绘制一些复杂的技能效果*/

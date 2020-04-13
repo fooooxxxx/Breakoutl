@@ -52,6 +52,8 @@ public class JBreakout extends JFrame implements CastSkill {
 
     //字体变量
     Font ggFont = new Font("黑体", Font.BOLD, 18);
+    //字体颜色
+    Color fontColor;
 
     public JBreakout() {
         //设置窗体大小
@@ -67,8 +69,9 @@ public class JBreakout extends JFrame implements CastSkill {
 
         //初始化组件
         mainMenu = new MainMenu(this);//主菜单JPanel
-
+        fontColor = new Color(232,92,17);
         //添加组件
+
         mainMenu.setVisible(true);
         add(mainMenu);
 
@@ -238,6 +241,7 @@ public class JBreakout extends JFrame implements CastSkill {
     public void gameOver(int result) {//弹出结束画面,并且记录分数
         mainTimer.cancel();//关闭定时器,游戏结束
         JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
+        ggLabel.setForeground(fontColor);
         JButton backBtn = new JButton("返回主菜单");
         ggLabel.setBounds(180, 350, 300, 100);
         ggLabel.setFont(ggFont);

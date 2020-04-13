@@ -52,12 +52,15 @@ public class EnergyAdder {
     CastSkill castSkillInterface;//技能释放的回调接口
     //技能描述相关
     JLabel skillDescriptionLabel;
+    Color fontColor;
 
 
     EnergyAdder(CastSkill castSkillInterface) {
         this.castSkillInterface = castSkillInterface;
+        fontColor = new Color(232,92,17);
         skillDescriptionLabel = new JLabel("<html>上下键切换技能,空格键使用技能</html>");
         skillDescriptionLabel.setBounds(skillStartX+280,skillY-20,220,60);
+        skillDescriptionLabel.setForeground(fontColor);
         scoreFont = new Font("Agency FB", Font.BOLD, 66);
         skillLabelList = new ArrayList<>();
         scoreMultipleLabel = new JLabel("1");
@@ -88,8 +91,8 @@ public class EnergyAdder {
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.BLACK);
         /* 分数加成器绘制 */
+        g2.setColor(new Color(208,252,239));
         g2.drawPolygon(xBorderList, yBorderList, 14);//绘制加成器外轮廓
         g2.setColor(autoSelectColor());
         int tempFillFlag = calculateFillPoint();
@@ -100,7 +103,7 @@ public class EnergyAdder {
             }
         }
         /* 技能面板槽绘制 */
-        g2.setColor(Color.BLACK);
+        g2.setColor(fontColor);
         g2.drawRoundRect(sEnergyX,sEnergyY,sEnergyWidth,sEnergyHeight,8,15);//技能外轮廓能量槽绘制
         g2.setColor(Color.CYAN);
         //绘制内填充的能量槽
