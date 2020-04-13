@@ -46,8 +46,10 @@ public class BreakoutComponents extends JComponent {
             add(skillOne);
         random = new Random();
         railGunLabel = new JLabel(new ImageIcon("src/image/railGunFire.gif"));
-
+        //技能特效相关
         backgroundImage = new ImageIcon("src/image/backgroundImage.png").getImage();
+        railGunLabel.setVisible(false);
+        add(railGunLabel);
     }
 
     /**
@@ -103,13 +105,12 @@ public class BreakoutComponents extends JComponent {
                     else{//然后绘制轨道炮图片
                         if(JBreakout.skillTimeCounter == 210){//初始化只执行一次
                             railGunLabel.setBounds(paddle.getCenterX()-40,0,80,810);
-                            add(railGunLabel);
+                            railGunLabel.setVisible(true);
                             System.out.println("轨道炮图片加载一次");
                         }
                         else {
                             if (JBreakout.skillTimeCounter <= 60) {//结束动画
                                 railGunLabel.setVisible(false);
-                                remove(railGunLabel);
                             } else//修正位置
                                 railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 810);
                         }

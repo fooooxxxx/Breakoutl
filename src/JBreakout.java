@@ -46,9 +46,10 @@ public class JBreakout extends JFrame implements CastSkill {
     static int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
     static int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
 
-
     static boolean isBallLaunching;//球是否已经发射
     static boolean isGameStart = false;//游戏是否开始
+    /**距离下一次小球启动自动锁定倒计时*/
+    int autoLockBrickCountDown;
 
     //字体变量
     Font ggFont = new Font("黑体", Font.BOLD, 18);
@@ -82,7 +83,7 @@ public class JBreakout extends JFrame implements CastSkill {
     /** 开始游戏,设置监听,并且启用监听 */
     public void startGame() {
         mainMenu.setVisible(false);
-
+        autoLockBrickCountDown = 5;
         ballNum = 1;
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
@@ -181,20 +182,20 @@ public class JBreakout extends JFrame implements CastSkill {
                                         ball.rebounceX();
                                     else
                                         ball.rebounceY();
-
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
-                                        if (brickOne.hpCheck(1) && items.size() < 3) {
+                                        if (brickOne.hpCheck(1) && items.size() < 3) {//如果击碎砖块
                                             breakoutComponents.generateItem(brickOne);
                                             energyAdder.addEnergy(1);//击碎时增加一点分数能量
                                             score += energyAdder.scoreMultiple * brickOne.getBrickScore();//加分
                                             energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
                                             soundPlay(2);//播放击碎音效
-                                        } else {
+                                        } else {//没有击碎砖块
                                             energyAdder.addEnergy(1);//击中时增加一点分数能量
                                             energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
                                             soundPlay(1);//播放击中音效
                                         }
+                                        resetAutoLockBrick();//命中砖块,重置自动锁定装置
                                         break;
                                     }else{//碰到不可被摧毁的砖块
                                         energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
@@ -203,9 +204,10 @@ public class JBreakout extends JFrame implements CastSkill {
                                 brickOne.setAutoColor();//根据生命值自动设置颜色
                             }
                         }
-                        if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {
+                        if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {//判断是否与paddle
                             ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
                             ball.rebounceY();
+                            if(isBallLaunching) autoLockBrick(ball);//小球长时间没击中砖块时,将锁定一个砖块
                         }
                     } else {//如果小球到底部且不是唯一的小球,则对小球进行移除
                         balls.remove(ball);
@@ -255,6 +257,8 @@ public class JBreakout extends JFrame implements CastSkill {
         if (result == 0) {//游戏胜利的提示
             ggLabel.setText("游戏胜利!你的分数为 " + score);
         }
+        skillTimeCounter = 0;
+        skillTypeUsing = -1;
         breakoutComponents.add(backBtn);
         breakoutComponents.add(ggLabel);
         backBtn.addActionListener(e -> {
@@ -338,7 +342,7 @@ public class JBreakout extends JFrame implements CastSkill {
             //x,y为砖块坐标
             int x = j * BRICK_WIDTH + BRICK_SEP * (j + 1);
             brick.setX(x);
-            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + 100;//空出上面空间
+            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + 20;//空出上面空间
             brick.setY(y);
             j++;
             if (j == 10) {
@@ -528,6 +532,28 @@ public class JBreakout extends JFrame implements CastSkill {
         }
         return 0;
     }
+
+    /**长期没有小球击中砖块时,让小球改变速度,向一个尚存在的砖块飞行*/
+    boolean autoLockBrick(Ball ball){
+        if(--autoLockBrickCountDown <= 0){
+            for(Brick brickOne : bricks){
+                if(brickOne.isAlive() && brickOne.getDestoryable()){//瞄准存活的而且可破坏的砖块
+                    ball.setSpeed((int) Math.round((1.0*ball.getBallCenterX()-brickOne.getCenterX())/(ball.getBallCenterY()-brickOne.getCenterY())*ball.getVy()),
+                            ball.getVy());
+                    resetAutoLockBrick();//重设倒计时
+                    System.out.println("自动锁定启动");
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**重置自动小球锁定砖块系统的倒计时*/
+    void resetAutoLockBrick(){
+        autoLockBrickCountDown = 5;
+    }
+
 
     boolean winCheck(){
         for(Brick brickOne : bricks){
