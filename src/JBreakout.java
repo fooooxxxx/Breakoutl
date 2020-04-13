@@ -542,8 +542,9 @@ public class JBreakout extends JFrame implements CastSkill {
         if(--autoLockBrickCountDown <= 0){
             for(Brick brickOne : bricks){
                 if(brickOne.isAlive() && brickOne.getDestoryable()){//瞄准存活的而且可破坏的砖块
-                    ball.setSpeed((int) Math.round((1.0*ball.getBallCenterX()-brickOne.getCenterX())/(ball.getBallCenterY()-brickOne.getCenterY())*ball.getVy()),
-                            ball.getVy());
+                    ball.setSpeed((int) Math.round((1.0*ball.getBallCenterX()-brickOne.getCenterX())/(ball.getBallCenterY()-brickOne.getCenterY())
+                                    *(ball.getVy()-2))
+                            , ball.getVy()-2);
                     resetAutoLockBrick();//重设倒计时
                     System.out.println("自动锁定启动");
                     return true;

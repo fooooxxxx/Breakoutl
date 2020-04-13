@@ -1,12 +1,13 @@
 import javax.swing.*;
 import java.awt.*;
+import java.awt.image.ImageObserver;
 
 /**
  * Ball类
  */
-public class Ball extends JComponent implements CollideInterface {
+public class Ball implements CollideInterface {
     //小球半径
-    private static final int BALL_RADIUS = 6;
+    private static final int BALL_RADIUS = 7;
     //小球初始位置
     private int x = 300;
     private int y = 700;
@@ -24,6 +25,9 @@ public class Ball extends JComponent implements CollideInterface {
     private int vy = 4;
 
     private int ballDamage = 1;//小球撞击砖块时伤害,默认为1
+
+    private Image ballImage1;//伤害为1的小球图片
+    private Image ballImage2;//伤害为2的小球图片
 
     /**
      * 有参ball构造函数,可以指定小球速度和坐标
@@ -47,6 +51,7 @@ public class Ball extends JComponent implements CollideInterface {
      * @param y 小球Y轴坐标
      */
     Ball(int x, int y) {
+        super();
         this.x = x;
         this.y = y;
         System.out.println("新增小球vx为" + vx + "-vy为" + vy);
@@ -56,12 +61,18 @@ public class Ball extends JComponent implements CollideInterface {
     Ball() {
         vx = 3;
         vy = 4;
+        ballImage1 = new ImageIcon("src/image/ball1.png").getImage();
+        ballImage1 = new ImageIcon("src/image/ball2.png").getImage();
     }
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         //绘制小球
         g2.drawOval(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2);
+        /*if(ballDamage == 1)
+            g2.drawImage(ballImage1,x, y, (ImageObserver) this);
+        else
+            g2.drawImage(ballImage2,x, y, (ImageObserver) this);*/
     }
 
     /**
@@ -163,12 +174,10 @@ public class Ball extends JComponent implements CollideInterface {
         return BALL_RADIUS;
     }
 
-    @Override
     public int getX() {
         return x;
     }
 
-    @Override
     public int getY() {
         return y;
     }
