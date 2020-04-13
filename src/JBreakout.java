@@ -185,7 +185,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                         ball.rebounceY();
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
-                                        if (brickOne.hpCheck(1) && items.size() < 3) {//如果击碎砖块
+                                        if (brickOne.hpCheck(ball.getBallDamage()) && items.size() < 3) {//如果击碎砖块
                                             breakoutComponents.generateItem(brickOne);
                                             //击碎时增加一点分数能量
                                             score += energyAdder.addEnergy(1)* brickOne.getBrickScore();//加分

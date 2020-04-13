@@ -23,11 +23,13 @@ public class Ball extends JComponent implements CollideInterface {
     private int vx = 3;
     private int vy = 4;
 
+    private int ballDamage = 1;//小球撞击砖块时伤害,默认为1
+
     /**
      * 有参ball构造函数,可以指定小球速度和坐标
      *
-     * @param x 小球X轴坐标
-     * @param y 小球Y轴坐标
+     * @param x  小球X轴坐标
+     * @param y  小球Y轴坐标
      * @param vx x轴小球速度
      * @param vy y轴小球速度
      */
@@ -169,5 +171,14 @@ public class Ball extends JComponent implements CollideInterface {
     @Override
     public int getY() {
         return y;
+    }
+
+    /** 设置小球伤害 */
+    public void setBallDamage(int ballDamage) {
+        this.ballDamage = ballDamage;
+    }
+
+    public int getBallDamage(){
+        return ballDamage;
     }
 }
