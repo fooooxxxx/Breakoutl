@@ -1,5 +1,7 @@
 import javax.swing.*;
 import java.awt.*;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
@@ -16,6 +18,8 @@ public class BreakoutComponents extends JComponent {
     Random random;//随机数生成器
     final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
     Font showFont;//显示游戏信息的字体
+    //技能特效相关
+    JLabel railGunLabel;
 
     BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items,EnergyAdder energyAdder) {
         this.paddle = paddle;
@@ -91,6 +95,18 @@ public class BreakoutComponents extends JComponent {
                         g2.drawLine(paddle.getCenterX()+leftX,0,paddle.getCenterX()+leftX,paddle.getY()-1);
                     }
                     else{//然后绘制轨道炮图片
+                        if(JBreakout.skillTimeCounter == 210){//初始化只执行一次
+                                railGunLabel = new JLabel(new ImageIcon("src/image/railGunFire.gif"));
+                                railGunLabel.setBounds(paddle.getCenterX()-40,0,80,810);
+                                add(railGunLabel);
+                        }
+                        else {
+                            if (JBreakout.skillTimeCounter <= 2) {//结束动画
+                                railGunLabel.setVisible(false);
+                                remove(railGunLabel);
+                            } else//修正位置
+                                railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 810);
+                        }
 
                     }
 
