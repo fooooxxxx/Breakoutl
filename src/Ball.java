@@ -62,8 +62,8 @@ public class Ball implements CollideInterface,ImageObserver{
     Ball() {
         vx = 3;
         vy = 4;
-        ballImage1 = new ImageIcon("src/image/ball1.png").getImage();
-        ballImage2 = new ImageIcon("src/image/ball2.png").getImage();
+        ballImage1 = new ImageIcon("src/image/ball_8_blue.png").getImage();
+        ballImage2 = new ImageIcon("src/image/ball_8_red.png").getImage();
     }
 
     public void draw(Graphics g) {
