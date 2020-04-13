@@ -80,6 +80,7 @@ public class JBreakout extends JFrame implements CastSkill {
     public void startGame() {
         mainMenu.setVisible(false);
 
+        ballNum = 1;
         healthPoint = 3;//初始血量为3
         score = 0;//清空分数
         skillTypeUsing = -1;
@@ -222,7 +223,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 }
                 useSkill();//释放复杂的技能
                 energyAdder.reduceEnergy(0);//泄漏能量
-                itemUse(2);//测试代码,无限分裂小球,快速胜利
+                //itemUse(2);//测试代码,无限分裂小球,快速胜利
                 breakoutComponents.updateHpAndScore(healthPoint, score);//更新数据面板数据
             }
         }, 0, 14);
