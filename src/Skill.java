@@ -13,7 +13,7 @@ public class Skill extends JLabel {
     int skillCenterX;//所需能量在技能能量槽X轴坐标,同时也是图片的对称线X轴坐标
     private final int imageSize = 25;//技能图片宽高为25
     int needEnergy;//所需技能能量值
-    private String skillName;
+    private final String skillName;
     String skillDescription = "技能描述";//技能效果描述
     private final int arrowHalfWidth = 4;
     private final int arrowHeight = 10;//箭头高度

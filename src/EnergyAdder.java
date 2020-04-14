@@ -79,8 +79,11 @@ public class EnergyAdder {
         //添加技能
         skillLabelList.add(new Skill(new ImageIcon("src/image/ballPlus2.jpg"),20,
                 "额外加码","立刻从挡板上发射一颗小球"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/at_field_image.png"),220,
+                "AT力场","在底部展开力场,使小球无法触底"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/railGun.jpg"),350,
                 "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成伤害"));
+
 
         //添加技能描述
 
