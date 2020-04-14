@@ -45,9 +45,10 @@ public class BreakoutComponents extends JComponent {
         for(Skill skillOne :energyAdder.skillLabelList)
             add(skillOne);
         random = new Random();
-        railGunLabel = new JLabel(new ImageIcon("src/image/railGunFire.gif"));
-        //技能特效相关
         backgroundImage = new ImageIcon("src/image/backgroundImage.png").getImage();
+
+        //技能特效相关
+        railGunLabel = new JLabel(new ImageIcon("src/image/skill/rail_gun_fire.gif"));
         railGunLabel.setVisible(false);
         add(railGunLabel);
     }

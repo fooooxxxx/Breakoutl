@@ -193,7 +193,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                             if(items.size()<3) breakoutComponents.generateItem(brickOne);
                                             //击碎时增加一点分数能量
                                             score += energyAdder.addEnergy(1)* brickOne.getBrickScore();//加分
-                                            energyAdder.reduceEnergy(200);//能量短时间内不再泄漏
+                                            energyAdder.reduceEnergy(220);//能量短时间内不再泄漏
                                             soundPlay(2);//播放击碎音效
                                         } else {//没有击碎砖块
                                             energyAdder.addEnergy(1);//击中时增加一点分数能量
@@ -492,6 +492,13 @@ public class JBreakout extends JFrame implements CastSkill {
                     break;
                 case 2://AT力场
                     break;
+                case 3://双倍伤害
+                    if(skillTimeCounter <=1){//减少伤害
+                        for(Ball ballOne: balls) ballOne.setBallDamage(1);
+                    }
+                    else if(skillTimeCounter <=539)//增加伤害
+                        for(Ball ballOne:balls) ballOne.setBallDamage(2);
+                    break;
 
             }
         }
@@ -519,7 +526,6 @@ public class JBreakout extends JFrame implements CastSkill {
         return x>x1 && x<x2 && y>y1 && y<y2;
     }
 
-
     @Override
     public int castSkill(int sType) {//此处sType可以和skillTypeUsing不对应,添加技能更加方便
         if(skillCoolDown == 0 ) {
@@ -532,13 +538,18 @@ public class JBreakout extends JFrame implements CastSkill {
                     ballNum++;
                     skillCoolDown = 350;
                     break;
-                case 1://AT力场
-                    skillTypeUsing = 2;
-                    skillTimeCounter = 520;
-                    skillCoolDown = 0;
+                case 1://双倍伤害
+                    skillTypeUsing = 3;
+                    skillTimeCounter = 600;//大约8.4秒
+                    skillCoolDown = 10;
+                    break;
+                case 2://AT力场
+                    /*skillTypeUsing = 2;
+                    skillTimeCounter = 520;*/
+                    skillCoolDown = 10;
                     paddle.updatePaddleWidth(599,6000,true);
                     break;
-                case 2://轨道炮
+                case 3://轨道炮
                     skillTypeUsing = 1;
                     skillTimeCounter = 320;
                     soundPlay(4);
