@@ -502,7 +502,6 @@ public class JBreakout extends JFrame implements CastSkill {
                     }
                     break;
                 case 2://AT力场
-
                     break;
                 case 3://双倍伤害
                     if (skillTimeCounter <= 1) {//伤害变为1
