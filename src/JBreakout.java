@@ -465,8 +465,10 @@ public class JBreakout extends JFrame implements CastSkill {
                             break;
                         case 4://轨道炮音效
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/rail_gun_sound.wav")));
+                            break;
                         case 5://双倍伤害
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit2.wav")));
+                            break;
                     }
                     clip.start();
                 } catch (Exception e) {
