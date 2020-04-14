@@ -116,6 +116,8 @@ public class BreakoutComponents extends JComponent {
                         }
                     }
                     break;
+                case 2:
+                    break;
             }
         }
     }

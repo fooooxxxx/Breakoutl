@@ -129,7 +129,6 @@ public class JBreakout extends JFrame implements CastSkill {
                             else if(tempResult==2){
                                 System.out.println("技能在CD当中");
                             }
-
                         }
                         break;
                     case KeyEvent.VK_P://暂停按钮
@@ -397,7 +396,7 @@ public class JBreakout extends JFrame implements CastSkill {
         switch (itemType) {
             case 1:
                 breakoutComponents.updateItemMessage("挡板长度增加了!");
-                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000);
+                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000,false);
                 break;
             case 2:
                 ballSplit(2);//分裂出两个小球
@@ -480,7 +479,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     if(skillTimeCounter<212) {//延长前期的动画效果
                         if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
                             for(Brick brickOne : bricks){
-                                if(brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getX(), 0, paddle.getX()+Paddle.PADDLE_WIDTH,paddle.getY())) {
+                                if(brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getCenterX()-40, 0, paddle.getCenterX()+40,paddle.getY())) {
                                     //砖块需要存活的,可被摧毁的,并且在效果范围内才能生效
                                     brickOne.hpCheck(1);
                                     energyAdder.addEnergy(1);
@@ -491,6 +490,9 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     }
                     break;
+                case 2://AT力场
+                    break;
+
             }
         }
     }
@@ -528,13 +530,20 @@ public class JBreakout extends JFrame implements CastSkill {
                     /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
                             ,paddle.getY() - 2 * Ball.getBallRadius()));*/
                     ballNum++;
-                    skillCoolDown = 400;
+                    skillCoolDown = 350;
                     break;
-                case 1://轨道炮
+                case 1://AT力场
+                    skillTypeUsing = 2;
+                    skillTimeCounter = 520;
+                    skillCoolDown = 0;
+                    paddle.updatePaddleWidth(599,6000,true);
+                    break;
+                case 2://轨道炮
                     skillTypeUsing = 1;
                     skillTimeCounter = 320;
                     soundPlay(4);
                     break;
+
             }
             System.out.println("释放<"+sType+">号技能");
         }

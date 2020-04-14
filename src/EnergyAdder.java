@@ -301,14 +301,14 @@ public class EnergyAdder {
     /** 使用技能
      * return 返回0时表示技能释放成功;1表示技能能量不足,释放失败,返回2说明技能还在冷却*/
     int useSkill(){
-        int result = 1;
+        int result;
         if(skillLabelList.get(skillSelect).checkCastEnergy()){
             result = castSkillInterface.castSkill(skillSelect);//释放选中技能
             if(result == 0)
                 skillEnergy -= skillLabelList.get(skillSelect).needEnergy;
         }
         else
-            result = 2;
+            result = 1;
         return result;
     }
 
