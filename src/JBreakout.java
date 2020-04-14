@@ -122,9 +122,14 @@ public class JBreakout extends JFrame implements CastSkill {
                         if (!isBallLaunching)//如果不处于发射状态,则进行发射
                             launchBall();
                         else {//否则释放技能
-                            if(energyAdder.useSkill()==1){
+                            int tempResult = energyAdder.useSkill();
+                            if(tempResult==1){
                                 System.out.println("能量不足,技能释放失败");
                             }
+                            else if(tempResult==2){
+                                System.out.println("技能在CD当中");
+                            }
+
                         }
                         break;
                     case KeyEvent.VK_P://暂停按钮

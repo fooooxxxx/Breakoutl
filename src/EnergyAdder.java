@@ -304,6 +304,8 @@ public class EnergyAdder {
             if(result == 0)
                 skillEnergy -= skillLabelList.get(skillSelect).needEnergy;
         }
+        else
+            result = 2;
         return result;
     }
 
