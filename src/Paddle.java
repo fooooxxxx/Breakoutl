@@ -163,9 +163,8 @@ public class Paddle extends JComponent {
             }
             PADDLE_WIDTH = width;
             paddleItemWidthFlag = isATField?2:1;
+            if(isATField) x = 0;
         }
-
-
     }
 
     @Override
