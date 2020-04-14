@@ -48,7 +48,7 @@ public class JBreakout extends JFrame implements CastSkill {
 
     static boolean isBallLaunching;//球是否已经发射
     //static boolean isGameStart = false;//游戏是否开始
-    /**距离下一次小球启动自动锁定倒计时*/
+    /** 距离下一次小球启动自动锁定倒计时 */
     int autoLockBrickCountDown;
 
     //字体变量
@@ -70,7 +70,7 @@ public class JBreakout extends JFrame implements CastSkill {
 
         //初始化组件
         mainMenu = new MainMenu(this);//主菜单JPanel
-        fontColor = new Color(232,92,17);
+        fontColor = new Color(232, 92, 17);
         //添加组件
 
         mainMenu.setVisible(true);
@@ -97,14 +97,15 @@ public class JBreakout extends JFrame implements CastSkill {
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
-        breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items,energyAdder);
+        breakoutComponents = new BreakoutComponents(paddle, balls, bricks, items, energyAdder);
         add(breakoutComponents);
 
         breakoutComponents.setVisible(true);
         breakoutComponents.requestFocus();//强制获取焦点
         breakoutComponents.addKeyListener(new KeyListener() {
             @Override
-            public void keyTyped(KeyEvent e) { }
+            public void keyTyped(KeyEvent e) {
+            }
 
             @Override
             public void keyPressed(KeyEvent e) {
@@ -123,10 +124,9 @@ public class JBreakout extends JFrame implements CastSkill {
                             launchBall();
                         else {//否则释放技能
                             int tempResult = energyAdder.useSkill();
-                            if(tempResult==1){
+                            if (tempResult == 1) {
                                 System.out.println("能量不足,技能释放失败");
-                            }
-                            else if(tempResult==2){
+                            } else if (tempResult == 2) {
                                 System.out.println("技能在CD当中");
                             }
                         }
@@ -172,7 +172,7 @@ public class JBreakout extends JFrame implements CastSkill {
 //                    if(balls.size()==0){//当场上无小球时,生成小球
 //                        balls.add(new Ball());
 //                    }
-                    balls.get(0).setSpeed(3,3);//对唯一的ball设置速度
+                    balls.get(0).setSpeed(3, 3);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
@@ -188,11 +188,11 @@ public class JBreakout extends JFrame implements CastSkill {
                                     else
                                         ball.rebounceY();
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                                    if(brickOne.getDestoryable()) {//碰到可被摧毁的砖块
+                                    if (brickOne.getDestoryable()) {//碰到可被摧毁的砖块
                                         if (brickOne.hpCheck(ball.getBallDamage())) {//如果击碎砖块
-                                            if(items.size()<3) breakoutComponents.generateItem(brickOne);
+                                            if (items.size() < 3) breakoutComponents.generateItem(brickOne);
                                             //击碎时增加一点分数能量
-                                            score += energyAdder.addEnergy(1)* brickOne.getBrickScore();//加分
+                                            score += energyAdder.addEnergy(1) * brickOne.getBrickScore();//加分
                                             energyAdder.reduceEnergy(220);//能量短时间内不再泄漏
                                             soundPlay(2);//播放击碎音效
                                         } else {//没有击碎砖块
@@ -200,10 +200,10 @@ public class JBreakout extends JFrame implements CastSkill {
                                             energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
                                             soundPlay(1);//播放击中音效
                                         }
-                                        if(skillTypeUsing == 3 ) soundPlay(5);//如果处于双倍伤害状态,播放不同的音效
+                                        if (skillTypeUsing == 3) soundPlay(5);//如果处于双倍伤害状态,播放不同的音效
                                         resetAutoLockBrick();//命中砖块,重置自动锁定装置
                                         break;
-                                    }else{//碰到不可被摧毁的砖块
+                                    } else {//碰到不可被摧毁的砖块
                                         energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
                                     }
                                 }
@@ -213,7 +213,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         if (ball.collide(paddle.getX(), paddle.getY(), Paddle.getPaddleWidth(), Paddle.getPaddleHeight())) {//判断是否与paddle
                             ball.setY(ball.getY() - 5);//防止ball与paddle进行多次碰撞
                             ball.rebounceY();
-                            if(isBallLaunching) autoLockBrick(ball);//小球长时间没击中砖块时,将锁定一个砖块
+                            if (isBallLaunching) autoLockBrick(ball);//小球长时间没击中砖块时,将锁定一个砖块
                         }
                     } else {//如果小球到底部且不是唯一的小球,则对小球进行移除
                         balls.remove(ball);
@@ -236,7 +236,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     }
                 }
-                if(skillCoolDown>0) skillCoolDown--;//技能冷却
+                if (skillCoolDown > 0) skillCoolDown--;//技能冷却
                 useSkill();//释放复杂的技能
                 energyAdder.reduceEnergy(0);//泄漏能量
                 //itemUse(2);//测试代码,无限分裂小球,快速胜利
@@ -371,7 +371,7 @@ public class JBreakout extends JFrame implements CastSkill {
      */
     public boolean judgeCollideDirection(Ball ball, double setTan, int objX, int objY) {
         double tempTan = (double) (objY - ball.getBallCenterY()) / (objX - ball.getBallCenterX());
-        if(tempTan<=0) tempTan = -tempTan;
+        if (tempTan <= 0) tempTan = -tempTan;
         System.out.println("碰撞判定的tan为" + tempTan);
         if (tempTan < setTan) {
             System.out.println("逆转X");
@@ -397,7 +397,7 @@ public class JBreakout extends JFrame implements CastSkill {
         switch (itemType) {
             case 1:
                 breakoutComponents.updateItemMessage("挡板长度增加了!");
-                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000,false);
+                paddle.updatePaddleWidth(2 * Paddle.oldWidth, 10000, false);
                 break;
             case 2:
                 ballSplit(2);//分裂出两个小球
@@ -411,15 +411,18 @@ public class JBreakout extends JFrame implements CastSkill {
         }
     }
 
-    /** 小球分裂函数
-     * @param ballSplitNum 小球分裂数量*/
+    /**
+     * 小球分裂函数
+     *
+     * @param ballSplitNum 小球分裂数量
+     */
     public void ballSplit(int ballSplitNum) {
         Random randBall = new Random();
         Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
-        for(int i = 0;i < ballSplitNum;i++){
+        for (int i = 0; i < ballSplitNum; i++) {
             balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
-            ballNum+=1;//小球数量+1
+            ballNum += 1;//小球数量+1
         }
 
     }
@@ -435,15 +438,18 @@ public class JBreakout extends JFrame implements CastSkill {
         }
     }
 
-    /** 各种音效的播放
-     * @param soundType 音效类型,1为击中音效,2为击碎音效,3为获得道具音效 */
+    /**
+     * 各种音效的播放
+     *
+     * @param soundType 音效类型,1为击中音效,2为击碎音效,3为获得道具音效
+     */
     public void soundPlay(int soundType) {
         new Thread(new Runnable() {
             @Override
             public void run() {
                 try {
                     Clip clip = AudioSystem.getClip();
-                    switch(soundType) {
+                    switch (soundType) {
                         case 1://普通伤害
                             System.out.println("播放hit音效");
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
@@ -472,17 +478,17 @@ public class JBreakout extends JFrame implements CastSkill {
     }
 
     //使用复杂技能
-    void useSkill(){
-        if(skillTypeUsing!=-1) {//如果有在生效的技能
+    void useSkill() {
+        if (skillTypeUsing != -1) {//如果有在生效的技能
             if (--skillTimeCounter <= 0) {//倒计时为0时,结束释放
                 skillTypeUsing = -1;
             }
             switch (skillTypeUsing) {
                 case 1://轨道炮
-                    if(skillTimeCounter<212) {//延长前期的动画效果
+                    if (skillTimeCounter < 212) {//延长前期的动画效果
                         if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
-                            for(Brick brickOne : bricks){
-                                if(brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getCenterX()-40, 0, paddle.getCenterX()+40,paddle.getY())) {
+                            for (Brick brickOne : bricks) {
+                                if (brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getCenterX() - 40, 0, paddle.getCenterX() + 40, paddle.getY())) {
                                     //砖块需要存活的,可被摧毁的,并且在效果范围内才能生效
                                     brickOne.hpCheck(1);
                                     energyAdder.addEnergy(1);
@@ -497,46 +503,47 @@ public class JBreakout extends JFrame implements CastSkill {
 
                     break;
                 case 3://双倍伤害
-                    if(skillTimeCounter <=1){//伤害变为1
-                        for(Ball ballOne: balls) ballOne.setBallDamage(1);
-                    }
-                    else if(skillTimeCounter <=600)//增加伤害
-                        for(Ball ballOne:balls) ballOne.setBallDamage(2);
+                    if (skillTimeCounter <= 1) {//伤害变为1
+                        for (Ball ballOne : balls) ballOne.setBallDamage(1);
+                    } else if (skillTimeCounter <= 600)//增加伤害
+                        for (Ball ballOne : balls) ballOne.setBallDamage(2);
                     break;
 
             }
         }
     }
 
-    /** 判断该砖块是否在效果范围内
+    /**
+     * 判断该砖块是否在效果范围内
+     *
      * @param x1 左上角点的X轴坐标
      * @param y1 左上角点的Y轴坐标
      * @param x2 右下角点的X轴坐标
      * @param y2 右下角点的Y轴坐标
-     * @return 如果在,返回true,否则返回false*/
-    boolean isBrickTrigger(Brick brick,int x1,int y1,int x2,int y2){
+     * @return 如果在, 返回true, 否则返回false
+     */
+    boolean isBrickTrigger(Brick brick, int x1, int y1, int x2, int y2) {
         int x = brick.getX();
         int y = brick.getY();
         int width = brick.getBRICK_WIDTH();
-        return isPointInRect(x,y,x1,y1,x2,y2)//需要对四个顶点都进行一次判断
-                || isPointInRect(x+width,y,x1,y1,x2,y2)
-                || isPointInRect(x,y+Brick.BRICK_HEIGHT,x1,y1,x2,y2)
-                || isPointInRect(x+width,y+Brick.BRICK_HEIGHT,x1,y1,x2,y2);
-
+        return isPointInRect(x, y, x1, y1, x2, y2)//需要对四个顶点都进行一次判断
+                || isPointInRect(x + width, y, x1, y1, x2, y2)
+                || isPointInRect(x, y + Brick.BRICK_HEIGHT, x1, y1, x2, y2)
+                || isPointInRect(x + width, y + Brick.BRICK_HEIGHT, x1, y1, x2, y2);
     }
 
-    /**判断一个点是否在一个矩形内*/
-    boolean isPointInRect(int x,int y,int x1,int y1,int x2,int y2){
-        return x>x1 && x<x2 && y>y1 && y<y2;
+    /** 判断一个点是否在一个矩形内 */
+    boolean isPointInRect(int x, int y, int x1, int y1, int x2, int y2) {
+        return x > x1 && x < x2 && y > y1 && y < y2;
     }
 
     @Override
     public int castSkill(int sType) {//此处sType可以和skillTypeUsing不对应,添加技能更加方便
-        if(skillCoolDown == 0 ) {
+        if (skillCoolDown == 0) {
             int castFlag;
             switch (sType) {
                 case 0://立刻从挡板中心发射一颗默认速度的小球
-                    balls.add(new Ball(0,0,3,3));
+                    balls.add(new Ball(0, 0, 3, 3));
                     /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
                             ,paddle.getY() - 2 * Ball.getBallRadius()));*/
                     ballNum++;
@@ -551,7 +558,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     skillTypeUsing = 2;
                     skillTimeCounter = 450;
                     skillCoolDown = 10;
-                    paddle.updatePaddleWidth(600,6300,true);
+                    paddle.updatePaddleWidth(600, 6300, true);
                     break;
                 case 3://轨道炮
                     skillTypeUsing = 1;
@@ -559,23 +566,22 @@ public class JBreakout extends JFrame implements CastSkill {
                     soundPlay(4);
                     break;
             }
-            System.out.println("释放<"+sType+">号技能");
-        }
-        else{
+            System.out.println("释放<" + sType + ">号技能");
+        } else {
             System.out.println("释放技能失败,尚在冷却中");
             return 2;
         }
         return 0;
     }
 
-    /**长期没有小球击中砖块时,让小球改变速度,向一个尚存在的砖块飞行*/
-    boolean autoLockBrick(Ball ball){
-        if(--autoLockBrickCountDown <= 0){
-            for(Brick brickOne : bricks){
-                if(brickOne.isAlive() && brickOne.getDestoryable()){//瞄准存活的而且可破坏的砖块
-                    ball.setSpeed((int) Math.round((1.0*ball.getBallCenterX()-brickOne.getCenterX())/(ball.getBallCenterY()-brickOne.getCenterY())
-                                    *(ball.getVy()+2*ball.getSpeedDirection()[1]))
-                            , ball.getVy()+2*ball.getSpeedDirection()[1]);
+    /** 长期没有小球击中砖块时,让小球改变速度,向一个尚存在的砖块飞行 */
+    boolean autoLockBrick(Ball ball) {
+        if (--autoLockBrickCountDown <= 0) {
+            for (Brick brickOne : bricks) {
+                if (brickOne.isAlive() && brickOne.getDestoryable()) {//瞄准存活的而且可破坏的砖块
+                    ball.setSpeed((int) Math.round((1.0 * ball.getBallCenterX() - brickOne.getCenterX()) / (ball.getBallCenterY() - brickOne.getCenterY())
+                                    * (ball.getVy() + 2 * ball.getSpeedDirection()[1]))
+                            , ball.getVy() + 2 * ball.getSpeedDirection()[1]);
                     resetAutoLockBrick();//重设倒计时
                     System.out.println("自动锁定启动");
                     return true;
@@ -585,14 +591,14 @@ public class JBreakout extends JFrame implements CastSkill {
         return false;
     }
 
-    /**重置自动小球锁定砖块系统的倒计时*/
-    void resetAutoLockBrick(){
+    /** 重置自动小球锁定砖块系统的倒计时 */
+    void resetAutoLockBrick() {
         autoLockBrickCountDown = 4;
     }
 
-    boolean winCheck(){
-        for(Brick brickOne : bricks){
-            if(brickOne.isAlive() && brickOne.getDestoryable()) return false;
+    boolean winCheck() {
+        for (Brick brickOne : bricks) {
+            if (brickOne.isAlive() && brickOne.getDestoryable()) return false;
         }
         return true;
     }
