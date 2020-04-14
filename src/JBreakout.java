@@ -24,9 +24,9 @@ public class JBreakout extends JFrame implements CastSkill {
     public static int realHeight = 0;
 
     /** 每层砖块的数量 */
-    private static final int BRICKS_PER_ROW = 10;
+    private static int BRICKS_PER_ROW = 10;
     /** 层数 */
-    private static final int BRICK_ROWS = 10;
+    private static int BRICK_ROWS = 10;
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 2;
     //变量
@@ -188,7 +188,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                     else
                                         ball.rebounceY();
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
-                                    if (brickOne.getDestoryable()) {//碰到可被摧毁的砖块
+                                    if (brickOne.getDestroyable()) {//碰到可被摧毁的砖块
                                         if (brickOne.hpCheck(ball.getBallDamage())) {//如果击碎砖块
                                             if (items.size() < 3) breakoutComponents.generateItem(brickOne);
                                             //击碎时增加一点分数能量
@@ -297,11 +297,39 @@ public class JBreakout extends JFrame implements CastSkill {
     /**
      * 初始化brick.并且有随机生命值
      *
+     * @param isSymmetry 左右是否对称
      * @return 返回初始化完成的bricks
      */
-    private ArrayList<Brick> randInitBricks() {
-        //ArrayList<Brick> bricks = new ArrayList<>();
-
+    private ArrayList<Brick> randInitBricks(boolean isSymmetry) {
+        ArrayList<Brick> bricks = new ArrayList<>();
+        BRICK_ROWS = new Random().nextInt(4)+8;//随机层数
+        int randomCols = BRICKS_PER_ROW;//列数暂时固定
+        Random random = new Random();
+        for(int i = 0; i < BRICK_ROWS;i++){
+            for(int j = 0; j<BRICKS_PER_ROW;j++){
+                int randNum = random.nextInt(10);//随机生成0~9
+                Brick brick = new Brick();
+                switch(randNum) {
+                    case 1:
+                    case 2:
+                    case 7:
+                    case 8:
+                    case 9:
+                        brick.setBrickHP(1);
+                        break;
+                    case 3:
+                    case 4:
+                        brick.setBrickHP(3);
+                        break;
+                    case 5:
+                    case 6:
+                    case 10:
+                        brick.setBrickHP(2);
+                        break;
+                }
+                bricks.add(brick);
+            }
+        }
 
         return bricks;
     }
@@ -490,7 +518,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     if (skillTimeCounter < 212) {//延长前期的动画效果
                         if (skillTimeCounter % 70 == 0) {//每980毫秒造成一次伤害,进行三次
                             for (Brick brickOne : bricks) {
-                                if (brickOne.isAlive() && brickOne.getDestoryable() && isBrickTrigger(brickOne, paddle.getCenterX() - 40, 0, paddle.getCenterX() + 40, paddle.getY())) {
+                                if (brickOne.isAlive() && brickOne.getDestroyable() && isBrickTrigger(brickOne, paddle.getCenterX() - 40, 0, paddle.getCenterX() + 40, paddle.getY())) {
                                     //砖块需要存活的,可被摧毁的,并且在效果范围内才能生效
                                     brickOne.hpCheck(1);
                                     energyAdder.addEnergy(1);
@@ -579,7 +607,7 @@ public class JBreakout extends JFrame implements CastSkill {
     boolean autoLockBrick(Ball ball) {
         if (--autoLockBrickCountDown <= 0) {
             for (Brick brickOne : bricks) {
-                if (brickOne.isAlive() && brickOne.getDestoryable()) {//瞄准存活的而且可破坏的砖块
+                if (brickOne.isAlive() && brickOne.getDestroyable()) {//瞄准存活的而且可破坏的砖块
                     ball.setSpeed((int) Math.round((1.0 * ball.getBallCenterX() - brickOne.getCenterX()) / (ball.getBallCenterY() - brickOne.getCenterY())
                                     * (ball.getVy() + 2 * ball.getSpeedDirection()[1]))
                             , ball.getVy() + 2 * ball.getSpeedDirection()[1]);
@@ -599,7 +627,7 @@ public class JBreakout extends JFrame implements CastSkill {
 
     boolean winCheck() {
         for (Brick brickOne : bricks) {
-            if (brickOne.isAlive() && brickOne.getDestoryable()) return false;
+            if (brickOne.isAlive() && brickOne.getDestroyable()) return false;
         }
         return true;
     }

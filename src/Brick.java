@@ -17,7 +17,9 @@ public class Brick extends JComponent {
     /** 消除该brick获得的分数 */
     private int brickScore = 1;
 
-    private boolean isDestoryable;//是否可以被破坏,不可破坏的砖块不计入胜利条件内
+
+
+    private boolean isDestroyable;//是否可以被破坏,不可破坏的砖块不计入胜利条件内
     private int x, y;
     private Color color;
 
@@ -53,9 +55,12 @@ public class Brick extends JComponent {
         this.brickScore = brickHP * 2;
     }
 
-    public Brick(boolean isDestory) {
-        this.isDestoryable = isDestory;
+    public Brick(boolean isDestroy) {
+        this.isDestroyable = isDestroy;
     }
+
+    /**默认构造函数将生成可破坏的砖块*/
+    public Brick() { this.isDestroyable = true;}
 
     /** 计算并更新brickTan中心到各顶点的tan值 */
     public void countBrickTan() {
@@ -69,7 +74,7 @@ public class Brick extends JComponent {
 
     /** 根据生命值自动设置brick样式 */
     public void setAutoColor() {
-        if (brickHP != 0) {
+        if (brickHP != 0 && isDestroyable) {
             switch (brickHP) {//根据生命值设定颜色
                 case 3:
                     setColor(Color.BLUE);
@@ -81,9 +86,11 @@ public class Brick extends JComponent {
                     setColor(Color.RED);
                     break;
                 default:
-                    setColor(Color.BLACK);
+                    setColor(Color.BLACK);//
             }
         }
+        else
+            setColor(Color.GRAY);//不可破坏砖块为灰色
     }
 
     public int getBrickScore() {
@@ -134,7 +141,11 @@ public class Brick extends JComponent {
 
     public int getCenterY(){ return y+BRICK_HEIGHT/2; }
 
-    public boolean getDestoryable(){
-        return isDestoryable;
+    public boolean getDestroyable(){
+        return isDestroyable;
+    }
+
+    public void setDestroyable(boolean destroyable) {
+        isDestroyable = destroyable;
     }
 }
