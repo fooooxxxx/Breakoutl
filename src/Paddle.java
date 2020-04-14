@@ -28,8 +28,8 @@ public class Paddle extends JComponent {
     //道具效果计时器
     Timer paddleItemTimer;
     TimerTask paddleItemWidthTask;
-    /** 该paddle是否在受width增长道具影响标志,true表示有道具影响,false表示无道具影响 */
-    static boolean paddleItemWidthFlag = false;
+    /** 该paddle是否在受width增长道具或技能的影响标志,0为无影响,1为被道具影响,2为被技能影响 */
+    static int paddleItemWidthFlag = 0;
     /** 按下左移动按钮指示量 */
     int paddleLeftMoveFlag = 0;
     /** 按下右移动按钮指示量 */
@@ -146,21 +146,26 @@ public class Paddle extends JComponent {
      *
      * @param width 被设置的宽度
      * @param time  宽度修改持续时间,单位为毫秒,如果该值为0则为永久修改
+     * @param isATField 是不是来自技能的,普通道具无法影响来自技能的改变宽度效果
      */
-    public void updatePaddleWidth(int width, int time) {
-        if (paddleItemWidthFlag) paddleItemWidthTask.cancel();//paddle如果在受道具影响,则取消TimerTask,以便进行重置道具影响时间
-        if (time > 0) {//如果time大于0,设置让宽度恢复的计时器
-            paddleItemWidthTask = new TimerTask() {
-                @Override
-                public void run() {
-                    PADDLE_WIDTH = oldWidth;
-                    paddleItemWidthFlag = false;
-                }
-            };
+    public void updatePaddleWidth(int width, int time,boolean isATField) {
+        if(paddleItemWidthFlag !=2){//宽度受技能效果影响时,道具无效
+            if(paddleItemWidthFlag ==1) paddleItemWidthTask.cancel();//paddle如果在受道具影响,则取消TimerTask,以便进行重置道具影响时间
+            if (time > 0) {//如果time大于0,设置让宽度恢复的计时器
+                paddleItemWidthTask = new TimerTask() {
+                    @Override
+                    public void run() {
+                        PADDLE_WIDTH = oldWidth;
+                        paddleItemWidthFlag = 0;
+                    }
+                };
+                paddleItemTimer.schedule(paddleItemWidthTask, time);
+            }
+            PADDLE_WIDTH = width;
+            paddleItemWidthFlag = isATField?2:1;
         }
-        paddleItemTimer.schedule(paddleItemWidthTask, time);
-        PADDLE_WIDTH = width;
-        paddleItemWidthFlag = true;
+
+
     }
 
     @Override
