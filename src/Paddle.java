@@ -37,20 +37,23 @@ public class Paddle extends JComponent {
     /** 初始width,记录道具获得之前的PADDLE宽度 */
     static int oldWidth = 0;
 
+    Image atFieldImage;
+
     Paddle() {
         PADDLE_WIDTH = 80;
         paddleMoveTimer = new Timer();
         paddleItemTimer = new Timer();
         oldWidth = PADDLE_WIDTH;//记录初始宽度
         countPaddleTan();
-
+        atFieldImage = new ImageIcon("src/image/skill/at_field_skill.png").getImage();
     }
 
     /** 重写draw函数 */
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         g2.setColor(Color.blue);
-        g2.drawRect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        if(JBreakout.skillTypeUsing == 2) g2.drawImage(atFieldImage,x,y-20,this);//绘制技能
+        else g2.drawRect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
         //System.out.println(getX() + " ---"+getY());
     }
 

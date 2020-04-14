@@ -80,12 +80,11 @@ public class EnergyAdder {
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/ball_plus.jpg"),20,
                 "额外加码","立刻从挡板上发射一颗小球"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/double_damage.png"),90,
-                "额外加码","立刻从挡板上发射一颗小球"));
+                "双倍伤害","小球伤害翻倍"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/at_field.png"),200,
                 "AT力场","在底部展开力场,使小球无法触底"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/rail_gun.jpg"),350,
-                "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成伤害"));
-
+                "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成三次伤害"));
 
         skillNum = skillLabelList.size();//获得技能数量
 

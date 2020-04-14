@@ -200,6 +200,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                             energyAdder.reduceEnergy(130);//能量短时间内不再泄漏
                                             soundPlay(1);//播放击中音效
                                         }
+                                        if(skillTypeUsing == 3 ) soundPlay(5);//如果处于双倍伤害状态,播放不同的音效
                                         resetAutoLockBrick();//命中砖块,重置自动锁定装置
                                         break;
                                     }else{//碰到不可被摧毁的砖块
@@ -427,7 +428,7 @@ public class JBreakout extends JFrame implements CastSkill {
     public void preSound() {
         try {
             Clip clip = AudioSystem.getClip();
-            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/itemGetSound.wav")));
+            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/item_get_sound.wav")));
         } catch (Exception e) {
             e.printStackTrace();
             System.out.println("异常抛出,音乐文件未找到");
@@ -443,7 +444,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 try {
                     Clip clip = AudioSystem.getClip();
                     switch(soundType) {
-                        case 1:
+                        case 1://普通伤害
                             System.out.println("播放hit音效");
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit.wav")));
                             /* https://stackoverflow.com/questions/6045384/playing-mp3-and-wav-in-java */
@@ -454,10 +455,12 @@ public class JBreakout extends JFrame implements CastSkill {
                             break;
                         case 3:
                             System.out.println("播放获得道具音效");
-                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/itemGetSound.wav")));
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/item_get_sound.wav")));
                             break;
-                        case 4:
-                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/railGun_sound.wav")));
+                        case 4://轨道炮音效
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/rail_gun_sound.wav")));
+                        case 5://双倍伤害
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit2.wav")));
                     }
                     clip.start();
                 } catch (Exception e) {
@@ -471,7 +474,7 @@ public class JBreakout extends JFrame implements CastSkill {
     //使用复杂技能
     void useSkill(){
         if(skillTypeUsing!=-1) {//如果有在生效的技能
-            if (--skillTimeCounter == 0) {//倒计时为0时,结束释放
+            if (--skillTimeCounter <= 0) {//倒计时为0时,结束释放
                 skillTypeUsing = -1;
             }
             switch (skillTypeUsing) {
@@ -491,12 +494,13 @@ public class JBreakout extends JFrame implements CastSkill {
                     }
                     break;
                 case 2://AT力场
+
                     break;
                 case 3://双倍伤害
-                    if(skillTimeCounter <=1){//减少伤害
+                    if(skillTimeCounter <=1){//伤害变为1
                         for(Ball ballOne: balls) ballOne.setBallDamage(1);
                     }
-                    else if(skillTimeCounter <=539)//增加伤害
+                    else if(skillTimeCounter <=600)//增加伤害
                         for(Ball ballOne:balls) ballOne.setBallDamage(2);
                     break;
 
@@ -544,17 +548,16 @@ public class JBreakout extends JFrame implements CastSkill {
                     skillCoolDown = 10;
                     break;
                 case 2://AT力场
-                    /*skillTypeUsing = 2;
-                    skillTimeCounter = 520;*/
+                    skillTypeUsing = 2;
+                    skillTimeCounter = 450;
                     skillCoolDown = 10;
-                    paddle.updatePaddleWidth(599,6000,true);
+                    paddle.updatePaddleWidth(600,6300,true);
                     break;
                 case 3://轨道炮
                     skillTypeUsing = 1;
                     skillTimeCounter = 320;
                     soundPlay(4);
                     break;
-
             }
             System.out.println("释放<"+sType+">号技能");
         }
@@ -584,9 +587,8 @@ public class JBreakout extends JFrame implements CastSkill {
 
     /**重置自动小球锁定砖块系统的倒计时*/
     void resetAutoLockBrick(){
-        autoLockBrickCountDown = 5;
+        autoLockBrickCountDown = 4;
     }
-
 
     boolean winCheck(){
         for(Brick brickOne : bricks){
