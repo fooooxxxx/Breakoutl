@@ -457,6 +457,8 @@ public class JBreakout extends JFrame implements CastSkill {
                             System.out.println("播放获得道具音效");
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/itemGetSound.wav")));
                             break;
+                        case 4:
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/railGun_sound.wav")));
                     }
                     clip.start();
                 } catch (Exception e) {
@@ -531,6 +533,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 case 1://轨道炮
                     skillTypeUsing = 1;
                     skillTimeCounter = 320;
+                    soundPlay(4);
                     break;
             }
             System.out.println("释放<"+sType+">号技能");
