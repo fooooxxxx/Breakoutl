@@ -93,7 +93,7 @@ public class JBreakout extends JFrame implements CastSkill {
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
         energyAdder = new EnergyAdder(this);
-        bricks = initBricks();//生成砖块
+        bricks = randInitBricks(true);//生成砖块
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
@@ -302,35 +302,43 @@ public class JBreakout extends JFrame implements CastSkill {
      */
     private ArrayList<Brick> randInitBricks(boolean isSymmetry) {
         ArrayList<Brick> bricks = new ArrayList<>();
-        BRICK_ROWS = new Random().nextInt(4)+8;//随机层数
-        int randomCols = BRICKS_PER_ROW;//列数暂时固定
         Random random = new Random();
+        BRICK_ROWS = random.nextInt(4)+8;//随机层数
+        int randomCols = BRICKS_PER_ROW;//列数暂时固定
         for(int i = 0; i < BRICK_ROWS;i++){
             for(int j = 0; j<BRICKS_PER_ROW;j++){
-                int randNum = random.nextInt(10);//随机生成0~9
-                Brick brick = new Brick();
-                switch(randNum) {
-                    case 1:
-                    case 2:
-                    case 7:
-                    case 8:
-                    case 9:
-                        brick.setBrickHP(1);
-                        break;
-                    case 3:
-                    case 4:
-                        brick.setBrickHP(3);
-                        break;
-                    case 5:
-                    case 6:
-                    case 10:
-                        brick.setBrickHP(2);
-                        break;
+                if(isSymmetry && j>=5){
+                    bricks.add((Brick) bricks.get(i*BRICKS_PER_ROW+BRICKS_PER_ROW-j-1).clone());
                 }
-                bricks.add(brick);
+                else {
+                    int randNum = random.nextInt(10);//随机生成0~9
+                    Brick brick = new Brick();
+                    switch (randNum) {
+                        case 0:
+                        case 1:
+                        case 2:
+                        case 3:
+                            brick.setBrickHP(1);
+                            break;
+                        case 4:
+                        case 5:
+                            brick.setBrickHP(3);
+                            break;
+                        case 6:
+                        case 7:
+                        case 8:
+                            brick.setBrickHP(2);
+                            break;
+                        case 9:
+                            int r = random.nextInt(3);
+                            brick.setDestroyable(r == 0);//设置1/3的不可破坏砖块
+                            brick.setAlive(r != 0);//设置2/3的空白位置
+                            break;
+                    }
+                    bricks.add(brick);
+                }
             }
         }
-
         return bricks;
     }
 

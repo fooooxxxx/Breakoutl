@@ -4,7 +4,7 @@ import java.awt.*;
 /**
  * 砖块类
  */
-public class Brick extends JComponent {
+public class Brick implements Cloneable{
 
     /** Width of a brick */
     private int BRICK_WIDTH;
@@ -68,8 +68,14 @@ public class Brick extends JComponent {
         System.out.println("brickTan" + brickTan);
     }
 
-    public int getBRICK_WIDTH() {
-        return BRICK_WIDTH;
+    @Override
+    public Object clone(){
+        try {
+            return super.clone();
+        } catch (CloneNotSupportedException e) {
+            e.printStackTrace();
+        }
+        return new Brick();//如果克隆失败,就随便new一个
     }
 
     /** 根据生命值自动设置brick样式 */
@@ -143,6 +149,10 @@ public class Brick extends JComponent {
 
     public boolean getDestroyable(){
         return isDestroyable;
+    }
+
+    public int getBRICK_WIDTH() {
+        return BRICK_WIDTH;
     }
 
     public void setDestroyable(boolean destroyable) {
