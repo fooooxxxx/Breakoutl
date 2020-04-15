@@ -1,4 +1,6 @@
 import javax.swing.*;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -21,16 +23,19 @@ public class MainMenu extends JPanel {
         Font btnFont = new Font("黑体", Font.BOLD, 24);
         JButton startBtn = new JButton("开始游戏");
         JButton exitGameBtn = new JButton("退出游戏");
+        JCheckBox randomCheckCox = new JCheckBox("随机");
 
         startBtn.setFont(btnFont);
         exitGameBtn.setFont(btnFont);
 
+        add(randomCheckCox);
         add(startBtn);
         add(exitGameBtn);
 
         //设置位置和大小
         startBtn.setBounds(200, 240, 200, 70);
         exitGameBtn.setBounds(200, 600, 200, 70);
+        randomCheckCox.setBounds(150,240,50,50);
 
         //设置触发监听器
         startBtn.addActionListener(new ActionListener() {
@@ -45,7 +50,12 @@ public class MainMenu extends JPanel {
                 mainFrame.dispose();//关闭窗口
             }
         });
-
+        randomCheckCox.addChangeListener(new ChangeListener() {
+            @Override
+            public void stateChanged(ChangeEvent e) {
+                JBreakout.isRandomMap = randomCheckCox.isSelected() ;
+            }
+        });
 
     }
 

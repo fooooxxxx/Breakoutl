@@ -24,7 +24,7 @@ public class JBreakout extends JFrame implements CastSkill {
     public static int realHeight = 0;
 
     /** 每层砖块的数量 */
-    private static int BRICKS_PER_ROW = 10;
+    private static final int BRICKS_PER_ROW = 10;
     /** 层数 */
     private static int BRICK_ROWS = 10;
     /** 砖块之间的间隔 */
@@ -55,6 +55,10 @@ public class JBreakout extends JFrame implements CastSkill {
     Font ggFont = new Font("黑体", Font.BOLD, 18);
     //字体颜色
     Color fontColor;
+
+    /*随机关卡生成设定*/
+    static boolean isRandomMap = false;
+    final boolean isSymmetry = true;//默认对称
 
     public JBreakout() {
         //设置窗体大小
@@ -93,7 +97,7 @@ public class JBreakout extends JFrame implements CastSkill {
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
         energyAdder = new EnergyAdder(this);
-        bricks = randInitBricks(true);//生成砖块
+        bricks = isRandomMap?randInitBricks(isSymmetry):initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
