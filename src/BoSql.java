@@ -5,6 +5,9 @@ import java.util.ArrayList;
  * 方便连接数据库的类
  */
 public class BoSql {
+    final String TABLE_NAME = "player";
+
+
     Connection mysqlConn = null;
     Statement stmt = null;
     PreparedStatement preStmt = null;
@@ -35,10 +38,38 @@ public class BoSql {
         }
     }
 
+    /**更新玩家数据*/
+    boolean updatePlayerInfo(String name,int score){
+        String preSql = "UPDATE " +TABLE_NAME +" SET score=? WHERE player_name=?;";
+        try {
+            preStmt = mysqlConn.prepareStatement(preSql);
+            preStmt.setInt(1,score);
+            preStmt.setString(2,name);
+            return preStmt.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
+    /**插入新玩家数据*/
+    boolean insertPlayerInfo(String name,int score){
+        String preSql = "INSERT INTO " +TABLE_NAME +" (player_name,score) VALUES(?,?);";
+        try {
+            preStmt = mysqlConn.prepareStatement(preSql);
+            preStmt.setString(1,name);
+            preStmt.setInt(2,score);
+            return preStmt.execute();
+        } catch (SQLException throwables) {
+            throwables.printStackTrace();
+            return false;
+        }
+    }
+
     /**从数据库中读取玩家信息
      * @param playerName 需要读取的特定玩家姓名
      * @param isAll 是否查询所有玩家,如果是,则无视上面参数,返回所有玩家的数据*/
-    ArrayList<PlayerInfo> queryGamePlayer(String playerName,boolean isAll){
+    ArrayList<PlayerInfo> queryPlayerInfo(String playerName,boolean isAll){
         ArrayList<PlayerInfo> playerList = new ArrayList<>();
         String sql;
         if(isAll){
@@ -64,6 +95,7 @@ public class BoSql {
 class PlayerInfo{
     String playerName;//玩家姓名
     int score;//最高分
+
     PlayerInfo(String name,int score){
         this.playerName = name;
         this.score = score;
