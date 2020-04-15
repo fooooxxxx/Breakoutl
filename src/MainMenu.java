@@ -32,6 +32,7 @@ public class MainMenu extends JPanel {
         //多选框设置
         randomCheckCox.setForeground(new Color(255,111,0));
         randomCheckCox.setOpaque(false);
+        randomCheckCox.setFocusPainted(false);
         //添加组件
         add(randomCheckCox);
         add(startBtn);
@@ -44,7 +45,12 @@ public class MainMenu extends JPanel {
         randomCheckCox.setBounds(150,240,50,50);
 
         //设置触发监听器
-        startBtn.addActionListener(e -> mainFrame.startGame());
+        startBtn.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                mainFrame.startGame();
+            }
+        });
         exitGameBtn.addActionListener(e -> {
             mainFrame.dispose();//关闭窗口
         });

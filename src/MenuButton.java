@@ -28,6 +28,7 @@ public class MenuButton extends JButton {
         setBorderPainted(false);//去边框
         setForeground(defaultColor);
         setPressedIcon(pressIcon);//无效
+        setFocusPainted(false);//无焦点特效
         addMouseListener(new MouseAdapter() {
             @Override
             public void mouseEntered(MouseEvent e) {//鼠标进入后
@@ -46,6 +47,11 @@ public class MenuButton extends JButton {
             }
 
         });
+    }
+
+    @Override
+    protected void paintComponent(Graphics g) {
+        super.paintComponent(g);
     }
 
     public void setDefaultColor(Color defaultColor) {
