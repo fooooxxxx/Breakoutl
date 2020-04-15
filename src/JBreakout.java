@@ -56,6 +56,8 @@ public class JBreakout extends JFrame implements CastSkill {
     //字体颜色
     Color fontColor;
 
+    BoSql sqlConn;
+
     /*随机关卡生成设定*/
     static boolean isRandomMap = false;
     final boolean isSymmetry = true;//默认对称
@@ -80,6 +82,7 @@ public class JBreakout extends JFrame implements CastSkill {
         mainMenu.setVisible(true);
         add(mainMenu);
 
+        sqlConn = new BoSql();
         //startGame();
 
     }
