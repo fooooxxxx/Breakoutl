@@ -5,7 +5,7 @@ import java.util.ArrayList;
  * 方便连接数据库的类
  */
 public class BoSql {
-    final String TABLE_NAME = "player";
+    final String TABLE_NAME = "players";
 
 
     Connection mysqlConn = null;
@@ -56,6 +56,7 @@ public class BoSql {
     boolean insertPlayerInfo(String name,int score){
         String preSql = "INSERT INTO " +TABLE_NAME +" (player_name,score) VALUES(?,?);";
         try {
+            System.out.println(score);
             preStmt = mysqlConn.prepareStatement(preSql);
             preStmt.setString(1,name);
             preStmt.setInt(2,score);
@@ -73,10 +74,10 @@ public class BoSql {
         ArrayList<PlayerInfo> playerList = new ArrayList<>();
         String sql;
         if(isAll){
-             sql = "SELECT player_name,score FROM players";
+             sql = "SELECT player_name,score FROM players ORDER BY score DESC";
         }
         else{//查询特定玩家的
-            sql = "SELECT player_name,score FROM players WHERE player_name="+playerName;
+            sql = "SELECT player_name,score FROM players WHERE player_name= '" + playerName +"';";
         }
         try {
             rs = stmt.executeQuery(sql);

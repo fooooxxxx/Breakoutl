@@ -3,6 +3,7 @@ import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.util.*;
+import java.util.List;
 import java.util.Timer;
 import java.util.concurrent.CopyOnWriteArrayList;
 import javax.sound.sampled.AudioSystem;
@@ -56,6 +57,7 @@ public class JBreakout extends JFrame implements CastSkill {
     //字体颜色
     Color fontColor;
 
+    public static String playerName = null;
     BoSql sqlConn;
 
     /*随机关卡生成设定*/
@@ -67,7 +69,6 @@ public class JBreakout extends JFrame implements CastSkill {
         setSize(APPLICATION_WIDTH, APPLICATION_HEIGHT);
         //设置窗体标题
         setTitle("Breakout");
-
 
         //设置点击关闭按钮关闭程序
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -92,7 +93,7 @@ public class JBreakout extends JFrame implements CastSkill {
         mainMenu.setVisible(false);
         autoLockBrickCountDown = 5;
         ballNum = 1;
-        healthPoint = 3;//初始血量为3
+        healthPoint = 1;//初始血量为3
         score = 0;//清空分数
         skillTypeUsing = -1;
         //构建对象
@@ -100,7 +101,7 @@ public class JBreakout extends JFrame implements CastSkill {
         balls = new CopyOnWriteArrayList<>();
         balls.add(new Ball());
         energyAdder = new EnergyAdder(this);
-        bricks = isRandomMap?randInitBricks(isSymmetry):initBricks();//生成砖块
+        bricks = isRandomMap ? randInitBricks(isSymmetry) : initBricks();//生成砖块
         items = new CopyOnWriteArrayList<>();
         isBallLaunching = false;//将小球设置为未发射状态
         preSound();//音频预加载
@@ -178,9 +179,6 @@ public class JBreakout extends JFrame implements CastSkill {
                     gameOver(1);
                 }
                 if (!isBallLaunching) {
-//                    if(balls.size()==0){//当场上无小球时,生成小球
-//                        balls.add(new Ball());
-//                    }
                     balls.get(0).setSpeed(3, 3);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
@@ -261,20 +259,40 @@ public class JBreakout extends JFrame implements CastSkill {
      * @param result 0为胜利,1为失败
      */
     public void gameOver(int result) {//弹出结束画面,并且记录分数
+        int tempScore;//结算后分数,胜利,分数*1.2
         mainTimer.cancel();//关闭定时器,游戏结束
         JLabel ggLabel = new JLabel("游戏结束,你的分数为 " + score);
         ggLabel.setForeground(fontColor);
-        JButton backBtn = new JButton("返回主菜单");
-        ggLabel.setBounds(180, 350, 300, 100);
+        JButton backBtn = new MenuButton("返回主菜单");
+        ggLabel.setBounds(150, 350, 300, 100);
+        ggLabel.setHorizontalAlignment(JLabel.CENTER);
         ggLabel.setFont(ggFont);
         ggLabel.setVisible(true);
         backBtn.setBounds(200, 450, 200, 100);
         backBtn.setFont(ggFont);//设置字体
         if (result == 0) {//游戏胜利的提示
-            ggLabel.setText("游戏胜利!你的分数为 " + score);
+            tempScore = (int) (score * 1.2);
+            ggLabel.setText("游戏胜利!你的分数为 " + tempScore);
+        } else {
+            tempScore = score;
         }
-        skillTimeCounter = 0;
+        skillTimeCounter = 0;//技能清空
         skillTypeUsing = -1;
+
+        if(playerName !=null){//如果玩家登录过姓名
+            List<PlayerInfo> tempPlayers = sqlConn.queryPlayerInfo(playerName,false);
+            if(tempPlayers.size()!=0){//如果该玩家信息可以从数据库中读取
+                if(tempPlayers.get(0).score<tempScore){
+                    ggLabel.setText("你的分数为 "+tempScore+" 打破记录!");
+                    sqlConn.updatePlayerInfo(playerName,tempScore);//进行更新
+                }
+            }
+            else{//将数据插入到数据库
+                ggLabel.setText("你的分数为 "+tempScore+" 新记录!");
+                sqlConn.insertPlayerInfo(playerName,tempScore);
+            }
+        }
+
         breakoutComponents.add(backBtn);
         breakoutComponents.add(ggLabel);
         backBtn.addActionListener(e -> {
@@ -312,14 +330,13 @@ public class JBreakout extends JFrame implements CastSkill {
     private ArrayList<Brick> randInitBricks(boolean isSymmetry) {
         ArrayList<Brick> bricks = new ArrayList<>();
         Random random = new Random();
-        BRICK_ROWS = random.nextInt(4)+8;//随机层数
+        BRICK_ROWS = random.nextInt(4) + 8;//随机层数
         int randomCols = BRICKS_PER_ROW;//列数暂时固定
-        for(int i = 0; i < BRICK_ROWS;i++){
-            for(int j = 0; j<BRICKS_PER_ROW;j++){
-                if(isSymmetry && j>=5){
-                    bricks.add((Brick) bricks.get(i*BRICKS_PER_ROW+BRICKS_PER_ROW-j-1).clone());
-                }
-                else {
+        for (int i = 0; i < BRICK_ROWS; i++) {
+            for (int j = 0; j < BRICKS_PER_ROW; j++) {
+                if (isSymmetry && j >= 5) {
+                    bricks.add((Brick) bricks.get(i * BRICKS_PER_ROW + BRICKS_PER_ROW - j - 1).clone());
+                } else {
                     int randNum = random.nextInt(10);//随机生成0~9
                     Brick brick = new Brick();
                     switch (randNum) {
@@ -550,7 +567,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     }
                     break;
                 case 2://AT力场
-                    if(skillTimeCounter==1) paddle.setX(300-Paddle.PADDLE_WIDTH/2);
+                    if (skillTimeCounter == 1) paddle.setX(300 - Paddle.PADDLE_WIDTH / 2);
                     break;
                 case 3://双倍伤害
                     if (skillTimeCounter <= 1) {//伤害变为1
