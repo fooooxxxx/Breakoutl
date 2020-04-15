@@ -12,6 +12,10 @@ public class Paddle extends JComponent {
     //offset 距离窗体底部距离
     static final int PADDLE_Y_OFFSET = 110;
 
+    public void setX(int x) {
+        this.x = x;
+    }
+
     //paddle 坐标设置
     private int x = 0;
     private int y = 0;

@@ -129,8 +129,10 @@ public class JBreakout extends JFrame implements CastSkill {
                         else {//否则释放技能
                             int tempResult = energyAdder.useSkill();
                             if (tempResult == 1) {
+                                soundPlay(6);
                                 System.out.println("能量不足,技能释放失败");
                             } else if (tempResult == 2) {
+                                soundPlay(6);
                                 System.out.println("技能在CD当中");
                             }
                         }
@@ -506,8 +508,11 @@ public class JBreakout extends JFrame implements CastSkill {
                         case 4://轨道炮音效
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/rail_gun_sound.wav")));
                             break;
-                        case 5://双倍伤害
+                        case 5://双倍击中音效伤害
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/hit2.wav")));
+                            break;
+                        case 6://能量不足音效
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/lack_energy.wav")));
                             break;
                     }
                     clip.start();
@@ -542,6 +547,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     }
                     break;
                 case 2://AT力场
+                    if(skillTimeCounter==1) paddle.setX(300-Paddle.PADDLE_WIDTH/2);
                     break;
                 case 3://双倍伤害
                     if (skillTimeCounter <= 1) {//伤害变为1
@@ -588,23 +594,24 @@ public class JBreakout extends JFrame implements CastSkill {
                     /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
                             ,paddle.getY() - 2 * Ball.getBallRadius()));*/
                     ballNum++;
-                    skillCoolDown = 350;
+                    skillCoolDown = 300;
                     break;
                 case 1://双倍伤害
                     skillTypeUsing = 3;
                     skillTimeCounter = 600;//大约8.4秒
-                    skillCoolDown = 10;
+                    skillCoolDown = 601;
                     break;
                 case 2://AT力场
                     skillTypeUsing = 2;
                     skillTimeCounter = 450;
-                    skillCoolDown = 10;
+                    skillCoolDown = 451;
                     paddle.updatePaddleWidth(600, 6300, true);
                     break;
                 case 3://轨道炮
                     skillTypeUsing = 1;
                     skillTimeCounter = 320;
                     soundPlay(4);
+                    skillCoolDown = 200;
                     break;
             }
             System.out.println("释放<" + sType + ">号技能");
