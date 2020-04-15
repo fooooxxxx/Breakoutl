@@ -22,6 +22,8 @@ public class BreakoutComponents extends JComponent {
     JLabel railGunLabel;
     Image backgroundImage;
 
+    Color showColor = new Color(255,111,0);//信息显示相关字体颜色
+
     BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items,EnergyAdder energyAdder) {
         this.paddle = paddle;
         paddle.setVisible(true);
@@ -38,6 +40,9 @@ public class BreakoutComponents extends JComponent {
         this.itemLabel.setBounds(380, 870, 100, 30);
         this.showLabel.setFont(showFont);
         this.itemLabel.setFont(showFont);
+        this.showLabel.setForeground(showColor);
+        this.itemLabel.setForeground(showColor);
+        //组件添加
         add(showLabel);
         add(itemLabel);
         add(energyAdder.scoreMultipleLabel);
