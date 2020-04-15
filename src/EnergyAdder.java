@@ -82,7 +82,7 @@ public class EnergyAdder {
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/double_damage.png"),90,
                 "双倍伤害","小球伤害翻倍"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/at_field.png"),200,
-                "AT力场","在底部展开力场,使小球无法触底"));
+                "AT力场","在底部展开护盾,使小球无法触底"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/rail_gun.jpg"),350,
                 "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成三次伤害"));
 
