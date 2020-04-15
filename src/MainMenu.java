@@ -22,21 +22,25 @@ public class MainMenu extends JPanel {
         //初始化控件
         Font btnFont = new Font("黑体", Font.BOLD, 24);
         JButton startBtn = new MenuButton("开始游戏");
+        JButton rankBtn = new MenuButton("排行榜");
         JButton exitGameBtn = new MenuButton("退出游戏");
         JCheckBox randomCheckCox = new JCheckBox("随机");
-
+        //按钮字体设置
         startBtn.setFont(btnFont);
         exitGameBtn.setFont(btnFont);
+        rankBtn.setFont(btnFont);
+        //多选框设置
         randomCheckCox.setForeground(new Color(255,111,0));
         randomCheckCox.setOpaque(false);
-
+        //添加组件
         add(randomCheckCox);
         add(startBtn);
+        add(rankBtn);
         add(exitGameBtn);
-
         //设置位置和大小
-        startBtn.setBounds(200, 240, 180, 60);
-        exitGameBtn.setBounds(200, 600, 180, 60);
+        startBtn.setBounds(210, 240, 180, 60);
+        rankBtn.setBounds(210,400,180,60);
+        exitGameBtn.setBounds(210, 560, 180, 60);
         randomCheckCox.setBounds(150,240,50,50);
 
         //设置触发监听器
