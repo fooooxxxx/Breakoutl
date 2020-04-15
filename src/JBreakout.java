@@ -335,8 +335,8 @@ public class JBreakout extends JFrame implements CastSkill {
                             break;
                         case 9:
                             int r = random.nextInt(3);
-                            brick.setDestroyable(r == 0);//设置1/3的不可破坏砖块
-                            brick.setAlive(r != 0);//设置2/3的空白位置
+                            //brick.setDestroyable(r == 0);//设置1/3的不可破坏砖块
+                            brick.setAlive(false);//设置2/3的空白位置
                             break;
                     }
                     bricks.add(brick);
