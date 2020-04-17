@@ -144,6 +144,10 @@ public class JBreakout extends JFrame implements CastSkill {
                         break;
                     case KeyEvent.VK_P://暂停按钮
                         break;
+                    case KeyEvent.VK_ESCAPE://退出游戏
+                        gameOver(1);
+                        System.out.println("退出游戏");
+                        break;
                     case KeyEvent.VK_UP:
                     case KeyEvent.VK_W:
                         breakoutComponents.energyAdder.switchSkill(-1);
@@ -152,6 +156,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     case KeyEvent.VK_S:
                         breakoutComponents.energyAdder.switchSkill(1);
                         break;
+
                 }
             }
 
