@@ -19,7 +19,7 @@ public class JBreakout extends JFrame implements CastSkill {
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 2;
     /** 砖块距离顶部距离 */
-    public static final int BRICK_OFFSET_TOP = 45;
+    public static final int BRICK_OFFSET_TOP = 50;
     /** 道具数量上限 */
     final int ITEM_LIMIT = 4;
     /** 初始生命值 */
@@ -230,6 +230,7 @@ public class JBreakout extends JFrame implements CastSkill {
                         }
                     } else {//如果小球到底部且不是唯一的小球,则对小球进行移除
                         balls.remove(ball);
+                        energyAdder.resetReduceCountDown(0);
                     }
                 }
                 if (winCheck()) gameOver(0);

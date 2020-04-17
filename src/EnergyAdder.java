@@ -290,6 +290,17 @@ public class EnergyAdder {
         return scoreMultiple;
     }
 
+    /**重设reduceCountDown
+     * @param reduce 为0时,将reduceCountDown设置为minCountDown*/
+    void resetReduceCountDown(int reduce){
+        if(reduce !=0){
+            reduceCountDown = reduce;
+        }
+        else{
+            reduceCountDown = minCountDown;
+        }
+    }
+
     /** 根据当前分数倍数自动选择分数倍数的字体颜色,并改变内容 */
     public void autoChangeLabel() {
         scoreMultipleLabel.setForeground(autoSelectColor());
