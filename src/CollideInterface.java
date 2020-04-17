@@ -11,6 +11,6 @@ public interface CollideInterface {
      * @param object_width  被判断物体的宽度
      * @return 返回true, 则表示发生了碰撞, 否则无碰撞
      */
-    public boolean collide(int object_x, int object_y, int object_width, int object_height);
+    boolean collide(int object_x, int object_y, int object_width, int object_height);
 
 }

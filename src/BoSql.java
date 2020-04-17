@@ -38,13 +38,13 @@ public class BoSql {
         }
     }
 
-    /**更新玩家数据*/
-    boolean updatePlayerInfo(String name,int score){
-        String preSql = "UPDATE " +TABLE_NAME +" SET score=? WHERE player_name=?;";
+    /** 更新玩家数据 */
+    boolean updatePlayerInfo(String name, int score) {
+        String preSql = "UPDATE " + TABLE_NAME + " SET score=? WHERE player_name=?;";
         try {
             preStmt = mysqlConn.prepareStatement(preSql);
-            preStmt.setInt(1,score);
-            preStmt.setString(2,name);
+            preStmt.setInt(1, score);
+            preStmt.setString(2, name);
             return preStmt.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -52,14 +52,14 @@ public class BoSql {
         }
     }
 
-    /**插入新玩家数据*/
-    boolean insertPlayerInfo(String name,int score){
-        String preSql = "INSERT INTO " +TABLE_NAME +" (player_name,score) VALUES(?,?);";
+    /** 插入新玩家数据 */
+    boolean insertPlayerInfo(String name, int score) {
+        String preSql = "INSERT INTO " + TABLE_NAME + " (player_name,score) VALUES(?,?);";
         try {
             System.out.println(score);
             preStmt = mysqlConn.prepareStatement(preSql);
-            preStmt.setString(1,name);
-            preStmt.setInt(2,score);
+            preStmt.setString(1, name);
+            preStmt.setInt(2, score);
             return preStmt.execute();
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -67,22 +67,24 @@ public class BoSql {
         }
     }
 
-    /**从数据库中读取玩家信息
+    /**
+     * 从数据库中读取玩家信息
+     *
      * @param playerName 需要读取的特定玩家姓名
-     * @param isAll 是否查询所有玩家,如果是,则无视上面参数,返回所有玩家的数据*/
-    ArrayList<PlayerInfo> queryPlayerInfo(String playerName,boolean isAll){
+     * @param isAll      是否查询所有玩家,如果是,则无视上面参数,返回所有玩家的数据
+     */
+    ArrayList<PlayerInfo> queryPlayerInfo(String playerName, boolean isAll) {
         ArrayList<PlayerInfo> playerList = new ArrayList<>();
         String sql;
-        if(isAll){
-             sql = "SELECT player_name,score FROM players ORDER BY score DESC";
-        }
-        else{//查询特定玩家的
-            sql = "SELECT player_name,score FROM players WHERE player_name= '" + playerName +"';";
+        if (isAll) {
+            sql = "SELECT player_name,score FROM players ORDER BY score DESC";
+        } else {//查询特定玩家的
+            sql = "SELECT player_name,score FROM players WHERE player_name= '" + playerName + "';";
         }
         try {
             rs = stmt.executeQuery(sql);
-            while(rs.next()){
-                playerList.add(new PlayerInfo(rs.getString("player_name"),rs.getInt("score")));
+            while (rs.next()) {
+                playerList.add(new PlayerInfo(rs.getString("player_name"), rs.getInt("score")));
             }
         } catch (SQLException throwables) {
             throwables.printStackTrace();
@@ -92,12 +94,12 @@ public class BoSql {
     }
 }
 
-/**数据存储类,存储玩家信息*/
-class PlayerInfo{
+/** 数据存储类,存储玩家信息 */
+class PlayerInfo {
     String playerName;//玩家姓名
     int score;//最高分
 
-    PlayerInfo(String name,int score){
+    PlayerInfo(String name, int score) {
         this.playerName = name;
         this.score = score;
     }

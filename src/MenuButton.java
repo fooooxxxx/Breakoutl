@@ -4,25 +4,26 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 /**
- *美化后的按钮
+ * 美化后的按钮
  */
 
 
 public class MenuButton extends JButton {
-    Color defaultColor = new Color(255,111,0);//默认字体颜色,以及鼠标移到按钮上后背景颜色
+    Color defaultColor = new Color(255, 111, 0);//默认字体颜色,以及鼠标移到按钮上后背景颜色
     Color enterFontColor = Color.BLACK;//鼠标移动到按钮上后字体颜色
-    Color pressBackgroundColor = new Color(252,158,86);//按下后背景颜色
+    Color pressBackgroundColor = new Color(252, 158, 86);//按下后背景颜色
     ImageIcon pressIcon = new ImageIcon("src/image/press_button_background.png");
 
-    MenuButton(){
+    MenuButton() {
         setMoveEffect();
     }
-    MenuButton(String text){
+
+    MenuButton(String text) {
         super(text);
         setMoveEffect();
     }
 
-    void setMoveEffect(){
+    void setMoveEffect() {
         this.setOpaque(false);//内容透明
         this.setContentAreaFilled(false);
         setBorderPainted(false);//去边框

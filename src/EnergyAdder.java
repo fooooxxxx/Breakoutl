@@ -2,6 +2,16 @@ import javax.swing.*;
 import java.awt.*;
 import java.util.ArrayList;
 
+interface CastSkill {
+    /**
+     * 实现技能效果
+     *
+     * @param sType 技能编号
+     * @return 返回值为0, 表示释放成功, 返回2说明技能还在冷却
+     */
+    int castSkill(int sType);
+}
+
 /**
  * 能量加成器
  * 用于计算能量和分数倍数
@@ -9,6 +19,13 @@ import java.util.ArrayList;
  * 同时设置技能能量槽,技能能量槽满后可以选择技能释放
  */
 public class EnergyAdder {
+    static final int sEnergyX = 90;//技能能量槽X坐标
+    static final int sEnergyWidth = 252;//外轮廓技能能量槽长度
+    static final int maxSkillEnergy = 400;//技能能量上限值
+    static int skillEnergy;//技能能量
+    private static int lastCountDown;//上次倒计时
+    /* 能量相关 */
+    final int[] scoreLine = {0, 10, 20, 30, 40, 50};//阶段所需分数,分别为提升到2,3,4,5倍分数加成所需的分数加成器能量,最后一个50为5倍时的能量上限
     /*加成器图像相关*/
     private final int x = 10;//加成器x轴起始坐标
     private final int y = 840;//加成器y轴起始坐标
@@ -22,45 +39,38 @@ public class EnergyAdder {
     /*技能图像相关*/
     private final int skillStartX = 90;//技能X轴坐标
     private final int skillY = 830;//技能Y轴坐标
-    static final int sEnergyX = 90;//技能能量槽X坐标
     private final int sEnergyY = 870;//技能能量槽Y坐标
-    static final int sEnergyWidth = 252;//外轮廓技能能量槽长度
     private final int sEnergyHeight = 20;//外轮廓技能能量槽高度
-    ArrayList<Skill> skillLabelList;
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
-    private int[] xFillList;//内填充x轴坐标数组
-    private int[] yFillList;
-    private int[] xFillList2;//用于两个多边形填充
-    private int fillPointNum;//内填充所需坐标数
-    /* 能量相关 */
-    final int[] scoreLine = {0, 10, 20, 30, 40, 50};//阶段所需分数,分别为提升到2,3,4,5倍分数加成所需的分数加成器能量,最后一个50为5倍时的能量上限
-    private int scoreMeter;//分数加成器当前阶段的分数能量,达到一定阶段所需分数是,提升分数倍数,将该值设置为0
+    private final int INIT_SKILL_ENERGY = 5;//初始能量
+    private final int minCountDown = 30;//最小倒计时
+    ArrayList<Skill> skillLabelList;
     int scoreMultiple = 1;//分数倍数,默认为1
     Color scoreMultipleColor;//分数倍数字体颜色,随scoreMultiple改变而改变
     JLabel scoreMultipleLabel;
     Font scoreFont;//分数字体
-    static int skillEnergy;//技能能量
-    private final int INIT_SKILL_ENERGY = 5;//初始能量
-    static final int maxSkillEnergy = 400;//技能能量上限值
-    private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
-    private final int minCountDown = 30;//最小倒计时
-    private static int lastCountDown;//上次倒计时
     //技能使用
     int skillSelect = 0;//选中的技能编号
     int skillNum;//技能数量
     CastSkill castSkillInterface;//技能释放的回调接口
     //技能描述相关
     JLabel skillDescriptionLabel;
-    Color fontColor = new Color(232,92,17);;
-    Color skillEnergyFillColor = new Color(0,214,250);
+    Color fontColor = new Color(232, 92, 17);
+    Color skillEnergyFillColor = new Color(0, 214, 250);
+    private int[] xFillList;//内填充x轴坐标数组
+    private int[] yFillList;
+    private int[] xFillList2;//用于两个多边形填充
+    private int fillPointNum;//内填充所需坐标数
+    private int scoreMeter;//分数加成器当前阶段的分数能量,达到一定阶段所需分数是,提升分数倍数,将该值设置为0
+    private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
 
 
     EnergyAdder(CastSkill castSkillInterface) {
         this.castSkillInterface = castSkillInterface;
         skillDescriptionLabel = new JLabel("<html>上下键切换技能,空格键使用技能</html>");
-        skillDescriptionLabel.setBounds(skillStartX+280,skillY-20,220,60);
+        skillDescriptionLabel.setBounds(skillStartX + 280, skillY - 20, 220, 60);
         skillDescriptionLabel.setForeground(fontColor);
         scoreFont = new Font("Agency FB", Font.BOLD, 66);
         skillLabelList = new ArrayList<>();
@@ -78,14 +88,14 @@ public class EnergyAdder {
         Skill.skillStartX = skillStartX;
         Skill.skillY = skillY;
         //添加技能
-        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/ball_plus.jpg"),20,
-                "额外加码","立刻从挡板上发射一颗小球"));
-        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/double_damage.png"),90,
-                "双倍伤害","小球伤害翻倍"));
-        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/at_field.png"),200,
-                "AT力场","在底部展开护盾,使小球无法触底"));
-        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/rail_gun.jpg"),350,
-                "轨道炮","短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成三次伤害"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/ball_plus.jpg"), 20,
+                "额外加码", "立刻从挡板上发射一颗小球"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/double_damage.png"), 90,
+                "双倍伤害", "小球伤害翻倍"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/at_field.png"), 200,
+                "AT力场", "在底部展开护盾,使小球无法触底"));
+        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/rail_gun.jpg"), 350,
+                "轨道炮", "短暂时间过后,从挡板发射一次轨道炮,对直线上的目标造成三次伤害"));
 
         skillNum = skillLabelList.size();//获得技能数量
 
@@ -94,11 +104,11 @@ public class EnergyAdder {
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         /* 分数加成器绘制 */
-        g2.setColor(new Color(208,252,239));
+        g2.setColor(new Color(208, 252, 239));
         g2.drawPolygon(xBorderList, yBorderList, 14);//绘制加成器外轮廓
         g2.setColor(autoSelectColor());
         int tempFillFlag = calculateFillPoint();
-            if (tempFillFlag != 0) {//返回false,说明当前倍数下累计能量为0,无需绘制
+        if (tempFillFlag != 0) {//返回false,说明当前倍数下累计能量为0,无需绘制
             g2.fillPolygon(xFillList, yFillList, fillPointNum);
             if (tempFillFlag == 2) {//根据计算结果绘制第二个多边形
                 g2.fillPolygon(xFillList2, yFillList, fillPointNum);
@@ -106,12 +116,12 @@ public class EnergyAdder {
         }
         /* 技能面板槽绘制 */
         g2.setColor(fontColor);
-        g2.drawRoundRect(sEnergyX,sEnergyY,sEnergyWidth,sEnergyHeight,8,15);//技能外轮廓能量槽绘制
+        g2.drawRoundRect(sEnergyX, sEnergyY, sEnergyWidth, sEnergyHeight, 8, 15);//技能外轮廓能量槽绘制
         g2.setColor(skillEnergyFillColor);
         //绘制内填充的能量槽
-        g2.fillRoundRect(sEnergyX+1,sEnergyY+1,calculateSkillEnergyMeter(),sEnergyHeight-1,10,15);
+        g2.fillRoundRect(sEnergyX + 1, sEnergyY + 1, calculateSkillEnergyMeter(), sEnergyHeight - 1, 10, 15);
         //绘制被选中的技能上方的箭头
-        for(int i = 0;i<skillNum;i++)
+        for (int i = 0; i < skillNum; i++)
             skillLabelList.get(i).draw(g, skillSelect == i);
 
 
@@ -120,7 +130,7 @@ public class EnergyAdder {
     /** 根据当前分数加成器能量计算加成器填充多边形坐标 */
     int calculateFillPoint() {
         int tempScoreMeter = scoreMeter;//分数加成器能量
-        if (tempScoreMeter == 0 && scoreMultiple!=5) {//分数能量为0时,并且分数倍数不为5时,无需绘制里面的填充多边形
+        if (tempScoreMeter == 0 && scoreMultiple != 5) {//分数能量为0时,并且分数倍数不为5时,无需绘制里面的填充多边形
             return 0;
         } else if (scoreMultiple == 5) {//倍数等于5时,分数加成器内填充永远为满
             xFillList = new int[]{x + 1, x + 9
@@ -129,14 +139,14 @@ public class EnergyAdder {
                     , x + 21
                     , x + 33, x + 25
                     , x + 17
-                    , x + 9, x+1
+                    , x + 9, x + 1
                     , x + 13};
-            yFillList = new int[]{y+1, y+1
+            yFillList = new int[]{y + 1, y + 1
                     , y + 16
-                    , y+1, y+1
+                    , y + 1, y + 1
                     , y + 24
                     , y + 48, y + 48
-                    , y + 33, y + 48, y + 48,  y + 24};
+                    , y + 33, y + 48, y + 48, y + 24};
             fillPointNum = 12;
         } else {
             int[] stageHeight = {16, 24, 25, 33};//这4个为特殊高度,其中小于16时,需要绘制两个多边形
@@ -212,10 +222,14 @@ public class EnergyAdder {
         }
         return 1;
     }
-    /**根据当前技能能量计算内填充的技能能量槽长度
-     * @return 返回内填充能量槽长度*/
-    private int calculateSkillEnergyMeter(){
-        return (int)Math.ceil(1.0*skillEnergy/maxSkillEnergy*(sEnergyWidth-1));
+
+    /**
+     * 根据当前技能能量计算内填充的技能能量槽长度
+     *
+     * @return 返回内填充能量槽长度
+     */
+    private int calculateSkillEnergyMeter() {
+        return (int) Math.ceil(1.0 * skillEnergy / maxSkillEnergy * (sEnergyWidth - 1));
     }
 
     /**
@@ -250,7 +264,10 @@ public class EnergyAdder {
      */
     public int reduceEnergy(int countDown) {
         if (countDown != 0) {
-            if (reduceCountDown < countDown && lastCountDown/2<countDown) {reduceCountDown = countDown;lastCountDown = reduceCountDown;}
+            if (reduceCountDown < countDown && lastCountDown / 2 < countDown) {
+                reduceCountDown = countDown;
+                lastCountDown = reduceCountDown;
+            }
             //如果新的能量泄露倒计时值大于原有的,并且大于下一阶段的倒计时,才重设,否则重设无效
             return 0;
         }
@@ -279,34 +296,38 @@ public class EnergyAdder {
         scoreMultipleLabel.setText(String.valueOf(scoreMultiple));
     }
 
-    /** 切换技能
+    /**
+     * 切换技能
+     *
      * @param direction 切换方向参数,-1为向上切换,1为向下切换
-     * @return 当前所选择技能下标*/
-    int switchSkill(int direction){
-        skillSelect+= direction;
-        if(skillSelect >= skillNum)
+     * @return 当前所选择技能下标
+     */
+    int switchSkill(int direction) {
+        skillSelect += direction;
+        if (skillSelect >= skillNum)
             skillSelect = 0;//循环切换
-        else if(skillSelect < 0)
-            skillSelect = skillNum-1;
+        else if (skillSelect < 0)
+            skillSelect = skillNum - 1;
         skillDescriptionLabel.setText(skillLabelList.get(skillSelect).concatDescription());
         return skillSelect;
     }
 
-    /**显示技能说明*/
-    void showSkillDescription(){
+    /** 显示技能说明 */
+    void showSkillDescription() {
 
     }
 
-    /** 使用技能
-     * return 返回0时表示技能释放成功;1表示技能能量不足,释放失败,返回2说明技能还在冷却*/
-    int useSkill(){
+    /**
+     * 使用技能
+     * return 返回0时表示技能释放成功;1表示技能能量不足,释放失败,返回2说明技能还在冷却
+     */
+    int useSkill() {
         int result;
-        if(skillLabelList.get(skillSelect).checkCastEnergy()){
+        if (skillLabelList.get(skillSelect).checkCastEnergy()) {
             result = castSkillInterface.castSkill(skillSelect);//释放选中技能
-            if(result == 0)
+            if (result == 0)
                 skillEnergy -= skillLabelList.get(skillSelect).needEnergy;
-        }
-        else
+        } else
             result = 1;
         return result;
     }
@@ -330,12 +351,4 @@ public class EnergyAdder {
     }
 
 
-
-
-}
-interface CastSkill{
-    /** 实现技能效果
-     * @param sType 技能编号
-     * @return 返回值为0,表示释放成功,返回2说明技能还在冷却*/
-    int castSkill(int sType);
 }

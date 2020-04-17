@@ -5,29 +5,18 @@ import java.awt.image.ImageObserver;
 /**
  * Ball类
  */
-public class Ball implements CollideInterface,ImageObserver{
+public class Ball implements CollideInterface, ImageObserver {
     //小球半径
     private static final int BALL_RADIUS = 7;
     //小球初始位置
     private int x = 300;
     private int y = 700;
-
-    public int getVx() {
-        return vx;
-    }
-
-    public int getVy() {
-        return vy;
-    }
-
     //小球在x和y轴上的初始速度
     private int vx = 3;
     private int vy = 4;
-
     private int ballDamage = 1;//小球撞击砖块时伤害,默认为1
-
-    private Image ballImage1;//伤害为1的小球图片
-    private Image ballImage2;//伤害为2的小球图片
+    private final Image ballImage1;//伤害为1的小球图片
+    private final Image ballImage2;//伤害为2的小球图片
 
     /**
      * 有参ball构造函数,可以指定小球速度和坐标
@@ -44,7 +33,6 @@ public class Ball implements CollideInterface,ImageObserver{
         setSpeed(vx, vy);
         System.out.println("新增小球vx为" + vx + "-vy为" + vy);
     }
-
     /**
      * 有参ball构造函数,只能指定小球坐标,速度为默认速度
      *
@@ -58,7 +46,6 @@ public class Ball implements CollideInterface,ImageObserver{
         System.out.println("新增小球vx为" + vx + "-vy为" + vy);
     }
 
-
     Ball() {
         vx = 3;
         vy = 4;
@@ -66,14 +53,26 @@ public class Ball implements CollideInterface,ImageObserver{
         ballImage2 = new ImageIcon("src/image/ball_8_red.png").getImage();
     }
 
+    public static int getBallRadius() {
+        return BALL_RADIUS;
+    }
+
+    public int getVx() {
+        return vx;
+    }
+
+    public int getVy() {
+        return vy;
+    }
+
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
         //绘制小球
         //g2.drawOval(x, y, BALL_RADIUS * 2, BALL_RADIUS * 2);
-        if(ballDamage == 1)
-            g2.drawImage(ballImage1,x, y, this);
+        if (ballDamage == 1)
+            g2.drawImage(ballImage1, x, y, this);
         else
-            g2.drawImage(ballImage2,x, y, this);
+            g2.drawImage(ballImage2, x, y, this);
     }
 
     /**
@@ -162,34 +161,29 @@ public class Ball implements CollideInterface,ImageObserver{
         return y + BALL_RADIUS / 2;
     }
 
+    public int getX() {
+        return x;
+    }
 
     public void setX(int x) {
         this.x = x;
-    }
-
-    public void setY(int y) {
-        this.y = y;
-    }
-
-    public static int getBallRadius() {
-        return BALL_RADIUS;
-    }
-
-    public int getX() {
-        return x;
     }
 
     public int getY() {
         return y;
     }
 
+    public void setY(int y) {
+        this.y = y;
+    }
+
+    public int getBallDamage() {
+        return ballDamage;
+    }
+
     /** 设置小球伤害 */
     public void setBallDamage(int ballDamage) {
         this.ballDamage = ballDamage;
-    }
-
-    public int getBallDamage(){
-        return ballDamage;
     }
 
     @Override

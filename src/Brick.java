@@ -1,30 +1,38 @@
-import javax.swing.*;
 import java.awt.*;
 
 /**
  * 砖块类
  */
-public class Brick implements Cloneable{
+public class Brick implements Cloneable {
 
-    /** Width of a brick */
-    private int BRICK_WIDTH;
     /** Height of a brick */
     public static final int BRICK_HEIGHT = 26;
+    /** 设定的tan值 */
+    double brickTan = 0;
+    /** Width of a brick */
+    private int BRICK_WIDTH;
     /** 是否存在,true为存在,false为消失 */
     private boolean isAlive = true;
     /** brick的生命值 */
     private int brickHP = 1;
     /** 消除该brick获得的分数 */
     private int brickScore = 1;
-
-
-
     private boolean isDestroyable;//是否可以被破坏,不可破坏的砖块不计入胜利条件内
     private int x, y;
     private Color color;
 
-    /** 设定的tan值 */
-    double brickTan = 0;
+    public Brick(boolean isDestroy) {
+        this.isDestroyable = isDestroy;
+    }
+
+    /** 默认构造函数将生成可破坏的砖块 */
+    public Brick() {
+        this.isDestroyable = true;
+    }
+
+    public static int getBrickHeight() {
+        return BRICK_HEIGHT;
+    }
 
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
@@ -32,7 +40,6 @@ public class Brick implements Cloneable{
             g2.setColor(color);
             g2.fillRect(x, y, BRICK_WIDTH, BRICK_HEIGHT);
         }
-        ;
     }
 
     /**
@@ -55,13 +62,6 @@ public class Brick implements Cloneable{
         this.brickScore = brickHP * 2;
     }
 
-    public Brick(boolean isDestroy) {
-        this.isDestroyable = isDestroy;
-    }
-
-    /**默认构造函数将生成可破坏的砖块*/
-    public Brick() { this.isDestroyable = true;}
-
     /** 计算并更新brickTan中心到各顶点的tan值 */
     public void countBrickTan() {
         brickTan = (double) BRICK_HEIGHT / BRICK_WIDTH;
@@ -69,7 +69,7 @@ public class Brick implements Cloneable{
     }
 
     @Override
-    public Object clone(){
+    public Object clone() {
         try {
             return super.clone();
         } catch (CloneNotSupportedException e) {
@@ -94,21 +94,12 @@ public class Brick implements Cloneable{
                 default:
                     setColor(Color.BLACK);//
             }
-        }
-        else
+        } else
             setColor(Color.GRAY);//不可破坏砖块为灰色
     }
 
     public int getBrickScore() {
         return brickScore;
-    }
-
-    public void setBRICK_WIDTH(int BRICK_WIDTH) {
-        this.BRICK_WIDTH = BRICK_WIDTH;
-    }
-
-    public static int getBrickHeight() {
-        return BRICK_HEIGHT;
     }
 
     public boolean isAlive() {
@@ -143,19 +134,27 @@ public class Brick implements Cloneable{
         this.color = color;
     }
 
-    public int getCenterX(){ return x+BRICK_WIDTH/2; }
+    public int getCenterX() {
+        return x + BRICK_WIDTH / 2;
+    }
 
-    public int getCenterY(){ return y+BRICK_HEIGHT/2; }
+    public int getCenterY() {
+        return y + BRICK_HEIGHT / 2;
+    }
 
-    public boolean getDestroyable(){
+    public boolean getDestroyable() {
         return isDestroyable;
+    }
+
+    public void setDestroyable(boolean destroyable) {
+        isDestroyable = destroyable;
     }
 
     public int getBRICK_WIDTH() {
         return BRICK_WIDTH;
     }
 
-    public void setDestroyable(boolean destroyable) {
-        isDestroyable = destroyable;
+    public void setBRICK_WIDTH(int BRICK_WIDTH) {
+        this.BRICK_WIDTH = BRICK_WIDTH;
     }
 }

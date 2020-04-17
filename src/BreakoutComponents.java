@@ -1,12 +1,11 @@
 import javax.swing.*;
 import java.awt.*;
-import java.net.MalformedURLException;
-import java.net.URL;
 import java.util.ArrayList;
 import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BreakoutComponents extends JComponent {
+    final static int ITEM_PROBABILITY = 60;//击碎brick后生成道具概率,100为100%,0为0%
     Paddle paddle;
     //Ball ball;
     ArrayList<Brick> bricks;
@@ -16,15 +15,14 @@ public class BreakoutComponents extends JComponent {
     JLabel showLabel;//用于显示游戏信息,比如血量等
     JLabel itemLabel;//显示道具效果
     Random random;//随机数生成器
-    final static int ITEM_PROBABILITY = 60;//击碎brick后生成道具概率,100为100%,0为0%
     Font showFont;//显示游戏信息的字体
     //技能特效相关
     JLabel railGunLabel;
     Image backgroundImage;
 
-    Color showColor = new Color(255,111,0);//信息显示相关字体颜色
+    Color showColor = new Color(255, 111, 0);//信息显示相关字体颜色
 
-    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items,EnergyAdder energyAdder) {
+    BreakoutComponents(Paddle paddle, CopyOnWriteArrayList<Ball> balls, ArrayList<Brick> bricks, CopyOnWriteArrayList<GameItem> items, EnergyAdder energyAdder) {
         this.paddle = paddle;
         paddle.setVisible(true);
         this.balls = balls;
@@ -35,7 +33,7 @@ public class BreakoutComponents extends JComponent {
         this.itemLabel = new JLabel("尚未获得道具");
         this.setLayout(null);//使用绝对布局
         //游戏信息显示模块
-        showFont = new Font("黑体",Font.PLAIN,12);
+        showFont = new Font("黑体", Font.PLAIN, 12);
         this.showLabel.setBounds(480, 870, 120, 30);
         this.itemLabel.setBounds(380, 870, 100, 30);
         this.showLabel.setFont(showFont);
@@ -47,7 +45,7 @@ public class BreakoutComponents extends JComponent {
         add(itemLabel);
         add(energyAdder.scoreMultipleLabel);
         add(energyAdder.skillDescriptionLabel);
-        for(Skill skillOne :energyAdder.skillLabelList)
+        for (Skill skillOne : energyAdder.skillLabelList)
             add(skillOne);
         random = new Random();
         backgroundImage = new ImageIcon("src/image/backgroundImage.png").getImage();
@@ -80,7 +78,7 @@ public class BreakoutComponents extends JComponent {
     @Override
     protected void paintComponent(Graphics g) {
         super.paintComponent(g);
-        g.drawImage(backgroundImage,0,0,this);//绘制背景图片
+        g.drawImage(backgroundImage, 0, 0, this);//绘制背景图片
         drawSkill(g);
         paddle.draw(g);
         for (Ball ball : balls) {
@@ -96,29 +94,27 @@ public class BreakoutComponents extends JComponent {
 
     }
 
-    /**绘制一些复杂的技能效果*/
-    void drawSkill(Graphics g){
-        Graphics2D g2 = (Graphics2D)g;
-        if(JBreakout.skillTypeUsing!=-1 ){//判断是否有复杂技能在释放
-            switch(JBreakout.skillTypeUsing){
+    /** 绘制一些复杂的技能效果 */
+    void drawSkill(Graphics g) {
+        Graphics2D g2 = (Graphics2D) g;
+        if (JBreakout.skillTypeUsing != -1) {//判断是否有复杂技能在释放
+            switch (JBreakout.skillTypeUsing) {
                 case 1://轨道炮技能效果绘制
-                    if(JBreakout.skillTimeCounter > 210){
+                    if (JBreakout.skillTimeCounter > 210) {
                         g2.setColor(Color.RED);//红色线
-                        int leftX =(int)((1.0*JBreakout.skillTimeCounter - 210)/110*Paddle.PADDLE_WIDTH/2);//左侧红线X轴与paddleX轴坐标的差
-                        g2.drawLine(paddle.getCenterX()-leftX,0,paddle.getCenterX()-leftX,paddle.getY()-1);
-                        g2.drawLine(paddle.getCenterX()+leftX,0,paddle.getCenterX()+leftX,paddle.getY()-1);
-                    }
-                    else{//然后绘制轨道炮图片
-                        if(JBreakout.skillTimeCounter == 210){//初始化只执行一次
-                            railGunLabel.setBounds(paddle.getCenterX()-40,0,80,900-Paddle.PADDLE_Y_OFFSET);
+                        int leftX = (int) ((1.0 * JBreakout.skillTimeCounter - 210) / 110 * Paddle.PADDLE_WIDTH / 2);//左侧红线X轴与paddleX轴坐标的差
+                        g2.drawLine(paddle.getCenterX() - leftX, 0, paddle.getCenterX() - leftX, paddle.getY() - 1);
+                        g2.drawLine(paddle.getCenterX() + leftX, 0, paddle.getCenterX() + leftX, paddle.getY() - 1);
+                    } else {//然后绘制轨道炮图片
+                        if (JBreakout.skillTimeCounter == 210) {//初始化只执行一次
+                            railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 900 - Paddle.PADDLE_Y_OFFSET);
                             railGunLabel.setVisible(true);
                             System.out.println("轨道炮图片加载一次");
-                        }
-                        else {
+                        } else {
                             if (JBreakout.skillTimeCounter <= 60) {//结束动画
                                 railGunLabel.setVisible(false);
                             } else//修正位置
-                                railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 900-Paddle.PADDLE_Y_OFFSET);
+                                railGunLabel.setBounds(paddle.getCenterX() - 40, 0, 80, 900 - Paddle.PADDLE_Y_OFFSET);
                         }
                     }
                     break;

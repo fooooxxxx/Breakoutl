@@ -1,19 +1,23 @@
+import javax.sound.sampled.AudioSystem;
+import javax.sound.sampled.Clip;
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
-import java.util.*;
 import java.util.List;
 import java.util.Timer;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArrayList;
-import javax.sound.sampled.AudioSystem;
-import javax.sound.sampled.Clip;
 
 
 public class JBreakout extends JFrame implements CastSkill {
     //游戏参数
     public static final int APPLICATION_WIDTH = 616;
     public static final int APPLICATION_HEIGHT = 939;
+    /** 每层砖块的数量 */
+    private static final int BRICKS_PER_ROW = 10;
+    /** 砖块之间的间隔 */
+    private static final int BRICK_SEP = 2;
     /** 血量 */
     public static int healthPoint = 0;
     /** 当期分数 */
@@ -23,13 +27,17 @@ public class JBreakout extends JFrame implements CastSkill {
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
-
-    /** 每层砖块的数量 */
-    private static final int BRICKS_PER_ROW = 10;
+    public static String playerName = null;
+    /*技能相关*/
+    static int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
+    static int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
+    static int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
+    static boolean isBallLaunching;//球是否已经发射
+    /*随机关卡生成设定*/
+    static boolean isRandomMap = false;
     /** 层数 */
     private static int BRICK_ROWS = 10;
-    /** 砖块之间的间隔 */
-    private static final int BRICK_SEP = 2;
+    final boolean isSymmetry = true;//默认对称
     //变量
     BreakoutComponents breakoutComponents;
     Paddle paddle;
@@ -38,31 +46,18 @@ public class JBreakout extends JFrame implements CastSkill {
     CopyOnWriteArrayList<Ball> balls;//小球列表
     EnergyAdder energyAdder;//能量加成器
     MainMenu mainMenu;//主菜单JPanel
+    //static boolean isGameStart = false;//游戏是否开始
     Timer mainTimer;
     /*道具相关*/
     CopyOnWriteArrayList<GameItem> items;//道具列表
     Iterator<GameItem> itemIterator;//道具迭代器
-    /*技能相关*/
-    static int skillCoolDown = 0;//技能冷却CD,当该值为0时才能释放技能
-    static int skillTypeUsing = -1;//使用中的技能类型,如果为-1,说明当前没有技能在释放中
-    static int skillTimeCounter = 0;//技能时间计数器,使用这个来设定持续性技能的生效,以及部分技能的动画效果
-
-    static boolean isBallLaunching;//球是否已经发射
-    //static boolean isGameStart = false;//游戏是否开始
     /** 距离下一次小球启动自动锁定倒计时 */
     int autoLockBrickCountDown;
-
     //字体变量
     Font ggFont = new Font("黑体", Font.BOLD, 18);
     //字体颜色
     Color fontColor;
-
-    public static String playerName = null;
     BoSql sqlConn;
-
-    /*随机关卡生成设定*/
-    static boolean isRandomMap = false;
-    final boolean isSymmetry = true;//默认对称
 
     public JBreakout() {
         //设置窗体大小
@@ -279,19 +274,18 @@ public class JBreakout extends JFrame implements CastSkill {
         skillTimeCounter = 0;//技能清空
         skillTypeUsing = -1;
 
-        if(playerName !=null){//如果玩家登录过姓名
-            List<PlayerInfo> tempPlayers = sqlConn.queryPlayerInfo(playerName,false);
-            if(tempPlayers.size()!=0){//如果该玩家信息可以从数据库中读取
-                if(tempPlayers.get(0).score<tempScore){
-                    ggLabel.setText("你的分数为 "+tempScore+" 打破记录!");
+        if (playerName != null) {//如果玩家登录过姓名
+            List<PlayerInfo> tempPlayers = sqlConn.queryPlayerInfo(playerName, false);
+            if (tempPlayers.size() != 0) {//如果该玩家信息可以从数据库中读取
+                if (tempPlayers.get(0).score < tempScore) {
+                    ggLabel.setText("你的分数为 " + tempScore + " 打破记录!");
                     soundPlay(7);
-                    sqlConn.updatePlayerInfo(playerName,tempScore);//进行更新
+                    sqlConn.updatePlayerInfo(playerName, tempScore);//进行更新
                 }
-            }
-            else{//将数据插入到数据库
-                ggLabel.setText("你的分数为 "+tempScore+" 新记录!");
+            } else {//将数据插入到数据库
+                ggLabel.setText("你的分数为 " + tempScore + " 新记录!");
                 soundPlay(7);
-                sqlConn.insertPlayerInfo(playerName,tempScore);
+                sqlConn.insertPlayerInfo(playerName, tempScore);
             }
         }
 
@@ -617,7 +611,7 @@ public class JBreakout extends JFrame implements CastSkill {
                 case 0://立刻从挡板中心发射一颗默认速度的小球
                     //balls.add(new Ball(0, 0, 3, 3));//测试代码
                     balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
-                            ,paddle.getY() - 2 * Ball.getBallRadius()));
+                            , paddle.getY() - 2 * Ball.getBallRadius()));
                     ballNum++;
                     skillCoolDown = 250;
                     break;

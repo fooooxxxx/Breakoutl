@@ -6,7 +6,7 @@ import java.util.Random;
 /**
  * 掉落的游戏道具类
  */
-public class GameItem  implements CollideInterface, ImageObserver {
+public class GameItem implements CollideInterface, ImageObserver {
     final static int ITEM_HEIGHT = 30;
     final static int ITEM_WIDTH = 30;
     final static int itemSpeed = 2;
@@ -25,15 +25,13 @@ public class GameItem  implements CollideInterface, ImageObserver {
         this.y = y;
         Random r = new Random();
         int randNum = r.nextInt(100);//随机roll点,决定道具类型
-        if(randNum>=80) {
+        if (randNum >= 80) {
             itemType = 3;//20%概率为加命道具
             itemImage = new ImageIcon("src/image/add_hp.png").getImage();
-        }
-        else if(randNum>=40) {
+        } else if (randNum >= 40) {
             itemType = 2;
             itemImage = new ImageIcon("src/image/ball_split.png").getImage();
-        }
-        else {
+        } else {
             itemType = 1;
             itemImage = new ImageIcon("src/image/paddle_long.png").getImage();
         }
@@ -44,7 +42,7 @@ public class GameItem  implements CollideInterface, ImageObserver {
         //g2.setColor(Color.RED);
         //g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
 
-        g2.drawImage(itemImage,x,y,this);
+        g2.drawImage(itemImage, x, y, this);
         //g2.drawOval(x, y, ITEM_WIDTH, ITEM_HEIGHT);
     }
 
@@ -64,11 +62,9 @@ public class GameItem  implements CollideInterface, ImageObserver {
 
     @Override
     public boolean collide(int object_x, int object_y, int object_width, int object_height) {
-        if (this.x + ITEM_WIDTH > object_x && this.x < object_x + object_width
-                && this.y + ITEM_HEIGHT > object_y && this.y < object_y + object_height) {//判断是否发生碰撞
-            return true;
-        }
-        return false;
+        //判断是否发生碰撞
+        return this.x + ITEM_WIDTH > object_x && this.x < object_x + object_width
+                && this.y + ITEM_HEIGHT > object_y && this.y < object_y + object_height;
     }
 
     @Override
