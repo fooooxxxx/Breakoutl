@@ -18,12 +18,12 @@ public class JBreakout extends JFrame implements CastSkill {
     private static final int BRICKS_PER_ROW = 10;
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 2;
-    /** 血量 */
-    public static int healthPoint = 0;
-    /** 当期分数 */
-    public static int score = 0;
-    /** 小球数量 */
-    public static int ballNum = 1;//当小球数量为0时,生命值减一
+    /** 砖块距离顶部距离 */
+    public static final int BRICK_OFFSET_TOP = 30;
+    /** 道具数量上限 */
+    final int ITEM_LIMIT = 4;
+    /** 初始生命值 */
+    final int INIT_HEALTH_POINT = 3;
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
@@ -35,10 +35,16 @@ public class JBreakout extends JFrame implements CastSkill {
     static boolean isBallLaunching;//球是否已经发射
     /*随机关卡生成设定*/
     static boolean isRandomMap = false;
-    /** 层数 */
-    private static int BRICK_ROWS = 10;
     final boolean isSymmetry = true;//默认对称
     //变量
+    /** 血量 */
+    public static int healthPoint = 0;
+    /** 当前分数 */
+    public static int score = 0;
+    /** 层数 */
+    private static int BRICK_ROWS = 10;
+    /** 小球数量 */
+    public static int ballNum = 1;//当小球数量为0时,生命值减一
     BreakoutComponents breakoutComponents;
     Paddle paddle;
     //Ball ball;
@@ -192,7 +198,7 @@ public class JBreakout extends JFrame implements CastSkill {
                                     /* 进行一次伤害判定,默认伤害为1;如果球被击碎,调用道具生成函数;道具在场上数量不能超过2,连续击碎下无效  */
                                     if (brickOne.getDestroyable()) {//碰到可被摧毁的砖块
                                         if (brickOne.hpCheck(ball.getBallDamage())) {//如果击碎砖块
-                                            if (items.size() < 3) breakoutComponents.generateItem(brickOne);
+                                            if (items.size() < ITEM_LIMIT) breakoutComponents.generateItem(brickOne);
                                             //击碎时增加一点分数能量
                                             score += energyAdder.addEnergy(1) * brickOne.getBrickScore();//加分
                                             energyAdder.reduceEnergy(220);//能量短时间内不再泄漏
@@ -407,7 +413,7 @@ public class JBreakout extends JFrame implements CastSkill {
             //x,y为砖块坐标
             int x = j * BRICK_WIDTH + BRICK_SEP * (j + 1);
             brick.setX(x);
-            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + 20;//空出上面空间
+            int y = i * Brick.BRICK_HEIGHT + BRICK_SEP * i + BRICK_OFFSET_TOP;//空出上面空间
             brick.setY(y);
             j++;
             if (j == 10) {

@@ -5,7 +5,7 @@ import java.util.Random;
 import java.util.concurrent.CopyOnWriteArrayList;
 
 public class BreakoutComponents extends JComponent {
-    final static int ITEM_PROBABILITY = 60;//击碎brick后生成道具概率,100为100%,0为0%
+    final static int ITEM_PROBABILITY = 40;//击碎brick后生成道具概率,100为100%,0为0%
     Paddle paddle;
     //Ball ball;
     ArrayList<Brick> bricks;

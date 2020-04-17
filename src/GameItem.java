@@ -25,11 +25,11 @@ public class GameItem implements CollideInterface, ImageObserver {
         this.y = y;
         Random r = new Random();
         int randNum = r.nextInt(100);//随机roll点,决定道具类型
-        if (randNum >= 80) {
-            itemType = 3;//20%概率为加命道具
+        if (randNum >= 90) {
+            itemType = 3;//10%概率为加命道具
             itemImage = new ImageIcon("src/image/add_hp.png").getImage();
-        } else if (randNum >= 40) {
-            itemType = 2;
+        } else if (randNum >= 43) {
+            itemType = 2;//分裂
             itemImage = new ImageIcon("src/image/ball_split.png").getImage();
         } else {
             itemType = 1;
