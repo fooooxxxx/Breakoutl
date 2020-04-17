@@ -284,11 +284,13 @@ public class JBreakout extends JFrame implements CastSkill {
             if(tempPlayers.size()!=0){//如果该玩家信息可以从数据库中读取
                 if(tempPlayers.get(0).score<tempScore){
                     ggLabel.setText("你的分数为 "+tempScore+" 打破记录!");
+                    soundPlay(7);
                     sqlConn.updatePlayerInfo(playerName,tempScore);//进行更新
                 }
             }
             else{//将数据插入到数据库
                 ggLabel.setText("你的分数为 "+tempScore+" 新记录!");
+                soundPlay(7);
                 sqlConn.insertPlayerInfo(playerName,tempScore);
             }
         }
@@ -533,6 +535,9 @@ public class JBreakout extends JFrame implements CastSkill {
                             break;
                         case 6://能量不足音效
                             clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/lack_energy.wav")));
+                            break;
+                        case 7://打破记录或者新记录的音效
+                            clip.open(AudioSystem.getAudioInputStream(this.getClass().getResource("sound/cut_the_record.wav")));
                             break;
                     }
                     clip.start();
