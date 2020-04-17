@@ -16,7 +16,7 @@ public class BreakoutComponents extends JComponent {
     JLabel showLabel;//用于显示游戏信息,比如血量等
     JLabel itemLabel;//显示道具效果
     Random random;//随机数生成器
-    final static int itemProbability = 90;//击碎brick后生成道具概率,100为100%,0为0%
+    final static int ITEM_PROBABILITY = 60;//击碎brick后生成道具概率,100为100%,0为0%
     Font showFont;//显示游戏信息的字体
     //技能特效相关
     JLabel railGunLabel;
@@ -135,7 +135,7 @@ public class BreakoutComponents extends JComponent {
      * @return 返回值为true表示道具生成, false表示道具没有生成
      */
     public boolean generateItem(Brick dieBrick) {
-        if (random.nextInt(100) + 1 <= itemProbability) {//如果随机数小于等于itemProbability,则代表道具成功生成
+        if (random.nextInt(100) + 1 <= ITEM_PROBABILITY) {//如果随机数小于等于itemProbability,则代表道具成功生成
             System.out.println("道具成功生成");
             //道具x轴坐标计算公式为 brickX+(brickW-itemW)/2
             items.add(new GameItem(dieBrick.getX() + (dieBrick.getBRICK_WIDTH() - GameItem.ITEM_WIDTH) / 2, dieBrick.getY()));

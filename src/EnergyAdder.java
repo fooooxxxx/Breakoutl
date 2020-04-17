@@ -42,6 +42,7 @@ public class EnergyAdder {
     JLabel scoreMultipleLabel;
     Font scoreFont;//分数字体
     static int skillEnergy;//技能能量
+    private final int INIT_SKILL_ENERGY = 5;//初始能量
     static final int maxSkillEnergy = 400;//技能能量上限值
     private int reduceCountDown;//减少能量倒计时,倒计时为0时,减少一点能量,此外击中砖块或者获得道具可以重设倒计时
     private final int minCountDown = 30;//最小倒计时
@@ -71,7 +72,7 @@ public class EnergyAdder {
         xBorderList = new int[]{x, x + 10, x + 17, x + 24, x + 34, x + 22, x + 22, x + 34, x + 24, x + 17, x + 10, x, x + 12, x + 12};//外轮廓坐标顺序为顺时针,从左上角开始
         yBorderList = new int[]{y, y, y + 15, y, y, y + 24, y + 25, y + 49, y + 49, y + 34, y + 49, y + 49, y + 25, y + 24};
         scoreMeter = 0;
-        skillEnergy = 350;
+        skillEnergy = INIT_SKILL_ENERGY;//初始能量
         lastCountDown = minCountDown;
         //技能图标
         Skill.skillStartX = skillStartX;
