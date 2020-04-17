@@ -54,9 +54,9 @@ public class Paddle extends JComponent {
     /** 重写draw函数 */
     public void draw(Graphics g) {
         Graphics2D g2 = (Graphics2D) g;
-        g2.setColor(Color.blue);
+        g2.setColor(new Color(0, 214, 250));
         if (JBreakout.skillTypeUsing == 2) g2.drawImage(atFieldImage, x, y - 20, this);//绘制技能
-        else g2.drawRect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT);
+        else g2.fillRoundRect(x, y, PADDLE_WIDTH, PADDLE_HEIGHT,12,10);
         //System.out.println(getX() + " ---"+getY());
     }
 
