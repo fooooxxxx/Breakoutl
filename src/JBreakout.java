@@ -615,11 +615,11 @@ public class JBreakout extends JFrame implements CastSkill {
             int castFlag;
             switch (sType) {
                 case 0://立刻从挡板中心发射一颗默认速度的小球
-                    balls.add(new Ball(0, 0, 3, 3));
-                    /*balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
-                            ,paddle.getY() - 2 * Ball.getBallRadius()));*/
+                    //balls.add(new Ball(0, 0, 3, 3));//测试代码
+                    balls.add(new Ball(paddle.getX() + Paddle.PADDLE_WIDTH / 2 - Ball.getBallRadius()
+                            ,paddle.getY() - 2 * Ball.getBallRadius()));
                     ballNum++;
-                    skillCoolDown = 300;
+                    skillCoolDown = 250;
                     break;
                 case 1://双倍伤害
                     skillTypeUsing = 3;
