@@ -490,7 +490,7 @@ public class JBreakout extends JFrame implements CastSkill {
         Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
         for (int i = 0; i < ballSplitNum; i++) {
-            balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(5) + 3) * directionInt[1]));
+            balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(4) + 1) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
             ballNum += 1;//小球数量+1
         }
 
