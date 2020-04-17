@@ -19,11 +19,11 @@ public class JBreakout extends JFrame implements CastSkill {
     /** 砖块之间的间隔 */
     private static final int BRICK_SEP = 2;
     /** 砖块距离顶部距离 */
-    public static final int BRICK_OFFSET_TOP = 30;
+    public static final int BRICK_OFFSET_TOP = 45;
     /** 道具数量上限 */
     final int ITEM_LIMIT = 4;
     /** 初始生命值 */
-    final int INIT_HEALTH_POINT = 3;
+    final int INIT_HEALTH_POINT = 2;
     //游戏面板实际宽高
     public static int realWidth = 0;
     public static int realHeight = 0;
@@ -94,7 +94,7 @@ public class JBreakout extends JFrame implements CastSkill {
         mainMenu.setVisible(false);
         autoLockBrickCountDown = 5;
         ballNum = 1;
-        healthPoint = 1;//初始血量为3
+        healthPoint = INIT_HEALTH_POINT;//初始血量为3
         score = 0;//清空分数
         skillTypeUsing = -1;
         //构建对象
@@ -180,7 +180,7 @@ public class JBreakout extends JFrame implements CastSkill {
                     gameOver(1);
                 }
                 if (!isBallLaunching) {
-                    balls.get(0).setSpeed(3, 3);//对唯一的ball设置速度
+                    balls.get(0).setSpeed(3, 4);//对唯一的ball设置速度
                     setStartBallPosition();//如果游戏开始,但是小球尚未发射,小球就会跟着paddle移动
                     items.clear();//清空场上所有道具
                 }
@@ -332,7 +332,7 @@ public class JBreakout extends JFrame implements CastSkill {
     private ArrayList<Brick> randInitBricks(boolean isSymmetry) {
         ArrayList<Brick> bricks = new ArrayList<>();
         Random random = new Random();
-        BRICK_ROWS = random.nextInt(4) + 8;//随机层数
+        BRICK_ROWS = random.nextInt(4) + 10;//随机层数
         int randomCols = BRICKS_PER_ROW;//列数暂时固定
         for (int i = 0; i < BRICK_ROWS; i++) {
             for (int j = 0; j < BRICKS_PER_ROW; j++) {
@@ -485,7 +485,7 @@ public class JBreakout extends JFrame implements CastSkill {
         Ball ballOne = balls.get(0);//list中第一个球进行分裂
         int[] directionInt = ballOne.getSpeedDirection();
         for (int i = 0; i < ballSplitNum; i++) {
-            balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(4) + 3) * directionInt[1]));
+            balls.add(new Ball(ballOne.getX(), ballOne.getY(), (randBall.nextInt(3) + 2) * directionInt[0], (randBall.nextInt(5) + 3) * directionInt[1]));
             ballNum += 1;//小球数量+1
         }
 

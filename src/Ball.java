@@ -12,8 +12,8 @@ public class Ball implements CollideInterface, ImageObserver {
     private int x = 300;
     private int y = 700;
     //小球在x和y轴上的初始速度
-    private int vx = 3;
-    private int vy = 4;
+    private int vx ;
+    private int vy ;
     private int ballDamage = 1;//小球撞击砖块时伤害,默认为1
     private final Image ballImage1;//伤害为1的小球图片
     private final Image ballImage2;//伤害为2的小球图片

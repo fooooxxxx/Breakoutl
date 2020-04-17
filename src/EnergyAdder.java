@@ -44,7 +44,7 @@ public class EnergyAdder {
     //坐标数组
     private final int[] xBorderList;//外轮廓x轴坐标数组
     private final int[] yBorderList;
-    private final int INIT_SKILL_ENERGY = 5;//初始能量
+    private final int INIT_SKILL_ENERGY = 8;//初始能量
     private final int minCountDown = 30;//最小倒计时
     ArrayList<Skill> skillLabelList;
     int scoreMultiple = 1;//分数倍数,默认为1
@@ -88,7 +88,7 @@ public class EnergyAdder {
         Skill.skillStartX = skillStartX;
         Skill.skillY = skillY;
         //添加技能
-        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/ball_plus.jpg"), 20,
+        skillLabelList.add(new Skill(new ImageIcon("src/image/skill/ball_plus.jpg"), 16,
                 "额外加码", "立刻从挡板上发射一颗小球"));
         skillLabelList.add(new Skill(new ImageIcon("src/image/skill/double_damage.png"), 90,
                 "双倍伤害", "小球伤害翻倍"));
